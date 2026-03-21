@@ -1,0 +1,97 @@
+version: "1.0"
+generated_by: constrain
+session_id: chronicler_001
+
+components:
+  - name: "chronicler_core"
+    description: "central story correlation and timeout management service"
+    type: service
+    port: 8080
+    protocol: http
+    data_access:
+      reads: [PUBLIC]
+      writes: [PUBLIC]
+      rationale: "processes and correlates all event data for story assembly"
+    authority:
+      domains: ["story_assembly", "correlation_logic", "timeout_management"]
+      rationale: "owns story correlation and lifecycle management"
+    dependencies: ["event_ingress", "otlp_bridge"]
+    constraints: ["C001", "C002", "C003", "C005", "C007"]
+
+  - name: "event_ingress"
+    description: "HTTP webhook endpoints and file monitoring for event collection"
+    type: ingress
+    port: 8081
+    protocol: http
+    data_access:
+      reads: [PUBLIC]
+      writes: [PUBLIC]
+      rationale: "receives and validates incoming events from external sources"
+    authority:
+      domains: ["webhook_validation", "file_monitoring"]
+      rationale: "owns event collection and initial validation"
+    dependencies: []
+    constraints: ["C003", "C004", "C007"]
+
+  - name: "otlp_bridge"
+    description: "forwards OTLP spans from Baton integration"
+    type: service
+    port: 8082
+    protocol: grpc
+    data_access:
+      reads: [PUBLIC]
+      writes: [PUBLIC]
+      rationale: "bridges OTLP span data from Baton to Chronicler"
+    authority:
+      domains: []
+      rationale: null
+    dependencies: []
+    constraints: ["C007"]
+
+  - name: "stigmergy_adapter"
+    description: "emits completed stories via SourceAdapter protocol"
+    type: egress
+    port: null
+    protocol: http
+    data_access:
+      reads: [PUBLIC]
+      writes: []
+      rationale: "forwards completed stories to Stigmergy for pattern discovery"
+    authority:
+      domains: []
+      rationale: null
+    dependencies: ["chronicler_core"]
+    constraints: ["C006"]
+
+  - name: "apprentice_adapter"
+    description: "formats story sequences for training data"
+    type: egress
+    port: null
+    protocol: http
+    data_access:
+      reads: [PUBLIC]
+      writes: []
+      rationale: "formats story sequences for Apprentice training consumption"
+    authority:
+      domains: []
+      rationale: null
+    dependencies: ["chronicler_core"]
+    constraints: ["C006"]
+
+edges:
+  - from: "event_ingress"
+    to: "chronicler_core"
+    protocol: http
+    description: "validated events for story correlation"
+  - from: "otlp_bridge"
+    to: "chronicler_core"
+    protocol: http
+    description: "OTLP span events from Baton"
+  - from: "chronicler_core"
+    to: "stigmergy_adapter"
+    protocol: http
+    description: "completed stories for pattern discovery"
+  - from: "chronicler_core"
+    to: "apprentice_adapter"
+    protocol: http
+    description: "story sequences for training data"

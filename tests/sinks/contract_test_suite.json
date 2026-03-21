@@ -1,0 +1,808 @@
+{
+  "component_id": "sinks",
+  "contract_version": 1,
+  "test_cases": [
+    {
+      "id": "TC_DISK_HAPPY_LIFECYCLE",
+      "description": "DiskSink full lifecycle: start -> emit -> close produces valid JSONL",
+      "function": "DiskSink.start, DiskSink.emit, DiskSink.close",
+      "category": "happy_path",
+      "setup_description": "Create DiskSinkConfig with tmp_path, construct DiskSink, run full lifecycle",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "A valid Story object",
+      "expected_output_description": "JSONL file contains one valid JSON line matching the story",
+      "expected_error": "",
+      "assertions": [
+        "File exists at configured path",
+        "File contains exactly one line",
+        "Line deserializes to JSON matching story_id"
+      ]
+    },
+    {
+      "id": "TC_DISK_FLUSH_ON_WRITE",
+      "description": "DiskSink with flush_on_write=True flushes after each emit",
+      "function": "DiskSink.emit",
+      "category": "happy_path",
+      "setup_description": "Create DiskSinkConfig with flush_on_write=True",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "After emit, data is readable from file even before close"
+      ]
+    },
+    {
+      "id": "TC_DISK_MULTIPLE_EMITS",
+      "description": "Multiple emit calls produce multiple JSONL lines in order",
+      "function": "DiskSink.emit",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "File contains N lines for N emits",
+        "Lines are in order of emission"
+      ]
+    },
+    {
+      "id": "TC_DISK_APPEND_MODE",
+      "description": "DiskSink opens in append mode; existing data is preserved (invariant)",
+      "function": "DiskSink.start",
+      "category": "invariant",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Pre-existing content in the file is not overwritten"
+      ]
+    },
+    {
+      "id": "TC_DISK_NOT_STARTED_EMIT",
+      "description": "emit() before start() raises RuntimeError",
+      "function": "DiskSink.emit",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "RuntimeError",
+      "assertions": [
+        "RuntimeError is raised when emit called before start"
+      ]
+    },
+    {
+      "id": "TC_DISK_ALREADY_STARTED",
+      "description": "Calling start() twice raises error",
+      "function": "DiskSink.start",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "already_started",
+      "assertions": [
+        "Error raised on second start() call"
+      ]
+    },
+    {
+      "id": "TC_DISK_BAD_PATH",
+      "description": "start() with non-existent directory raises file_open_error",
+      "function": "DiskSink.start",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "file_open_error",
+      "assertions": [
+        "Exception raised for bad path"
+      ]
+    },
+    {
+      "id": "TC_DISK_EMIT_AFTER_CLOSE",
+      "description": "emit() after close() raises RuntimeError",
+      "function": "DiskSink.emit",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "RuntimeError",
+      "assertions": [
+        "RuntimeError raised on emit after close"
+      ]
+    },
+    {
+      "id": "TC_DISK_CLOSE_NOT_STARTED",
+      "description": "close() before start() raises error",
+      "function": "DiskSink.close",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "not_started",
+      "assertions": [
+        "Error raised when close called before start"
+      ]
+    },
+    {
+      "id": "TC_READ_HAPPY",
+      "description": "read_stories yields all valid Story objects from JSONL file",
+      "function": "read_stories",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "All valid lines are yielded as Story objects",
+        "story_id matches written data"
+      ]
+    },
+    {
+      "id": "TC_READ_CORRUPTED_LINES",
+      "description": "read_stories skips corrupted lines and yields only valid ones (invariant)",
+      "function": "read_stories",
+      "category": "invariant",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Corrupted lines are skipped",
+        "Valid lines still yielded",
+        "Warning logged for corrupted lines"
+      ]
+    },
+    {
+      "id": "TC_READ_EMPTY_FILE",
+      "description": "read_stories on empty file yields nothing",
+      "function": "read_stories",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "No stories yielded",
+        "No errors raised"
+      ]
+    },
+    {
+      "id": "TC_READ_FILE_NOT_FOUND",
+      "description": "read_stories raises for non-existent path",
+      "function": "read_stories",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "file_not_found",
+      "assertions": [
+        "FileNotFoundError or equivalent raised"
+      ]
+    },
+    {
+      "id": "TC_READ_ROUNDTRIP",
+      "description": "Stories written by DiskSink can be read back by read_stories with fidelity",
+      "function": "read_stories",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Round-trip produces identical story_id, story_type, events"
+      ]
+    },
+    {
+      "id": "TC_STIGMERGY_LIFECYCLE",
+      "description": "StigmergySink start/emit/close lifecycle completes without error",
+      "function": "StigmergySink.start, StigmergySink.emit, StigmergySink.close",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "No exceptions raised",
+        "DEBUG log emitted on emit"
+      ]
+    },
+    {
+      "id": "TC_STIGMERGY_EMIT_LOGS",
+      "description": "StigmergySink.emit logs story_id and story_type at DEBUG",
+      "function": "StigmergySink.emit",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "DEBUG log contains story_id",
+        "DEBUG log contains story_type"
+      ]
+    },
+    {
+      "id": "TC_APPRENTICE_LIFECYCLE",
+      "description": "ApprenticeSink start/emit/close lifecycle completes without error",
+      "function": "ApprenticeSink.start, ApprenticeSink.emit, ApprenticeSink.close",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "No exceptions raised",
+        "DEBUG log emitted"
+      ]
+    },
+    {
+      "id": "TC_APPRENTICE_EMIT_LOGS",
+      "description": "ApprenticeSink.emit logs story_id and event count at DEBUG",
+      "function": "ApprenticeSink.emit",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "DEBUG log contains story_id"
+      ]
+    },
+    {
+      "id": "TC_KINDEX_LIFECYCLE",
+      "description": "KindexSink start/emit/close lifecycle with noteworthy story",
+      "function": "KindexSink.start, KindexSink.emit, KindexSink.close",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "No exceptions raised",
+        "DEBUG log emitted for noteworthy story"
+      ]
+    },
+    {
+      "id": "TC_KINDEX_FILTERS_NON_NOTEWORTHY",
+      "description": "KindexSink silently drops non-noteworthy stories (invariant)",
+      "function": "KindexSink.emit",
+      "category": "invariant",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "No knowledge-node DEBUG log for filtered story"
+      ]
+    },
+    {
+      "id": "TC_KINDEX_START_LOGS_CONFIG",
+      "description": "KindexSink.start logs active config at DEBUG",
+      "function": "KindexSink.start",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "DEBUG log contains config information"
+      ]
+    },
+    {
+      "id": "TC_NOTEWORTHY_ALL_PASS",
+      "description": "is_noteworthy returns True when all thresholds met",
+      "function": "is_noteworthy",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Returns True"
+      ]
+    },
+    {
+      "id": "TC_NOTEWORTHY_STORY_TYPE_FILTER_MATCH",
+      "description": "is_noteworthy returns True when story_type is in config.story_types set",
+      "function": "is_noteworthy",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Returns True when story_type in allowed set"
+      ]
+    },
+    {
+      "id": "TC_NOTEWORTHY_STORY_TYPE_FILTER_MISS",
+      "description": "is_noteworthy returns False when story_type not in config.story_types set",
+      "function": "is_noteworthy",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Returns False"
+      ]
+    },
+    {
+      "id": "TC_NOTEWORTHY_STORY_TYPES_NONE",
+      "description": "is_noteworthy with story_types=None allows any story_type",
+      "function": "is_noteworthy",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Returns True regardless of story_type"
+      ]
+    },
+    {
+      "id": "TC_NOTEWORTHY_MIN_EVENT_COUNT_EXACT",
+      "description": "is_noteworthy returns True when events == min_event_count exactly",
+      "function": "is_noteworthy",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Returns True at boundary"
+      ]
+    },
+    {
+      "id": "TC_NOTEWORTHY_MIN_EVENT_COUNT_BELOW",
+      "description": "is_noteworthy returns False when events < min_event_count",
+      "function": "is_noteworthy",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Returns False"
+      ]
+    },
+    {
+      "id": "TC_NOTEWORTHY_MIN_DURATION_EXACT",
+      "description": "is_noteworthy returns True when duration == min_duration_seconds exactly",
+      "function": "is_noteworthy",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Returns True at boundary"
+      ]
+    },
+    {
+      "id": "TC_NOTEWORTHY_MIN_DURATION_BELOW",
+      "description": "is_noteworthy returns False when duration < min_duration_seconds",
+      "function": "is_noteworthy",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Returns False"
+      ]
+    },
+    {
+      "id": "TC_NOTEWORTHY_INVALID_TIMESTAMPS",
+      "description": "is_noteworthy raises on invalid ISO-8601 timestamps",
+      "function": "is_noteworthy",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "invalid_timestamps",
+      "assertions": [
+        "Exception raised for unparseable timestamps"
+      ]
+    },
+    {
+      "id": "TC_NOTEWORTHY_PURE_NO_SIDE_EFFECTS",
+      "description": "is_noteworthy is pure: calling it does not modify story or config (invariant)",
+      "function": "is_noteworthy",
+      "category": "invariant",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Story and config unchanged after call"
+      ]
+    },
+    {
+      "id": "TC_SAFE_EMIT_SUCCESS",
+      "description": "safe_emit returns emitted result on successful emit",
+      "function": "safe_emit",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "result is SinkEmitResult.emitted",
+        "error_message is empty",
+        "sink_name and story_id match inputs"
+      ]
+    },
+    {
+      "id": "TC_SAFE_EMIT_ERROR_CAPTURED",
+      "description": "safe_emit captures exception and returns error result",
+      "function": "safe_emit",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "result is SinkEmitResult.error",
+        "error_message is populated",
+        "No exception propagated"
+      ]
+    },
+    {
+      "id": "TC_SAFE_EMIT_NEVER_RAISES",
+      "description": "safe_emit never raises, even on unexpected errors (invariant)",
+      "function": "safe_emit",
+      "category": "invariant",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "No exception escapes safe_emit"
+      ]
+    },
+    {
+      "id": "TC_SINK_PROTOCOL",
+      "description": "All sink classes satisfy SinkProtocol with start, emit, close async methods",
+      "function": "SinkProtocol",
+      "category": "invariant",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "DiskSink, StigmergySink, ApprenticeSink, KindexSink all have start, emit, close"
+      ]
+    },
+    {
+      "id": "TC_FILEPATH_VALID",
+      "description": "FilePath accepts non-empty strings up to 4096 chars",
+      "function": "FilePath",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Valid path string accepted"
+      ]
+    },
+    {
+      "id": "TC_FILEPATH_EMPTY",
+      "description": "FilePath rejects empty string",
+      "function": "FilePath",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "ValidationError",
+      "assertions": [
+        "Empty string rejected"
+      ]
+    },
+    {
+      "id": "TC_FILEPATH_WHITESPACE_ONLY",
+      "description": "FilePath rejects whitespace-only string",
+      "function": "FilePath",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "ValidationError",
+      "assertions": [
+        "Whitespace-only string rejected"
+      ]
+    },
+    {
+      "id": "TC_FILEPATH_MAX_LENGTH",
+      "description": "FilePath accepts string of exactly 4096 chars",
+      "function": "FilePath",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "4096-char string accepted"
+      ]
+    },
+    {
+      "id": "TC_FILEPATH_OVER_MAX_LENGTH",
+      "description": "FilePath rejects string over 4096 chars",
+      "function": "FilePath",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "ValidationError",
+      "assertions": [
+        "4097-char string rejected"
+      ]
+    },
+    {
+      "id": "TC_POSITIVE_INT_VALID",
+      "description": "PositiveInt accepts integer >= 1",
+      "function": "PositiveInt",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Value 1 accepted",
+        "Value 100 accepted"
+      ]
+    },
+    {
+      "id": "TC_POSITIVE_INT_ZERO",
+      "description": "PositiveInt rejects 0",
+      "function": "PositiveInt",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "ValidationError",
+      "assertions": [
+        "0 rejected"
+      ]
+    },
+    {
+      "id": "TC_POSITIVE_INT_NEGATIVE",
+      "description": "PositiveInt rejects negative integers",
+      "function": "PositiveInt",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "ValidationError",
+      "assertions": [
+        "-1 rejected"
+      ]
+    },
+    {
+      "id": "TC_NONNEG_FLOAT_VALID",
+      "description": "NonNegativeFloat accepts 0.0 and positive floats",
+      "function": "NonNegativeFloat",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "0.0 accepted",
+        "1.5 accepted"
+      ]
+    },
+    {
+      "id": "TC_NONNEG_FLOAT_NEGATIVE",
+      "description": "NonNegativeFloat rejects negative floats",
+      "function": "NonNegativeFloat",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "ValidationError",
+      "assertions": [
+        "-0.1 rejected"
+      ]
+    },
+    {
+      "id": "TC_SINK_NAME_ENUM",
+      "description": "SinkName enum has exactly four variants: disk, stigmergy, apprentice, kindex",
+      "function": "SinkName",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "All four variants accessible",
+        "No extra variants"
+      ]
+    },
+    {
+      "id": "TC_SINK_EMIT_RESULT_ENUM",
+      "description": "SinkEmitResult enum has exactly three variants: emitted, filtered, error",
+      "function": "SinkEmitResult",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "All three variants accessible"
+      ]
+    },
+    {
+      "id": "TC_DISK_CONFIG_FROZEN",
+      "description": "DiskSinkConfig is immutable after construction (invariant)",
+      "function": "DiskSinkConfig",
+      "category": "invariant",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Attribute assignment raises error"
+      ]
+    },
+    {
+      "id": "TC_KINDEX_CONFIG_FROZEN",
+      "description": "KindexSinkConfig is immutable after construction (invariant)",
+      "function": "KindexSinkConfig",
+      "category": "invariant",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Attribute assignment raises error"
+      ]
+    },
+    {
+      "id": "TC_SAFE_EMIT_OUTCOME_FIELDS",
+      "description": "SafeEmitOutcome has correct fields: sink_name, story_id, result, error_message",
+      "function": "SafeEmitOutcome",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "All fields accessible and typed correctly"
+      ]
+    },
+    {
+      "id": "TC_KINDEX_IS_NOTEWORTHY_INTEGRATION",
+      "description": "KindexSink.emit uses is_noteworthy to decide emission — noteworthy story gets logged, non-noteworthy does not",
+      "function": "KindexSink.emit",
+      "category": "invariant",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Noteworthy story produces DEBUG log",
+        "Non-noteworthy story produces no knowledge-node log"
+      ]
+    },
+    {
+      "id": "TC_DISK_CONCURRENT_EMITS",
+      "description": "Concurrent DiskSink emit calls produce non-interleaved JSONL lines (invariant)",
+      "function": "DiskSink.emit",
+      "category": "invariant",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "All lines are valid JSON",
+        "No interleaving of partial lines"
+      ]
+    }
+  ],
+  "test_language": "python",
+  "generated_code": "\"\"\"\nContract tests for the sinks component.\n\nTests cover: DiskSink, read_stories, StigmergySink, ApprenticeSink,\nKindexSink, is_noteworthy, safe_emit, type validators, and invariants.\n\nRun with: pytest tests/test_sinks.py -v --asyncio-mode=auto\nRequires: pytest-asyncio\n\"\"\"\nimport asyncio\nimport json\nimport logging\nimport os\nimport sys\nfrom datetime import datetime, timedelta, timezone\nfrom pathlib import Path\nfrom unittest.mock import AsyncMock, MagicMock, patch\n\nimport pytest\n\n# ---------------------------------------------------------------------------\n# Imports from the component under test\n# ---------------------------------------------------------------------------\nfrom chronicler.sinks.disk import DiskSink, DiskSinkConfig, read_stories\nfrom chronicler.sinks.stigmergy import StigmergySink\nfrom chronicler.sinks.apprentice import ApprenticeSink\nfrom chronicler.sinks.kindex import KindexSink, KindexSinkConfig, is_noteworthy\nfrom chronicler.sinks.engine import safe_emit\nfrom chronicler.sinks.types import (\n    FilePath,\n    NonNegativeFloat,\n    PositiveInt,\n    SafeEmitOutcome,\n    SinkEmitResult,\n    SinkName,\n)\nfrom chronicler.schemas import Story\n\n\n# ---------------------------------------------------------------------------\n# Fixtures / Factories\n# ---------------------------------------------------------------------------\n\ndef _now_iso() -> str:\n    return datetime.now(timezone.utc).isoformat()\n\n\ndef _iso_offset(seconds: float, base: str | None = None) -> str:\n    if base is None:\n        base_dt = datetime.now(timezone.utc)\n    else:\n        base_dt = datetime.fromisoformat(base)\n    return (base_dt + timedelta(seconds=seconds)).isoformat()\n\n\ndef make_story(**overrides) -> Story:\n    \"\"\"Factory producing a valid closed Story with sensible defaults.\"\"\"\n    opened = _now_iso()\n    defaults = dict(\n        story_id=\"story-001\",\n        story_type=\"session\",\n        events=[{\"type\": \"click\", \"ts\": _now_iso()}],\n        opened_at=opened,\n        closed_at=_iso_offset(60, base=opened),\n        metadata={},\n    )\n    defaults.update(overrides)\n    return Story(**defaults)\n\n\ndef make_disk_config(tmp_path: Path, **overrides) -> DiskSinkConfig:\n    defaults = dict(\n        path=str(tmp_path / \"stories.jsonl\"),\n        flush_on_write=True,\n    )\n    defaults.update(overrides)\n    return DiskSinkConfig(**defaults)\n\n\ndef make_kindex_config(**overrides) -> KindexSinkConfig:\n    defaults = dict(\n        story_types=None,\n        min_event_count=1,\n        min_duration_seconds=0.0,\n    )\n    defaults.update(overrides)\n    return KindexSinkConfig(**defaults)\n\n\n@pytest.fixture\ndef story():\n    return make_story()\n\n\n@pytest.fixture\ndef disk_config(tmp_path):\n    return make_disk_config(tmp_path)\n\n\n@pytest.fixture\ndef kindex_config():\n    return make_kindex_config()\n\n\n# ---------------------------------------------------------------------------\n# Type / Validator Tests\n# ---------------------------------------------------------------------------\n\nclass TestFilePath:\n    \"\"\"Tests for the FilePath validated type.\"\"\"\n\n    def test_valid_path(self):\n        \"\"\"TC_FILEPATH_VALID: non-empty string accepted.\"\"\"\n        fp = FilePath(value=\"/tmp/test.jsonl\")\n        assert fp.value == \"/tmp/test.jsonl\"\n\n    def test_single_char(self):\n        fp = FilePath(value=\"a\")\n        assert fp.value == \"a\"\n\n    def test_empty_string_rejected(self):\n        \"\"\"TC_FILEPATH_EMPTY: empty string rejected.\"\"\"\n        with pytest.raises(Exception):  # ValidationError\n            FilePath(value=\"\")\n\n    def test_whitespace_only_rejected(self):\n        \"\"\"TC_FILEPATH_WHITESPACE_ONLY: whitespace-only rejected.\"\"\"\n        with pytest.raises(Exception):\n            FilePath(value=\"   \")\n\n    def test_tabs_only_rejected(self):\n        with pytest.raises(Exception):\n            FilePath(value=\"\\t\\t\")\n\n    def test_max_length_accepted(self):\n        \"\"\"TC_FILEPATH_MAX_LENGTH: 4096-char string accepted.\"\"\"\n        fp = FilePath(value=\"a\" * 4096)\n        assert len(fp.value) == 4096\n\n    def test_over_max_length_rejected(self):\n        \"\"\"TC_FILEPATH_OVER_MAX_LENGTH: 4097-char string rejected.\"\"\"\n        with pytest.raises(Exception):\n            FilePath(value=\"a\" * 4097)\n\n\nclass TestPositiveInt:\n    \"\"\"Tests for the PositiveInt validated type.\"\"\"\n\n    def test_one_accepted(self):\n        \"\"\"TC_POSITIVE_INT_VALID: 1 accepted.\"\"\"\n        pi = PositiveInt(value=1)\n        assert pi.value == 1\n\n    def test_large_value_accepted(self):\n        pi = PositiveInt(value=999_999)\n        assert pi.value == 999_999\n\n    def test_zero_rejected(self):\n        \"\"\"TC_POSITIVE_INT_ZERO: 0 rejected.\"\"\"\n        with pytest.raises(Exception):\n            PositiveInt(value=0)\n\n    def test_negative_rejected(self):\n        \"\"\"TC_POSITIVE_INT_NEGATIVE: -1 rejected.\"\"\"\n        with pytest.raises(Exception):\n            PositiveInt(value=-1)\n\n\nclass TestNonNegativeFloat:\n    \"\"\"Tests for the NonNegativeFloat validated type.\"\"\"\n\n    def test_zero_accepted(self):\n        \"\"\"TC_NONNEG_FLOAT_VALID: 0.0 accepted.\"\"\"\n        nnf = NonNegativeFloat(value=0.0)\n        assert nnf.value == 0.0\n\n    def test_positive_accepted(self):\n        nnf = NonNegativeFloat(value=3.14)\n        assert nnf.value == 3.14\n\n    def test_negative_rejected(self):\n        \"\"\"TC_NONNEG_FLOAT_NEGATIVE: -0.1 rejected.\"\"\"\n        with pytest.raises(Exception):\n            NonNegativeFloat(value=-0.1)\n\n\nclass TestSinkNameEnum:\n    \"\"\"Tests for the SinkName enum.\"\"\"\n\n    def test_all_variants(self):\n        \"\"\"TC_SINK_NAME_ENUM: four variants present.\"\"\"\n        assert SinkName.disk is not None\n        assert SinkName.stigmergy is not None\n        assert SinkName.apprentice is not None\n        assert SinkName.kindex is not None\n\n    def test_exactly_four_members(self):\n        assert len(SinkName) == 4\n\n\nclass TestSinkEmitResultEnum:\n    \"\"\"Tests for the SinkEmitResult enum.\"\"\"\n\n    def test_all_variants(self):\n        \"\"\"TC_SINK_EMIT_RESULT_ENUM: three variants present.\"\"\"\n        assert SinkEmitResult.emitted is not None\n        assert SinkEmitResult.filtered is not None\n        assert SinkEmitResult.error is not None\n\n    def test_exactly_three_members(self):\n        assert len(SinkEmitResult) == 3\n\n\nclass TestSafeEmitOutcome:\n    \"\"\"Tests for SafeEmitOutcome struct.\"\"\"\n\n    def test_fields(self):\n        \"\"\"TC_SAFE_EMIT_OUTCOME_FIELDS: all fields accessible.\"\"\"\n        outcome = SafeEmitOutcome(\n            sink_name=\"disk\",\n            story_id=\"s1\",\n            result=SinkEmitResult.emitted,\n            error_message=\"\",\n        )\n        assert outcome.sink_name == \"disk\"\n        assert outcome.story_id == \"s1\"\n        assert outcome.result == SinkEmitResult.emitted\n        assert outcome.error_message == \"\"\n\n\nclass TestConfigFrozen:\n    \"\"\"Invariant: config models are frozen (immutable after construction).\"\"\"\n\n    def test_disk_config_frozen(self, tmp_path):\n        \"\"\"TC_DISK_CONFIG_FROZEN\"\"\"\n        cfg = make_disk_config(tmp_path)\n        with pytest.raises(Exception):\n            cfg.flush_on_write = False\n\n    def test_kindex_config_frozen(self):\n        \"\"\"TC_KINDEX_CONFIG_FROZEN\"\"\"\n        cfg = make_kindex_config()\n        with pytest.raises(Exception):\n            cfg.min_event_count = 99\n\n\n# ---------------------------------------------------------------------------\n# DiskSink Tests\n# ---------------------------------------------------------------------------\n\n@pytest.mark.asyncio\nclass TestDiskSink:\n\n    async def test_full_lifecycle(self, tmp_path, story):\n        \"\"\"TC_DISK_HAPPY_LIFECYCLE: start -> emit -> close produces valid JSONL.\"\"\"\n        cfg = make_disk_config(tmp_path)\n        sink = DiskSink(cfg)\n\n        await sink.start()\n        await sink.emit(story)\n        await sink.close()\n\n        path = Path(cfg.path)\n        assert path.exists(), \"JSONL file should exist\"\n        lines = path.read_text().strip().splitlines()\n        assert len(lines) == 1, \"Exactly one JSONL line expected\"\n        data = json.loads(lines[0])\n        assert data[\"story_id\"] == story.story_id\n\n    async def test_flush_on_write(self, tmp_path, story):\n        \"\"\"TC_DISK_FLUSH_ON_WRITE: data readable before close when flush_on_write=True.\"\"\"\n        cfg = make_disk_config(tmp_path, flush_on_write=True)\n        sink = DiskSink(cfg)\n        await sink.start()\n        await sink.emit(story)\n\n        # Read while sink is still open\n        content = Path(cfg.path).read_text()\n        assert story.story_id in content\n\n        await sink.close()\n\n    async def test_multiple_emits(self, tmp_path):\n        \"\"\"TC_DISK_MULTIPLE_EMITS: N emits -> N lines in order.\"\"\"\n        cfg = make_disk_config(tmp_path)\n        sink = DiskSink(cfg)\n        await sink.start()\n\n        stories = [make_story(story_id=f\"s-{i}\") for i in range(5)]\n        for s in stories:\n            await sink.emit(s)\n        await sink.close()\n\n        lines = Path(cfg.path).read_text().strip().splitlines()\n        assert len(lines) == 5\n        for i, line in enumerate(lines):\n            assert json.loads(line)[\"story_id\"] == f\"s-{i}\"\n\n    async def test_append_mode_preserves_data(self, tmp_path, story):\n        \"\"\"TC_DISK_APPEND_MODE: existing data is never overwritten (invariant).\"\"\"\n        path = tmp_path / \"stories.jsonl\"\n        path.write_text(\"existing-line\\n\")\n\n        cfg = make_disk_config(tmp_path, path=str(path))\n        sink = DiskSink(cfg)\n        await sink.start()\n        await sink.emit(story)\n        await sink.close()\n\n        content = path.read_text()\n        assert content.startswith(\"existing-line\\n\"), \"Pre-existing content must be preserved\"\n        lines = content.strip().splitlines()\n        assert len(lines) == 2\n\n    async def test_emit_before_start_raises(self, tmp_path, story):\n        \"\"\"TC_DISK_NOT_STARTED_EMIT: emit before start raises RuntimeError.\"\"\"\n        cfg = make_disk_config(tmp_path)\n        sink = DiskSink(cfg)\n        with pytest.raises(RuntimeError):\n            await sink.emit(story)\n\n    async def test_double_start_raises(self, tmp_path):\n        \"\"\"TC_DISK_ALREADY_STARTED: second start() raises.\"\"\"\n        cfg = make_disk_config(tmp_path)\n        sink = DiskSink(cfg)\n        await sink.start()\n        try:\n            with pytest.raises(Exception):\n                await sink.start()\n        finally:\n            await sink.close()\n\n    async def test_bad_path_raises(self, tmp_path):\n        \"\"\"TC_DISK_BAD_PATH: start with non-existent directory raises.\"\"\"\n        cfg = make_disk_config(\n            tmp_path,\n            path=str(tmp_path / \"nonexistent_dir\" / \"sub\" / \"file.jsonl\"),\n        )\n        sink = DiskSink(cfg)\n        with pytest.raises(Exception):\n            await sink.start()\n\n    async def test_emit_after_close_raises(self, tmp_path, story):\n        \"\"\"TC_DISK_EMIT_AFTER_CLOSE: emit after close raises RuntimeError.\"\"\"\n        cfg = make_disk_config(tmp_path)\n        sink = DiskSink(cfg)\n        await sink.start()\n        await sink.close()\n        with pytest.raises(RuntimeError):\n            await sink.emit(story)\n\n    async def test_close_before_start_raises(self, tmp_path):\n        \"\"\"TC_DISK_CLOSE_NOT_STARTED: close before start raises.\"\"\"\n        cfg = make_disk_config(tmp_path)\n        sink = DiskSink(cfg)\n        with pytest.raises(Exception):\n            await sink.close()\n\n    async def test_concurrent_emits_produce_valid_jsonl(self, tmp_path):\n        \"\"\"TC_DISK_CONCURRENT_EMITS: concurrent emits produce non-interleaved lines (invariant).\"\"\"\n        cfg = make_disk_config(tmp_path, flush_on_write=True)\n        sink = DiskSink(cfg)\n        await sink.start()\n\n        stories = [make_story(story_id=f\"concurrent-{i}\") for i in range(20)]\n        await asyncio.gather(*(sink.emit(s) for s in stories))\n        await sink.close()\n\n        lines = Path(cfg.path).read_text().strip().splitlines()\n        assert len(lines) == 20, \"All 20 stories should be written\"\n        ids = set()\n        for line in lines:\n            data = json.loads(line)  # Each line must be valid JSON\n            ids.add(data[\"story_id\"])\n        assert len(ids) == 20, \"All 20 unique story_ids present\"\n\n\n# ---------------------------------------------------------------------------\n# read_stories Tests\n# ---------------------------------------------------------------------------\n\n@pytest.mark.asyncio\nclass TestReadStories:\n\n    async def test_read_valid_jsonl(self, tmp_path):\n        \"\"\"TC_READ_HAPPY: yields all valid Story objects from JSONL file.\"\"\"\n        cfg = make_disk_config(tmp_path)\n        sink = DiskSink(cfg)\n        await sink.start()\n        s1 = make_story(story_id=\"r1\")\n        s2 = make_story(story_id=\"r2\")\n        await sink.emit(s1)\n        await sink.emit(s2)\n        await sink.close()\n\n        stories = []\n        async for story in read_stories(cfg.path):\n            stories.append(story)\n\n        assert len(stories) == 2\n        assert stories[0].story_id == \"r1\"\n        assert stories[1].story_id == \"r2\"\n\n    async def test_corrupted_lines_skipped(self, tmp_path, caplog):\n        \"\"\"TC_READ_CORRUPTED_LINES: corrupted lines skipped, valid ones yielded (invariant).\"\"\"\n        path = tmp_path / \"mixed.jsonl\"\n        # Write one valid story via DiskSink, then inject corrupt line\n        cfg = make_disk_config(tmp_path, path=str(path))\n        sink = DiskSink(cfg)\n        await sink.start()\n        await sink.emit(make_story(story_id=\"valid-1\"))\n        await sink.close()\n\n        # Append corrupt data\n        with open(path, \"a\") as f:\n            f.write(\"THIS IS NOT JSON\\n\")\n            f.write(\"{\\\"story_id\\\": \\\"incomplete\\n\")\n\n        stories = []\n        with caplog.at_level(logging.WARNING):\n            async for story in read_stories(str(path)):\n                stories.append(story)\n\n        assert len(stories) == 1\n        assert stories[0].story_id == \"valid-1\"\n\n    async def test_empty_file(self, tmp_path):\n        \"\"\"TC_READ_EMPTY_FILE: empty file yields nothing.\"\"\"\n        path = tmp_path / \"empty.jsonl\"\n        path.write_text(\"\")\n\n        stories = []\n        async for story in read_stories(str(path)):\n            stories.append(story)\n\n        assert len(stories) == 0\n\n    async def test_file_not_found(self, tmp_path):\n        \"\"\"TC_READ_FILE_NOT_FOUND: raises for non-existent path.\"\"\"\n        with pytest.raises(Exception):  # FileNotFoundError or similar\n            async for _ in read_stories(str(tmp_path / \"nope.jsonl\")):\n                pass\n\n    async def test_roundtrip_fidelity(self, tmp_path):\n        \"\"\"TC_READ_ROUNDTRIP: write then read produces identical stories.\"\"\"\n        original = make_story(\n            story_id=\"rt-1\",\n            story_type=\"navigation\",\n            events=[{\"a\": 1}, {\"b\": 2}],\n            metadata={\"key\": \"value\"},\n        )\n        cfg = make_disk_config(tmp_path)\n        sink = DiskSink(cfg)\n        await sink.start()\n        await sink.emit(original)\n        await sink.close()\n\n        results = []\n        async for s in read_stories(cfg.path):\n            results.append(s)\n\n        assert len(results) == 1\n        rt = results[0]\n        assert rt.story_id == original.story_id\n        assert rt.story_type == original.story_type\n        assert len(rt.events) == len(original.events)\n        assert rt.metadata == original.metadata\n\n\n# ---------------------------------------------------------------------------\n# StigmergySink Tests\n# ---------------------------------------------------------------------------\n\n@pytest.mark.asyncio\nclass TestStigmergySink:\n\n    async def test_lifecycle(self, story, caplog):\n        \"\"\"TC_STIGMERGY_LIFECYCLE: start/emit/close without error.\"\"\"\n        sink = StigmergySink()\n        with caplog.at_level(logging.DEBUG):\n            await sink.start()\n            await sink.emit(story)\n            await sink.close()\n        # No exception is success\n\n    async def test_emit_logs_story_info(self, story, caplog):\n        \"\"\"TC_STIGMERGY_EMIT_LOGS: emit logs story_id and story_type at DEBUG.\"\"\"\n        sink = StigmergySink()\n        await sink.start()\n        with caplog.at_level(logging.DEBUG, logger=\"chronicler.sinks.stigmergy\"):\n            await sink.emit(story)\n        log_text = caplog.text\n        assert story.story_id in log_text or len(caplog.records) > 0\n\n\n# ---------------------------------------------------------------------------\n# ApprenticeSink Tests\n# ---------------------------------------------------------------------------\n\n@pytest.mark.asyncio\nclass TestApprenticeSink:\n\n    async def test_lifecycle(self, story, caplog):\n        \"\"\"TC_APPRENTICE_LIFECYCLE: start/emit/close without error.\"\"\"\n        sink = ApprenticeSink()\n        with caplog.at_level(logging.DEBUG):\n            await sink.start()\n            await sink.emit(story)\n            await sink.close()\n\n    async def test_emit_logs_story_info(self, story, caplog):\n        \"\"\"TC_APPRENTICE_EMIT_LOGS: emit logs story_id at DEBUG.\"\"\"\n        sink = ApprenticeSink()\n        await sink.start()\n        with caplog.at_level(logging.DEBUG, logger=\"chronicler.sinks.apprentice\"):\n            await sink.emit(story)\n        log_text = caplog.text\n        assert story.story_id in log_text or len(caplog.records) > 0\n\n\n# ---------------------------------------------------------------------------\n# KindexSink Tests\n# ---------------------------------------------------------------------------\n\n@pytest.mark.asyncio\nclass TestKindexSink:\n\n    async def test_lifecycle_noteworthy(self, caplog):\n        \"\"\"TC_KINDEX_LIFECYCLE: lifecycle with noteworthy story logs DEBUG.\"\"\"\n        opened = _now_iso()\n        story = make_story(\n            story_id=\"k-1\",\n            events=[{\"e\": 1}, {\"e\": 2}, {\"e\": 3}],\n            opened_at=opened,\n            closed_at=_iso_offset(120, base=opened),\n        )\n        cfg = make_kindex_config(min_event_count=1, min_duration_seconds=0.0)\n        sink = KindexSink(cfg)\n        with caplog.at_level(logging.DEBUG):\n            await sink.start()\n            await sink.emit(story)\n            await sink.close()\n\n    async def test_filters_non_noteworthy(self, caplog):\n        \"\"\"TC_KINDEX_FILTERS_NON_NOTEWORTHY: non-noteworthy story silently dropped (invariant).\"\"\"\n        opened = _now_iso()\n        story = make_story(\n            story_id=\"k-skip\",\n            events=[],\n            opened_at=opened,\n            closed_at=_iso_offset(0, base=opened),\n        )\n        cfg = make_kindex_config(min_event_count=100, min_duration_seconds=9999.0)\n        sink = KindexSink(cfg)\n        await sink.start()\n\n        with caplog.at_level(logging.DEBUG, logger=\"chronicler.sinks.kindex\"):\n            await sink.emit(story)\n\n        # Should NOT see a \"knowledge node\" emission log for this story\n        for record in caplog.records:\n            msg = record.getMessage().lower()\n            if \"knowledge\" in msg or \"emit\" in msg:\n                assert \"k-skip\" not in msg or \"skip\" in msg or \"drop\" in msg or \"filter\" in msg\n\n    async def test_start_logs_config(self, caplog):\n        \"\"\"TC_KINDEX_START_LOGS_CONFIG: start logs active config at DEBUG.\"\"\"\n        cfg = make_kindex_config(min_event_count=5, min_duration_seconds=30.0)\n        sink = KindexSink(cfg)\n        with caplog.at_level(logging.DEBUG, logger=\"chronicler.sinks.kindex\"):\n            await sink.start()\n        assert len(caplog.records) > 0, \"At least one DEBUG log on start\"\n\n    async def test_noteworthy_integration(self, caplog):\n        \"\"\"TC_KINDEX_IS_NOTEWORTHY_INTEGRATION: emit uses is_noteworthy to gate emission.\"\"\"\n        opened = _now_iso()\n        noteworthy_story = make_story(\n            story_id=\"worthy\",\n            story_type=\"session\",\n            events=[{\"e\": i} for i in range(5)],\n            opened_at=opened,\n            closed_at=_iso_offset(120, base=opened),\n        )\n        non_noteworthy_story = make_story(\n            story_id=\"unworthy\",\n            story_type=\"session\",\n            events=[],\n            opened_at=opened,\n            closed_at=opened,  # zero duration\n        )\n        cfg = make_kindex_config(min_event_count=3, min_duration_seconds=60.0)\n        sink = KindexSink(cfg)\n        await sink.start()\n\n        # Verify is_noteworthy agrees\n        assert is_noteworthy(noteworthy_story, cfg) is True\n        assert is_noteworthy(non_noteworthy_story, cfg) is False\n\n        with caplog.at_level(logging.DEBUG, logger=\"chronicler.sinks.kindex\"):\n            caplog.clear()\n            await sink.emit(noteworthy_story)\n            noteworthy_logs = list(caplog.records)\n            caplog.clear()\n            await sink.emit(non_noteworthy_story)\n            non_noteworthy_logs = list(caplog.records)\n\n        # Noteworthy should have more/different log output than non-noteworthy\n        # (at minimum, noteworthy gets a knowledge-node log)\n        assert len(noteworthy_logs) >= len(non_noteworthy_logs)\n\n        await sink.close()\n\n\n# ---------------------------------------------------------------------------\n# is_noteworthy Tests (Pure Function)\n# ---------------------------------------------------------------------------\n\nclass TestIsNoteworthy:\n\n    def _make_story_for_noteworthy(self, events_count=3, duration_seconds=60,\n                                    story_type=\"session\", story_id=\"nw-1\"):\n        opened = \"2024-01-01T00:00:00+00:00\"\n        closed = _iso_offset(duration_seconds, base=opened)\n        events = [{\"e\": i} for i in range(events_count)]\n        return make_story(\n            story_id=story_id,\n            story_type=story_type,\n            events=events,\n            opened_at=opened,\n            closed_at=closed,\n        )\n\n    def test_all_thresholds_met(self):\n        \"\"\"TC_NOTEWORTHY_ALL_PASS: returns True when all thresholds met.\"\"\"\n        story = self._make_story_for_noteworthy(events_count=5, duration_seconds=120)\n        cfg = make_kindex_config(\n            story_types=None,\n            min_event_count=3,\n            min_duration_seconds=60.0,\n        )\n        assert is_noteworthy(story, cfg) is True\n\n    def test_story_type_filter_match(self):\n        \"\"\"TC_NOTEWORTHY_STORY_TYPE_FILTER_MATCH: type in set -> True.\"\"\"\n        story = self._make_story_for_noteworthy(story_type=\"session\")\n        cfg = make_kindex_config(\n            story_types={\"session\", \"navigation\"},\n            min_event_count=1,\n            min_duration_seconds=0.0,\n        )\n        assert is_noteworthy(story, cfg) is True\n\n    def test_story_type_filter_miss(self):\n        \"\"\"TC_NOTEWORTHY_STORY_TYPE_FILTER_MISS: type not in set -> False.\"\"\"\n        story = self._make_story_for_noteworthy(story_type=\"debug\")\n        cfg = make_kindex_config(\n            story_types={\"session\", \"navigation\"},\n            min_event_count=1,\n            min_duration_seconds=0.0,\n        )\n        assert is_noteworthy(story, cfg) is False\n\n    def test_story_types_none_allows_all(self):\n        \"\"\"TC_NOTEWORTHY_STORY_TYPES_NONE: None means no filter.\"\"\"\n        story = self._make_story_for_noteworthy(story_type=\"anything_goes\")\n        cfg = make_kindex_config(\n            story_types=None,\n            min_event_count=1,\n            min_duration_seconds=0.0,\n        )\n        assert is_noteworthy(story, cfg) is True\n\n    def test_min_event_count_exact_boundary(self):\n        \"\"\"TC_NOTEWORTHY_MIN_EVENT_COUNT_EXACT: events == min -> True.\"\"\"\n        story = self._make_story_for_noteworthy(events_count=3)\n        cfg = make_kindex_config(min_event_count=3, min_duration_seconds=0.0)\n        assert is_noteworthy(story, cfg) is True\n\n    def test_min_event_count_below(self):\n        \"\"\"TC_NOTEWORTHY_MIN_EVENT_COUNT_BELOW: events < min -> False.\"\"\"\n        story = self._make_story_for_noteworthy(events_count=2)\n        cfg = make_kindex_config(min_event_count=3, min_duration_seconds=0.0)\n        assert is_noteworthy(story, cfg) is False\n\n    def test_min_duration_exact_boundary(self):\n        \"\"\"TC_NOTEWORTHY_MIN_DURATION_EXACT: duration == min -> True.\"\"\"\n        story = self._make_story_for_noteworthy(duration_seconds=60)\n        cfg = make_kindex_config(min_event_count=1, min_duration_seconds=60.0)\n        assert is_noteworthy(story, cfg) is True\n\n    def test_min_duration_below(self):\n        \"\"\"TC_NOTEWORTHY_MIN_DURATION_BELOW: duration < min -> False.\"\"\"\n        story = self._make_story_for_noteworthy(duration_seconds=59)\n        cfg = make_kindex_config(min_event_count=1, min_duration_seconds=60.0)\n        assert is_noteworthy(story, cfg) is False\n\n    def test_invalid_timestamps(self):\n        \"\"\"TC_NOTEWORTHY_INVALID_TIMESTAMPS: unparseable timestamps raise.\"\"\"\n        story = make_story(opened_at=\"not-a-date\", closed_at=\"also-not-a-date\")\n        cfg = make_kindex_config()\n        with pytest.raises(Exception):\n            is_noteworthy(story, cfg)\n\n    def test_pure_no_side_effects(self):\n        \"\"\"TC_NOTEWORTHY_PURE_NO_SIDE_EFFECTS: story and config unchanged after call.\"\"\"\n        story = self._make_story_for_noteworthy()\n        cfg = make_kindex_config(min_event_count=1, min_duration_seconds=0.0)\n\n        # Capture state before\n        story_id_before = story.story_id\n        cfg_min_event_before = cfg.min_event_count\n\n        result = is_noteworthy(story, cfg)\n\n        # State unchanged\n        assert story.story_id == story_id_before\n        assert cfg.min_event_count == cfg_min_event_before\n        assert isinstance(result, bool)\n\n    def test_zero_duration_zero_threshold(self):\n        \"\"\"Edge: zero duration with zero threshold passes.\"\"\"\n        story = self._make_story_for_noteworthy(events_count=1, duration_seconds=0)\n        cfg = make_kindex_config(min_event_count=1, min_duration_seconds=0.0)\n        assert is_noteworthy(story, cfg) is True\n\n    def test_all_conditions_must_hold(self):\n        \"\"\"Verify AND semantics: failing any one condition returns False.\"\"\"\n        # Fails on event count only\n        story = self._make_story_for_noteworthy(events_count=0, duration_seconds=120)\n        cfg = make_kindex_config(\n            story_types=None,\n            min_event_count=1,\n            min_duration_seconds=60.0,\n        )\n        assert is_noteworthy(story, cfg) is False\n\n        # Fails on duration only\n        story2 = self._make_story_for_noteworthy(events_count=5, duration_seconds=10)\n        assert is_noteworthy(story2, cfg) is False\n\n        # Fails on story_type only\n        story3 = self._make_story_for_noteworthy(\n            events_count=5, duration_seconds=120, story_type=\"wrong\"\n        )\n        cfg2 = make_kindex_config(\n            story_types={\"session\"},\n            min_event_count=1,\n            min_duration_seconds=60.0,\n        )\n        assert is_noteworthy(story3, cfg2) is False\n\n\n# ---------------------------------------------------------------------------\n# safe_emit Tests\n# ---------------------------------------------------------------------------\n\n@pytest.mark.asyncio\nclass TestSafeEmit:\n\n    async def test_success_returns_emitted(self, story):\n        \"\"\"TC_SAFE_EMIT_SUCCESS: successful emit returns emitted outcome.\"\"\"\n        mock_emit = AsyncMock(return_value=None)\n        outcome = await safe_emit(\"disk\", mock_emit, story)\n\n        assert outcome.sink_name == \"disk\"\n        assert outcome.story_id == story.story_id\n        assert outcome.result == SinkEmitResult.emitted\n        assert outcome.error_message == \"\"\n\n    async def test_error_captured(self, story):\n        \"\"\"TC_SAFE_EMIT_ERROR_CAPTURED: exception captured in error outcome.\"\"\"\n        mock_emit = AsyncMock(side_effect=IOError(\"disk full\"))\n        outcome = await safe_emit(\"disk\", mock_emit, story)\n\n        assert outcome.sink_name == \"disk\"\n        assert outcome.story_id == story.story_id\n        assert outcome.result == SinkEmitResult.error\n        assert \"disk full\" in outcome.error_message\n\n    async def test_never_raises_runtime_error(self, story):\n        \"\"\"TC_SAFE_EMIT_NEVER_RAISES: even RuntimeError is captured.\"\"\"\n        mock_emit = AsyncMock(side_effect=RuntimeError(\"unexpected\"))\n        # Must NOT raise\n        outcome = await safe_emit(\"broken_sink\", mock_emit, story)\n        assert outcome.result == SinkEmitResult.error\n        assert \"unexpected\" in outcome.error_message\n\n    async def test_never_raises_value_error(self, story):\n        \"\"\"safe_emit captures ValueError too.\"\"\"\n        mock_emit = AsyncMock(side_effect=ValueError(\"bad value\"))\n        outcome = await safe_emit(\"test_sink\", mock_emit, story)\n        assert outcome.result == SinkEmitResult.error\n\n    async def test_never_raises_generic_exception(self, story):\n        \"\"\"safe_emit captures generic Exception.\"\"\"\n        mock_emit = AsyncMock(side_effect=Exception(\"generic\"))\n        outcome = await safe_emit(\"test_sink\", mock_emit, story)\n        assert outcome.result == SinkEmitResult.error\n        assert outcome.error_message != \"\"\n\n\n# ---------------------------------------------------------------------------\n# SinkProtocol Invariant Test\n# ---------------------------------------------------------------------------\n\nclass TestSinkProtocol:\n    \"\"\"TC_SINK_PROTOCOL: All sinks have start, emit, close async methods.\"\"\"\n\n    def test_disk_sink_has_protocol_methods(self, tmp_path):\n        sink = DiskSink(make_disk_config(tmp_path))\n        assert callable(getattr(sink, \"start\", None))\n        assert callable(getattr(sink, \"emit\", None))\n        assert callable(getattr(sink, \"close\", None))\n\n    def test_stigmergy_sink_has_protocol_methods(self):\n        sink = StigmergySink()\n        assert callable(getattr(sink, \"start\", None))\n        assert callable(getattr(sink, \"emit\", None))\n        assert callable(getattr(sink, \"close\", None))\n\n    def test_apprentice_sink_has_protocol_methods(self):\n        sink = ApprenticeSink()\n        assert callable(getattr(sink, \"start\", None))\n        assert callable(getattr(sink, \"emit\", None))\n        assert callable(getattr(sink, \"close\", None))\n\n    def test_kindex_sink_has_protocol_methods(self):\n        sink = KindexSink(make_kindex_config())\n        assert callable(getattr(sink, \"start\", None))\n        assert callable(getattr(sink, \"emit\", None))\n        assert callable(getattr(sink, \"close\", None))\n\n    def test_all_methods_are_coroutines(self, tmp_path):\n        \"\"\"Verify start/emit/close are async (coroutine functions).\"\"\"\n        import asyncio\n        sinks = [\n            DiskSink(make_disk_config(tmp_path)),\n            StigmergySink(),\n            ApprenticeSink(),\n            KindexSink(make_kindex_config()),\n        ]\n        for sink in sinks:\n            assert asyncio.iscoroutinefunction(sink.start), f\"{type(sink).__name__}.start is not async\"\n            assert asyncio.iscoroutinefunction(sink.emit), f\"{type(sink).__name__}.emit is not async\"\n            assert asyncio.iscoroutinefunction(sink.close), f\"{type(sink).__name__}.close is not async\"\n"
+}

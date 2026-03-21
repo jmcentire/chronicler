@@ -1,0 +1,2340 @@
+{
+  "component_id": "schemas",
+  "name": "Core Data Models",
+  "description": "Pydantic v2 frozen models for Event (content-addressable SHA-256 ID from canonical JSON of identity fields), Story (open→closed lifecycle with ordered events, close reasons, chain_by support), CorrelationRule (group_by/chain_by/terminal_event/timeout), and all configuration models (source configs, sink configs, memory limits, kindex noteworthiness filter). Also defines SourceProtocol and SinkProtocol as runtime_checkable Protocol classes. This is the shared data model used by every other Chronicler component. Covers AC1 (Event model), AC2 (Story model), AC16 (config models, protocols).",
+  "version": 1,
+  "types": [
+    {
+      "name": "EventKind",
+      "kind": "primitive",
+      "fields": [
+        {
+          "name": "value",
+          "type_ref": "str",
+          "required": true,
+          "default": "",
+          "description": "The event kind string",
+          "validators": [
+            {
+              "kind": "regex",
+              "expression": "^[a-z][a-z0-9_.]{0,254}$",
+              "error_message": "EventKind must be 1-255 chars, lowercase alphanumeric with dots and underscores, starting with a letter"
+            },
+            {
+              "kind": "length",
+              "expression": "1..255",
+              "error_message": "EventKind must be between 1 and 255 characters"
+            }
+          ]
+        }
+      ],
+      "item_type": "",
+      "variants": [],
+      "inner_types": [],
+      "description": "A dot-separated event kind identifier (e.g. 'ci.build.completed', 'incident.opened'). Must be non-empty, lowercase alphanumeric with dots and underscores."
+    },
+    {
+      "name": "EntityKind",
+      "kind": "primitive",
+      "fields": [
+        {
+          "name": "value",
+          "type_ref": "str",
+          "required": true,
+          "default": "",
+          "description": "The entity kind string",
+          "validators": [
+            {
+              "kind": "regex",
+              "expression": "^[a-z][a-z0-9_.]{0,254}$",
+              "error_message": "EntityKind must be 1-255 chars, lowercase alphanumeric with dots and underscores, starting with a letter"
+            },
+            {
+              "kind": "length",
+              "expression": "1..255",
+              "error_message": "EntityKind must be between 1 and 255 characters"
+            }
+          ]
+        }
+      ],
+      "item_type": "",
+      "variants": [],
+      "inner_types": [],
+      "description": "The kind/type of the entity this event pertains to (e.g. 'repository', 'pipeline', 'incident'). Lowercase alphanumeric with dots and underscores."
+    },
+    {
+      "name": "EntityId",
+      "kind": "primitive",
+      "fields": [
+        {
+          "name": "value",
+          "type_ref": "str",
+          "required": true,
+          "default": "",
+          "description": "The entity identifier string",
+          "validators": [
+            {
+              "kind": "length",
+              "expression": "1..1024",
+              "error_message": "EntityId must be between 1 and 1024 characters"
+            }
+          ]
+        }
+      ],
+      "item_type": "",
+      "variants": [],
+      "inner_types": [],
+      "description": "A non-empty identifier for the entity this event pertains to. Free-form but non-empty, max 1024 chars."
+    },
+    {
+      "name": "ActorId",
+      "kind": "primitive",
+      "fields": [
+        {
+          "name": "value",
+          "type_ref": "str",
+          "required": true,
+          "default": "",
+          "description": "The actor identifier string",
+          "validators": [
+            {
+              "kind": "length",
+              "expression": "1..512",
+              "error_message": "ActorId must be between 1 and 512 characters"
+            }
+          ]
+        }
+      ],
+      "item_type": "",
+      "variants": [],
+      "inner_types": [],
+      "description": "Identifier for the actor that caused the event (user, service, system). Non-empty, max 512 chars."
+    },
+    {
+      "name": "Sha256Hex",
+      "kind": "primitive",
+      "fields": [
+        {
+          "name": "value",
+          "type_ref": "str",
+          "required": true,
+          "default": "",
+          "description": "The hex-encoded SHA-256 hash",
+          "validators": [
+            {
+              "kind": "regex",
+              "expression": "^[0-9a-f]{64}$",
+              "error_message": "Must be exactly 64 lowercase hex characters (SHA-256)"
+            }
+          ]
+        }
+      ],
+      "item_type": "",
+      "variants": [],
+      "inner_types": [],
+      "description": "A lowercase hex-encoded SHA-256 hash (64 characters)."
+    },
+    {
+      "name": "StoryId",
+      "kind": "primitive",
+      "fields": [
+        {
+          "name": "value",
+          "type_ref": "str",
+          "required": true,
+          "default": "",
+          "description": "UUID4 string",
+          "validators": [
+            {
+              "kind": "regex",
+              "expression": "^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$",
+              "error_message": "StoryId must be a valid UUID4 in lowercase canonical form"
+            }
+          ]
+        }
+      ],
+      "item_type": "",
+      "variants": [],
+      "inner_types": [],
+      "description": "UUID4 string identifier for a Story."
+    },
+    {
+      "name": "AwareDatetime",
+      "kind": "primitive",
+      "fields": [
+        {
+          "name": "value",
+          "type_ref": "str",
+          "required": true,
+          "default": "",
+          "description": "ISO 8601 datetime with timezone (e.g. '2024-01-15T10:30:00Z')",
+          "validators": [
+            {
+              "kind": "custom",
+              "expression": "datetime_has_tzinfo(value)",
+              "error_message": "Timestamp must be timezone-aware (not naive)"
+            }
+          ]
+        }
+      ],
+      "item_type": "",
+      "variants": [],
+      "inner_types": [],
+      "description": "A timezone-aware ISO 8601 datetime string. Naive datetimes are rejected at validation time. Internally stored as Python datetime with tzinfo set."
+    },
+    {
+      "name": "ContextValue",
+      "kind": "union",
+      "fields": [],
+      "item_type": "",
+      "variants": [],
+      "inner_types": [
+        "str",
+        "int",
+        "float",
+        "bool",
+        "None"
+      ],
+      "description": "Allowed value types within an Event context dict. Constrained to types that produce deterministic canonical JSON."
+    },
+    {
+      "name": "ContextDict",
+      "kind": "primitive",
+      "fields": [
+        {
+          "name": "value",
+          "type_ref": "dict",
+          "required": true,
+          "default": "",
+          "description": "Key-value context data",
+          "validators": [
+            {
+              "kind": "custom",
+              "expression": "all(isinstance(k, str) and len(k) > 0 for k in value.keys())",
+              "error_message": "All context keys must be non-empty strings"
+            },
+            {
+              "kind": "custom",
+              "expression": "all(isinstance(v, (str, int, float, bool, type(None))) for v in value.values())",
+              "error_message": "Context values must be str, int, float, bool, or None"
+            }
+          ]
+        }
+      ],
+      "item_type": "",
+      "variants": [],
+      "inner_types": [],
+      "description": "A dict[str, ContextValue] — the flexible context bag on an Event. Keys are non-empty strings. Values are constrained to str|int|float|bool|None for deterministic canonical JSON hashing."
+    },
+    {
+      "name": "CorrelationKeys",
+      "kind": "primitive",
+      "fields": [
+        {
+          "name": "value",
+          "type_ref": "dict",
+          "required": true,
+          "default": "",
+          "description": "Correlation key-value pairs",
+          "validators": [
+            {
+              "kind": "custom",
+              "expression": "all(isinstance(k, str) and len(k) > 0 and isinstance(v, str) and len(v) > 0 for k, v in value.items())",
+              "error_message": "All correlation keys and values must be non-empty strings"
+            }
+          ]
+        }
+      ],
+      "item_type": "",
+      "variants": [],
+      "inner_types": [],
+      "description": "A dict[str, str] of correlation key-value pairs used for grouping events into stories. All keys and values must be non-empty strings."
+    },
+    {
+      "name": "StoryStatus",
+      "kind": "enum",
+      "fields": [],
+      "item_type": "",
+      "variants": [
+        "open",
+        "closed"
+      ],
+      "inner_types": [],
+      "description": "Lifecycle status of a Story."
+    },
+    {
+      "name": "CloseReason",
+      "kind": "enum",
+      "fields": [],
+      "item_type": "",
+      "variants": [
+        "terminal",
+        "timeout",
+        "evicted"
+      ],
+      "inner_types": [],
+      "description": "Reason why a Story was closed."
+    },
+    {
+      "name": "Event",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "id",
+          "type_ref": "Sha256Hex",
+          "required": true,
+          "default": "",
+          "description": "Content-addressable SHA-256 hex digest of canonical JSON of identity fields. Computed automatically by model_validator(mode='before'); must not be set manually unless replaying.",
+          "validators": []
+        },
+        {
+          "name": "event_kind",
+          "type_ref": "EventKind",
+          "required": true,
+          "default": "",
+          "description": "Dot-separated kind of event (e.g. 'ci.build.completed').",
+          "validators": []
+        },
+        {
+          "name": "entity_kind",
+          "type_ref": "EntityKind",
+          "required": true,
+          "default": "",
+          "description": "Kind of entity this event pertains to (e.g. 'repository').",
+          "validators": []
+        },
+        {
+          "name": "entity_id",
+          "type_ref": "EntityId",
+          "required": true,
+          "default": "",
+          "description": "Identifier for the specific entity instance.",
+          "validators": []
+        },
+        {
+          "name": "actor",
+          "type_ref": "ActorId",
+          "required": true,
+          "default": "",
+          "description": "Who or what caused this event.",
+          "validators": []
+        },
+        {
+          "name": "timestamp",
+          "type_ref": "AwareDatetime",
+          "required": true,
+          "default": "",
+          "description": "When the event occurred. Must be timezone-aware.",
+          "validators": []
+        },
+        {
+          "name": "context",
+          "type_ref": "ContextDict",
+          "required": true,
+          "default": "",
+          "description": "Flexible key-value context data. Values constrained to str|int|float|bool|None for deterministic hashing.",
+          "validators": []
+        },
+        {
+          "name": "correlation_keys",
+          "type_ref": "CorrelationKeys",
+          "required": true,
+          "default": "",
+          "description": "Key-value pairs used by CorrelationRules to group events into stories.",
+          "validators": []
+        },
+        {
+          "name": "source",
+          "type_ref": "str",
+          "required": false,
+          "default": "",
+          "description": "Provenance label indicating which source produced this event. Excluded from content hash.",
+          "validators": []
+        }
+      ],
+      "item_type": "",
+      "variants": [],
+      "inner_types": [],
+      "description": "Immutable event envelope (frozen=True). The id field is a content-addressable SHA-256 hex digest computed via model_validator(mode='before') from canonical JSON of the identity fields: event_kind, entity_kind, entity_id, actor, timestamp, context, correlation_keys. Canonical JSON uses json.dumps(sort_keys=True, separators=(',',':'), ensure_ascii=True, default=str) on a fixed-key dict of those fields, with timestamps serialized as ISO 8601 with 'Z' suffix. The 'source' field is excluded from the hash (provenance metadata only)."
+    },
+    {
+      "name": "Story",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "story_id",
+          "type_ref": "StoryId",
+          "required": true,
+          "default": "",
+          "description": "UUID4 identifier for this story.",
+          "validators": []
+        },
+        {
+          "name": "story_type",
+          "type_ref": "str",
+          "required": true,
+          "default": "",
+          "description": "Type label for this story, derived from the CorrelationRule.story_type.",
+          "validators": [
+            {
+              "kind": "length",
+              "expression": "1..255",
+              "error_message": "story_type must be between 1 and 255 characters"
+            }
+          ]
+        },
+        {
+          "name": "correlation_rule",
+          "type_ref": "str",
+          "required": true,
+          "default": "",
+          "description": "Name of the CorrelationRule that created this story.",
+          "validators": [
+            {
+              "kind": "length",
+              "expression": "1..255",
+              "error_message": "correlation_rule name must be between 1 and 255 characters"
+            }
+          ]
+        },
+        {
+          "name": "group_key",
+          "type_ref": "CorrelationKeys",
+          "required": true,
+          "default": "",
+          "description": "The group_by key-value pairs that define this story's identity within its rule.",
+          "validators": []
+        },
+        {
+          "name": "events",
+          "type_ref": "EventIdTuple",
+          "required": true,
+          "default": "",
+          "description": "Ordered tuple of event IDs (SHA-256 hex) belonging to this story.",
+          "validators": []
+        },
+        {
+          "name": "status",
+          "type_ref": "StoryStatus",
+          "required": true,
+          "default": "",
+          "description": "Lifecycle status: 'open' or 'closed'.",
+          "validators": []
+        },
+        {
+          "name": "start_ts",
+          "type_ref": "AwareDatetime",
+          "required": true,
+          "default": "",
+          "description": "Timestamp of the first event added to this story.",
+          "validators": []
+        },
+        {
+          "name": "end_ts",
+          "type_ref": "AwareDatetime",
+          "required": false,
+          "default": "",
+          "description": "Timestamp when the story was closed. Required when status is 'closed', must be absent/None when 'open'.",
+          "validators": []
+        },
+        {
+          "name": "duration",
+          "type_ref": "float",
+          "required": false,
+          "default": "",
+          "description": "Duration in seconds from start_ts to end_ts. Set when closed.",
+          "validators": [
+            {
+              "kind": "range",
+              "expression": "0.0..",
+              "error_message": "Duration must be non-negative"
+            }
+          ]
+        },
+        {
+          "name": "event_count",
+          "type_ref": "int",
+          "required": true,
+          "default": "",
+          "description": "Number of events in this story. Must equal len(events).",
+          "validators": [
+            {
+              "kind": "range",
+              "expression": "0..",
+              "error_message": "event_count must be non-negative"
+            }
+          ]
+        },
+        {
+          "name": "close_reason",
+          "type_ref": "CloseReason",
+          "required": false,
+          "default": "",
+          "description": "Reason for closing: 'terminal' (terminal event matched), 'timeout' (rule timeout elapsed), 'evicted' (memory pressure). Required when closed, must be absent/None when open.",
+          "validators": []
+        },
+        {
+          "name": "parent_story_id",
+          "type_ref": "StoryId",
+          "required": false,
+          "default": "",
+          "description": "If this story was created via chain_by from a closed story, the parent story's ID.",
+          "validators": []
+        }
+      ],
+      "item_type": "",
+      "variants": [],
+      "inner_types": [],
+      "description": "Immutable story model (frozen=True). Represents a correlated sequence of events with an open→closed lifecycle. Mutation is performed via model_copy(update={...}) to produce new Story instances. A model_validator(mode='after') enforces that closed stories have end_ts and close_reason set, and open stories have neither. Events are stored as a tuple of event ID strings (not full Event objects) for frozen compatibility and copy efficiency."
+    },
+    {
+      "name": "EventIdTuple",
+      "kind": "list",
+      "fields": [],
+      "item_type": "Sha256Hex",
+      "variants": [],
+      "inner_types": [],
+      "description": "An ordered tuple of event IDs (SHA-256 hex strings). Stored as tuple for frozen model hashability."
+    },
+    {
+      "name": "TerminalEventPattern",
+      "kind": "primitive",
+      "fields": [
+        {
+          "name": "value",
+          "type_ref": "dict",
+          "required": true,
+          "default": "",
+          "description": "Field path to expected value mappings",
+          "validators": [
+            {
+              "kind": "custom",
+              "expression": "all(isinstance(k, str) and len(k) > 0 and isinstance(v, str) for k, v in value.items())",
+              "error_message": "Terminal event pattern keys must be non-empty strings and values must be strings"
+            }
+          ]
+        }
+      ],
+      "item_type": "",
+      "variants": [],
+      "inner_types": [],
+      "description": "A dict[str, str] representing a simple field=value pattern match on an event. All specified fields must match for the event to be considered terminal. Keys are dot-path field references (e.g. 'event_kind', 'context.status')."
+    },
+    {
+      "name": "GroupByKeys",
+      "kind": "list",
+      "fields": [],
+      "item_type": "str",
+      "variants": [],
+      "inner_types": [],
+      "description": "Ordered tuple of field paths used for grouping events into stories (e.g. ('correlation_keys.repo', 'correlation_keys.branch')). Order matters for deterministic group key construction."
+    },
+    {
+      "name": "ChainByKeys",
+      "kind": "list",
+      "fields": [],
+      "item_type": "str",
+      "variants": [],
+      "inner_types": [],
+      "description": "Ordered tuple of field paths linking a closed story to a new story via chain_by semantics."
+    },
+    {
+      "name": "CorrelationRule",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "name",
+          "type_ref": "str",
+          "required": true,
+          "default": "",
+          "description": "Unique name for this correlation rule.",
+          "validators": [
+            {
+              "kind": "regex",
+              "expression": "^[a-zA-Z][a-zA-Z0-9_.-]{0,254}$",
+              "error_message": "Rule name must be 1-255 chars, alphanumeric with underscores/dots/hyphens, starting with a letter"
+            }
+          ]
+        },
+        {
+          "name": "event_kinds",
+          "type_ref": "EventKindSet",
+          "required": true,
+          "default": "",
+          "description": "Set of event kinds this rule applies to. An event must have an event_kind in this set to be considered by this rule.",
+          "validators": []
+        },
+        {
+          "name": "group_by",
+          "type_ref": "GroupByKeys",
+          "required": true,
+          "default": "",
+          "description": "Ordered tuple of field paths used to compute the group key. Events with the same group key values are correlated into the same story.",
+          "validators": []
+        },
+        {
+          "name": "chain_by",
+          "type_ref": "ChainByKeys",
+          "required": false,
+          "default": "",
+          "description": "Optional ordered tuple of field paths for chain_by semantics. When a story is closed by terminal event, a new story is opened if a subsequent event matches these fields from the closed story.",
+          "validators": []
+        },
+        {
+          "name": "terminal_event",
+          "type_ref": "TerminalEventPattern",
+          "required": false,
+          "default": "",
+          "description": "Optional simple field=value pattern. When an event matches all specified fields, the story is closed with close_reason='terminal'.",
+          "validators": []
+        },
+        {
+          "name": "timeout",
+          "type_ref": "float",
+          "required": false,
+          "default": "",
+          "description": "Optional timeout in seconds. If no new event arrives within this duration after the last event, the story is closed with close_reason='timeout'.",
+          "validators": [
+            {
+              "kind": "range",
+              "expression": "0.001..",
+              "error_message": "Timeout must be positive (at least 1ms)"
+            }
+          ]
+        },
+        {
+          "name": "story_type",
+          "type_ref": "str",
+          "required": true,
+          "default": "",
+          "description": "The story_type label assigned to stories created by this rule.",
+          "validators": [
+            {
+              "kind": "length",
+              "expression": "1..255",
+              "error_message": "story_type must be between 1 and 255 characters"
+            }
+          ]
+        }
+      ],
+      "item_type": "",
+      "variants": [],
+      "inner_types": [],
+      "description": "Immutable rule definition (frozen=True) for correlating events into stories. Defines which event kinds to match, how to group them, optional chaining from closed stories, terminal event detection, and timeout."
+    },
+    {
+      "name": "EventKindSet",
+      "kind": "primitive",
+      "fields": [
+        {
+          "name": "value",
+          "type_ref": "list",
+          "required": true,
+          "default": "",
+          "description": "Set of event kind strings (stored as frozenset for hashability)",
+          "validators": [
+            {
+              "kind": "custom",
+              "expression": "len(value) > 0",
+              "error_message": "event_kinds must contain at least one event kind"
+            }
+          ]
+        }
+      ],
+      "item_type": "",
+      "variants": [],
+      "inner_types": [],
+      "description": "A frozenset of EventKind strings. Used for unordered set membership checks in CorrelationRule.event_kinds."
+    },
+    {
+      "name": "SourceType",
+      "kind": "enum",
+      "fields": [],
+      "item_type": "",
+      "variants": [
+        "webhook",
+        "otlp",
+        "file",
+        "sentinel"
+      ],
+      "inner_types": [],
+      "description": "Discriminator for source configuration types."
+    },
+    {
+      "name": "WebhookSourceConfig",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "type",
+          "type_ref": "str",
+          "required": true,
+          "default": "webhook",
+          "description": "Discriminator, always 'webhook'.",
+          "validators": []
+        },
+        {
+          "name": "host",
+          "type_ref": "str",
+          "required": false,
+          "default": "0.0.0.0",
+          "description": "Bind address for the webhook HTTP server.",
+          "validators": []
+        },
+        {
+          "name": "port",
+          "type_ref": "int",
+          "required": true,
+          "default": "",
+          "description": "Port to listen on.",
+          "validators": [
+            {
+              "kind": "range",
+              "expression": "1..65535",
+              "error_message": "Port must be between 1 and 65535"
+            }
+          ]
+        },
+        {
+          "name": "path",
+          "type_ref": "str",
+          "required": false,
+          "default": "/events",
+          "description": "URL path to accept POSTs on.",
+          "validators": [
+            {
+              "kind": "regex",
+              "expression": "^/[a-zA-Z0-9/_-]*$",
+              "error_message": "Path must start with / and contain only alphanumeric, underscore, hyphen, slash"
+            }
+          ]
+        },
+        {
+          "name": "source_label",
+          "type_ref": "str",
+          "required": false,
+          "default": "webhook",
+          "description": "Value to set in Event.source for events from this source.",
+          "validators": []
+        }
+      ],
+      "item_type": "",
+      "variants": [],
+      "inner_types": [],
+      "description": "Configuration for the HTTP POST webhook source."
+    },
+    {
+      "name": "OtlpSourceConfig",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "type",
+          "type_ref": "str",
+          "required": true,
+          "default": "otlp",
+          "description": "Discriminator, always 'otlp'.",
+          "validators": []
+        },
+        {
+          "name": "host",
+          "type_ref": "str",
+          "required": false,
+          "default": "0.0.0.0",
+          "description": "Bind address for the OTLP gRPC server.",
+          "validators": []
+        },
+        {
+          "name": "port",
+          "type_ref": "int",
+          "required": true,
+          "default": "",
+          "description": "Port to listen on.",
+          "validators": [
+            {
+              "kind": "range",
+              "expression": "1..65535",
+              "error_message": "Port must be between 1 and 65535"
+            }
+          ]
+        },
+        {
+          "name": "source_label",
+          "type_ref": "str",
+          "required": false,
+          "default": "otlp",
+          "description": "Value to set in Event.source for events from this source.",
+          "validators": []
+        }
+      ],
+      "item_type": "",
+      "variants": [],
+      "inner_types": [],
+      "description": "Configuration for the OTLP gRPC collector source."
+    },
+    {
+      "name": "FileSourceConfig",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "type",
+          "type_ref": "str",
+          "required": true,
+          "default": "file",
+          "description": "Discriminator, always 'file'.",
+          "validators": []
+        },
+        {
+          "name": "path",
+          "type_ref": "str",
+          "required": true,
+          "default": "",
+          "description": "Path to the JSONL file to tail.",
+          "validators": [
+            {
+              "kind": "length",
+              "expression": "1..4096",
+              "error_message": "File path must be between 1 and 4096 characters"
+            }
+          ]
+        },
+        {
+          "name": "poll_interval_seconds",
+          "type_ref": "float",
+          "required": false,
+          "default": "1.0",
+          "description": "How often to poll for new lines in seconds.",
+          "validators": [
+            {
+              "kind": "range",
+              "expression": "0.1..3600",
+              "error_message": "Poll interval must be between 0.1 and 3600 seconds"
+            }
+          ]
+        },
+        {
+          "name": "source_label",
+          "type_ref": "str",
+          "required": false,
+          "default": "file",
+          "description": "Value to set in Event.source for events from this source.",
+          "validators": []
+        }
+      ],
+      "item_type": "",
+      "variants": [],
+      "inner_types": [],
+      "description": "Configuration for the JSONL file tailer source."
+    },
+    {
+      "name": "SentinelSourceConfig",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "type",
+          "type_ref": "str",
+          "required": true,
+          "default": "sentinel",
+          "description": "Discriminator, always 'sentinel'.",
+          "validators": []
+        },
+        {
+          "name": "host",
+          "type_ref": "str",
+          "required": false,
+          "default": "0.0.0.0",
+          "description": "Bind address.",
+          "validators": []
+        },
+        {
+          "name": "port",
+          "type_ref": "int",
+          "required": true,
+          "default": "",
+          "description": "Port to listen on.",
+          "validators": [
+            {
+              "kind": "range",
+              "expression": "1..65535",
+              "error_message": "Port must be between 1 and 65535"
+            }
+          ]
+        },
+        {
+          "name": "source_label",
+          "type_ref": "str",
+          "required": false,
+          "default": "sentinel",
+          "description": "Value to set in Event.source for events from this source.",
+          "validators": []
+        }
+      ],
+      "item_type": "",
+      "variants": [],
+      "inner_types": [],
+      "description": "Configuration for the Sentinel incident receiver source."
+    },
+    {
+      "name": "SourceConfig",
+      "kind": "union",
+      "fields": [],
+      "item_type": "",
+      "variants": [],
+      "inner_types": [
+        "WebhookSourceConfig",
+        "OtlpSourceConfig",
+        "FileSourceConfig",
+        "SentinelSourceConfig"
+      ],
+      "description": "Discriminated union of all source configuration types, discriminated by the 'type' field."
+    },
+    {
+      "name": "SinkType",
+      "kind": "enum",
+      "fields": [],
+      "item_type": "",
+      "variants": [
+        "stigmergy",
+        "apprentice",
+        "disk",
+        "kindex"
+      ],
+      "inner_types": [],
+      "description": "Discriminator for sink configuration types."
+    },
+    {
+      "name": "StigmergySinkConfig",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "type",
+          "type_ref": "str",
+          "required": true,
+          "default": "stigmergy",
+          "description": "Discriminator, always 'stigmergy'.",
+          "validators": []
+        },
+        {
+          "name": "url",
+          "type_ref": "str",
+          "required": true,
+          "default": "",
+          "description": "Stigmergy endpoint URL.",
+          "validators": [
+            {
+              "kind": "regex",
+              "expression": "^https?://",
+              "error_message": "URL must start with http:// or https://"
+            }
+          ]
+        },
+        {
+          "name": "timeout_seconds",
+          "type_ref": "float",
+          "required": false,
+          "default": "10.0",
+          "description": "HTTP request timeout in seconds.",
+          "validators": [
+            {
+              "kind": "range",
+              "expression": "0.5..300",
+              "error_message": "Timeout must be between 0.5 and 300 seconds"
+            }
+          ]
+        }
+      ],
+      "item_type": "",
+      "variants": [],
+      "inner_types": [],
+      "description": "Configuration for emitting events/stories to Stigmergy."
+    },
+    {
+      "name": "ApprenticeSinkConfig",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "type",
+          "type_ref": "str",
+          "required": true,
+          "default": "apprentice",
+          "description": "Discriminator, always 'apprentice'.",
+          "validators": []
+        },
+        {
+          "name": "url",
+          "type_ref": "str",
+          "required": true,
+          "default": "",
+          "description": "Apprentice endpoint URL.",
+          "validators": [
+            {
+              "kind": "regex",
+              "expression": "^https?://",
+              "error_message": "URL must start with http:// or https://"
+            }
+          ]
+        },
+        {
+          "name": "timeout_seconds",
+          "type_ref": "float",
+          "required": false,
+          "default": "10.0",
+          "description": "HTTP request timeout in seconds.",
+          "validators": [
+            {
+              "kind": "range",
+              "expression": "0.5..300",
+              "error_message": "Timeout must be between 0.5 and 300 seconds"
+            }
+          ]
+        }
+      ],
+      "item_type": "",
+      "variants": [],
+      "inner_types": [],
+      "description": "Configuration for emitting events/stories to Apprentice."
+    },
+    {
+      "name": "DiskSinkConfig",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "type",
+          "type_ref": "str",
+          "required": true,
+          "default": "disk",
+          "description": "Discriminator, always 'disk'.",
+          "validators": []
+        },
+        {
+          "name": "events_path",
+          "type_ref": "str",
+          "required": true,
+          "default": "",
+          "description": "Path for the events JSONL file.",
+          "validators": [
+            {
+              "kind": "length",
+              "expression": "1..4096",
+              "error_message": "Path must be between 1 and 4096 characters"
+            }
+          ]
+        },
+        {
+          "name": "stories_path",
+          "type_ref": "str",
+          "required": true,
+          "default": "",
+          "description": "Path for the stories JSONL file.",
+          "validators": [
+            {
+              "kind": "length",
+              "expression": "1..4096",
+              "error_message": "Path must be between 1 and 4096 characters"
+            }
+          ]
+        }
+      ],
+      "item_type": "",
+      "variants": [],
+      "inner_types": [],
+      "description": "Configuration for the JSONL disk persistence sink."
+    },
+    {
+      "name": "NoteworthinessFilter",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "min_event_count",
+          "type_ref": "int",
+          "required": false,
+          "default": "1",
+          "description": "Minimum number of events in a story for it to be noteworthy.",
+          "validators": [
+            {
+              "kind": "range",
+              "expression": "1..",
+              "error_message": "min_event_count must be at least 1"
+            }
+          ]
+        },
+        {
+          "name": "min_duration_seconds",
+          "type_ref": "float",
+          "required": false,
+          "default": "0.0",
+          "description": "Minimum story duration in seconds for noteworthiness.",
+          "validators": [
+            {
+              "kind": "range",
+              "expression": "0.0..",
+              "error_message": "min_duration_seconds must be non-negative"
+            }
+          ]
+        },
+        {
+          "name": "story_types",
+          "type_ref": "list",
+          "required": false,
+          "default": "",
+          "description": "If non-empty, only stories with these story_types are noteworthy. Empty means all types qualify.",
+          "validators": []
+        },
+        {
+          "name": "exclude_close_reasons",
+          "type_ref": "list",
+          "required": false,
+          "default": "",
+          "description": "Close reasons to exclude from noteworthiness (e.g. ['evicted'] to skip evicted stories).",
+          "validators": []
+        }
+      ],
+      "item_type": "",
+      "variants": [],
+      "inner_types": [],
+      "description": "Configuration for filtering which stories are considered noteworthy for Kindex knowledge capture."
+    },
+    {
+      "name": "KindexSinkConfig",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "type",
+          "type_ref": "str",
+          "required": true,
+          "default": "kindex",
+          "description": "Discriminator, always 'kindex'.",
+          "validators": []
+        },
+        {
+          "name": "url",
+          "type_ref": "str",
+          "required": true,
+          "default": "",
+          "description": "Kindex endpoint URL.",
+          "validators": [
+            {
+              "kind": "regex",
+              "expression": "^https?://",
+              "error_message": "URL must start with http:// or https://"
+            }
+          ]
+        },
+        {
+          "name": "timeout_seconds",
+          "type_ref": "float",
+          "required": false,
+          "default": "10.0",
+          "description": "HTTP request timeout in seconds.",
+          "validators": [
+            {
+              "kind": "range",
+              "expression": "0.5..300",
+              "error_message": "Timeout must be between 0.5 and 300 seconds"
+            }
+          ]
+        },
+        {
+          "name": "noteworthiness",
+          "type_ref": "NoteworthinessFilter",
+          "required": false,
+          "default": "",
+          "description": "Filter controlling which stories are forwarded to Kindex.",
+          "validators": []
+        }
+      ],
+      "item_type": "",
+      "variants": [],
+      "inner_types": [],
+      "description": "Configuration for the Kindex knowledge capture sink."
+    },
+    {
+      "name": "SinkConfig",
+      "kind": "union",
+      "fields": [],
+      "item_type": "",
+      "variants": [],
+      "inner_types": [
+        "StigmergySinkConfig",
+        "ApprenticeSinkConfig",
+        "DiskSinkConfig",
+        "KindexSinkConfig"
+      ],
+      "description": "Discriminated union of all sink configuration types, discriminated by the 'type' field."
+    },
+    {
+      "name": "MemoryLimitsConfig",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "max_open_stories",
+          "type_ref": "int",
+          "required": true,
+          "default": "",
+          "description": "Maximum number of concurrently open stories. When exceeded, oldest stories are evicted with close_reason='evicted'.",
+          "validators": [
+            {
+              "kind": "range",
+              "expression": "1..1000000",
+              "error_message": "max_open_stories must be between 1 and 1,000,000"
+            }
+          ]
+        },
+        {
+          "name": "max_events_per_story",
+          "type_ref": "int",
+          "required": true,
+          "default": "",
+          "description": "Maximum number of events in a single story. When exceeded, the story is closed with close_reason='evicted'.",
+          "validators": [
+            {
+              "kind": "range",
+              "expression": "1..100000",
+              "error_message": "max_events_per_story must be between 1 and 100,000"
+            }
+          ]
+        }
+      ],
+      "item_type": "",
+      "variants": [],
+      "inner_types": [],
+      "description": "Configuration for memory pressure management in the story manager."
+    },
+    {
+      "name": "ChroniclerConfig",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "sources",
+          "type_ref": "list",
+          "required": true,
+          "default": "",
+          "description": "List of source configurations (at least one required).",
+          "validators": [
+            {
+              "kind": "custom",
+              "expression": "len(value) >= 1",
+              "error_message": "At least one source must be configured"
+            }
+          ]
+        },
+        {
+          "name": "sinks",
+          "type_ref": "list",
+          "required": true,
+          "default": "",
+          "description": "List of sink configurations (at least one required).",
+          "validators": [
+            {
+              "kind": "custom",
+              "expression": "len(value) >= 1",
+              "error_message": "At least one sink must be configured"
+            }
+          ]
+        },
+        {
+          "name": "correlation_rules",
+          "type_ref": "list",
+          "required": true,
+          "default": "",
+          "description": "List of CorrelationRule definitions (at least one required).",
+          "validators": [
+            {
+              "kind": "custom",
+              "expression": "len(value) >= 1",
+              "error_message": "At least one correlation rule must be configured"
+            }
+          ]
+        },
+        {
+          "name": "memory_limits",
+          "type_ref": "MemoryLimitsConfig",
+          "required": true,
+          "default": "",
+          "description": "Memory pressure management configuration.",
+          "validators": []
+        },
+        {
+          "name": "state_path",
+          "type_ref": "str",
+          "required": false,
+          "default": "./chronicler_state",
+          "description": "Directory path for JSONL state persistence files.",
+          "validators": [
+            {
+              "kind": "length",
+              "expression": "1..4096",
+              "error_message": "state_path must be between 1 and 4096 characters"
+            }
+          ]
+        }
+      ],
+      "item_type": "",
+      "variants": [],
+      "inner_types": [],
+      "description": "Top-level Chronicler configuration loaded from YAML. Validated at startup; invalid config is a fatal error."
+    },
+    {
+      "name": "EventOrStory",
+      "kind": "union",
+      "fields": [],
+      "item_type": "",
+      "variants": [],
+      "inner_types": [
+        "Event",
+        "Story"
+      ],
+      "description": "Union type for SinkProtocol.emit — a sink may receive either an Event or a Story."
+    }
+  ],
+  "functions": [
+    {
+      "name": "compute_event_id",
+      "description": "Computes the content-addressable SHA-256 hex ID for an Event from its identity fields. Constructs a fixed-key dict of {event_kind, entity_kind, entity_id, actor, timestamp, context, correlation_keys}, serializes to canonical JSON (json.dumps(sort_keys=True, separators=(',',':'), ensure_ascii=True, default=str)) with timestamps as ISO 8601 'Z' suffix, then returns the lowercase hex SHA-256 digest. This is a pure function with no side effects.",
+      "inputs": [
+        {
+          "name": "event_kind",
+          "type_ref": "str",
+          "required": true,
+          "default": "",
+          "description": "The event kind string.",
+          "validators": []
+        },
+        {
+          "name": "entity_kind",
+          "type_ref": "str",
+          "required": true,
+          "default": "",
+          "description": "The entity kind string.",
+          "validators": []
+        },
+        {
+          "name": "entity_id",
+          "type_ref": "str",
+          "required": true,
+          "default": "",
+          "description": "The entity identifier.",
+          "validators": []
+        },
+        {
+          "name": "actor",
+          "type_ref": "str",
+          "required": true,
+          "default": "",
+          "description": "The actor identifier.",
+          "validators": []
+        },
+        {
+          "name": "timestamp",
+          "type_ref": "AwareDatetime",
+          "required": true,
+          "default": "",
+          "description": "Timezone-aware timestamp.",
+          "validators": []
+        },
+        {
+          "name": "context",
+          "type_ref": "ContextDict",
+          "required": true,
+          "default": "",
+          "description": "Event context dictionary.",
+          "validators": []
+        },
+        {
+          "name": "correlation_keys",
+          "type_ref": "CorrelationKeys",
+          "required": true,
+          "default": "",
+          "description": "Correlation key-value pairs.",
+          "validators": []
+        }
+      ],
+      "output_type": "Sha256Hex",
+      "error_cases": [
+        {
+          "name": "naive_timestamp",
+          "condition": "timestamp has no tzinfo (naive datetime)",
+          "error_type": "ValueError",
+          "error_data": {
+            "message": "Event timestamp must be timezone-aware"
+          }
+        },
+        {
+          "name": "invalid_context_value_type",
+          "condition": "A value in the context dict is not str|int|float|bool|None",
+          "error_type": "TypeError",
+          "error_data": {
+            "message": "Context values must be str, int, float, bool, or None"
+          }
+        }
+      ],
+      "preconditions": [
+        "timestamp must be timezone-aware (has tzinfo)",
+        "All context values must be str|int|float|bool|None",
+        "All correlation_keys values must be non-empty strings"
+      ],
+      "postconditions": [
+        "Returned string is exactly 64 lowercase hex characters",
+        "Same inputs always produce the same output (deterministic)",
+        "Different inputs with any single field changed produce a different output (collision-resistant)"
+      ],
+      "idempotent": true,
+      "side_effects": [],
+      "structured_side_effects": [
+        {
+          "kind": "none",
+          "target": "",
+          "description": ""
+        }
+      ],
+      "performance_budget": {
+        "p95_latency_ms": 1,
+        "max_memory_mb": null,
+        "complexity": "O(n) where n is total size of identity fields"
+      }
+    },
+    {
+      "name": "create_event",
+      "description": "Creates a new Event instance. The id field is automatically computed via compute_event_id from the identity fields using the model_validator(mode='before'). This is the primary factory for Event creation. Returns a frozen Pydantic model instance.",
+      "inputs": [
+        {
+          "name": "event_kind",
+          "type_ref": "EventKind",
+          "required": true,
+          "default": "",
+          "description": "Dot-separated event kind.",
+          "validators": []
+        },
+        {
+          "name": "entity_kind",
+          "type_ref": "EntityKind",
+          "required": true,
+          "default": "",
+          "description": "Kind of entity.",
+          "validators": []
+        },
+        {
+          "name": "entity_id",
+          "type_ref": "EntityId",
+          "required": true,
+          "default": "",
+          "description": "Entity identifier.",
+          "validators": []
+        },
+        {
+          "name": "actor",
+          "type_ref": "ActorId",
+          "required": true,
+          "default": "",
+          "description": "Actor identifier.",
+          "validators": []
+        },
+        {
+          "name": "timestamp",
+          "type_ref": "AwareDatetime",
+          "required": true,
+          "default": "",
+          "description": "Timezone-aware timestamp.",
+          "validators": []
+        },
+        {
+          "name": "context",
+          "type_ref": "ContextDict",
+          "required": true,
+          "default": "",
+          "description": "Event context data.",
+          "validators": []
+        },
+        {
+          "name": "correlation_keys",
+          "type_ref": "CorrelationKeys",
+          "required": true,
+          "default": "",
+          "description": "Correlation key-value pairs.",
+          "validators": []
+        },
+        {
+          "name": "source",
+          "type_ref": "str",
+          "required": false,
+          "default": "",
+          "description": "Optional provenance label (excluded from hash).",
+          "validators": []
+        }
+      ],
+      "output_type": "Event",
+      "error_cases": [
+        {
+          "name": "invalid_event_kind",
+          "condition": "event_kind does not match the EventKind pattern",
+          "error_type": "ValidationError",
+          "error_data": {
+            "field": "event_kind"
+          }
+        },
+        {
+          "name": "invalid_entity_kind",
+          "condition": "entity_kind does not match the EntityKind pattern",
+          "error_type": "ValidationError",
+          "error_data": {
+            "field": "entity_kind"
+          }
+        },
+        {
+          "name": "empty_entity_id",
+          "condition": "entity_id is empty",
+          "error_type": "ValidationError",
+          "error_data": {
+            "field": "entity_id"
+          }
+        },
+        {
+          "name": "empty_actor",
+          "condition": "actor is empty",
+          "error_type": "ValidationError",
+          "error_data": {
+            "field": "actor"
+          }
+        },
+        {
+          "name": "naive_timestamp",
+          "condition": "timestamp has no tzinfo",
+          "error_type": "ValidationError",
+          "error_data": {
+            "field": "timestamp"
+          }
+        },
+        {
+          "name": "invalid_context_value",
+          "condition": "A context value is not str|int|float|bool|None",
+          "error_type": "ValidationError",
+          "error_data": {
+            "field": "context"
+          }
+        },
+        {
+          "name": "invalid_correlation_key",
+          "condition": "A correlation key or value is empty or not a string",
+          "error_type": "ValidationError",
+          "error_data": {
+            "field": "correlation_keys"
+          }
+        }
+      ],
+      "preconditions": [
+        "event_kind matches ^[a-z][a-z0-9_.]{0,254}$",
+        "entity_kind matches ^[a-z][a-z0-9_.]{0,254}$",
+        "entity_id is non-empty, max 1024 chars",
+        "actor is non-empty, max 512 chars",
+        "timestamp is timezone-aware",
+        "All context values are str|int|float|bool|None",
+        "All correlation_keys keys and values are non-empty strings"
+      ],
+      "postconditions": [
+        "Returned Event is frozen (immutable)",
+        "Event.id is the SHA-256 of canonical JSON of identity fields",
+        "Creating the same event twice produces Events with identical id fields",
+        "Event.source is excluded from the hash computation"
+      ],
+      "idempotent": true,
+      "side_effects": [],
+      "structured_side_effects": [
+        {
+          "kind": "none",
+          "target": "",
+          "description": ""
+        }
+      ],
+      "performance_budget": {
+        "p95_latency_ms": 2,
+        "max_memory_mb": null,
+        "complexity": "O(n) where n is total size of all fields"
+      }
+    },
+    {
+      "name": "create_story",
+      "description": "Creates a new open Story instance with a generated UUID4 story_id, the given story_type and correlation_rule name, an initial group_key, and the first event ID. Status is set to 'open', end_ts/duration/close_reason are None.",
+      "inputs": [
+        {
+          "name": "story_type",
+          "type_ref": "str",
+          "required": true,
+          "default": "",
+          "description": "Story type label from the CorrelationRule.",
+          "validators": []
+        },
+        {
+          "name": "correlation_rule",
+          "type_ref": "str",
+          "required": true,
+          "default": "",
+          "description": "Name of the creating CorrelationRule.",
+          "validators": []
+        },
+        {
+          "name": "group_key",
+          "type_ref": "CorrelationKeys",
+          "required": true,
+          "default": "",
+          "description": "Group key values for this story.",
+          "validators": []
+        },
+        {
+          "name": "first_event_id",
+          "type_ref": "Sha256Hex",
+          "required": true,
+          "default": "",
+          "description": "ID of the first event in this story.",
+          "validators": []
+        },
+        {
+          "name": "start_ts",
+          "type_ref": "AwareDatetime",
+          "required": true,
+          "default": "",
+          "description": "Timestamp of the first event.",
+          "validators": []
+        },
+        {
+          "name": "parent_story_id",
+          "type_ref": "StoryId",
+          "required": false,
+          "default": "",
+          "description": "Optional parent story ID for chain_by linkage.",
+          "validators": []
+        }
+      ],
+      "output_type": "Story",
+      "error_cases": [
+        {
+          "name": "empty_story_type",
+          "condition": "story_type is empty",
+          "error_type": "ValidationError",
+          "error_data": {
+            "field": "story_type"
+          }
+        },
+        {
+          "name": "empty_correlation_rule",
+          "condition": "correlation_rule is empty",
+          "error_type": "ValidationError",
+          "error_data": {
+            "field": "correlation_rule"
+          }
+        },
+        {
+          "name": "invalid_first_event_id",
+          "condition": "first_event_id is not a valid SHA-256 hex string",
+          "error_type": "ValidationError",
+          "error_data": {
+            "field": "first_event_id"
+          }
+        }
+      ],
+      "preconditions": [
+        "story_type is non-empty",
+        "correlation_rule is non-empty",
+        "first_event_id is a valid SHA-256 hex string",
+        "start_ts is timezone-aware"
+      ],
+      "postconditions": [
+        "Returned Story is frozen (immutable)",
+        "story.status == 'open'",
+        "story.events == (first_event_id,)",
+        "story.event_count == 1",
+        "story.end_ts is None",
+        "story.duration is None",
+        "story.close_reason is None",
+        "story.story_id is a valid UUID4"
+      ],
+      "idempotent": false,
+      "side_effects": [],
+      "structured_side_effects": [
+        {
+          "kind": "none",
+          "target": "",
+          "description": ""
+        }
+      ],
+      "performance_budget": null
+    },
+    {
+      "name": "append_event_to_story",
+      "description": "Produces a new Story with an additional event appended. Uses model_copy(update={...}) on the source story to add the event ID to events, increment event_count. The story must be open.",
+      "inputs": [
+        {
+          "name": "story",
+          "type_ref": "Story",
+          "required": true,
+          "default": "",
+          "description": "The existing open story to append to.",
+          "validators": []
+        },
+        {
+          "name": "event_id",
+          "type_ref": "Sha256Hex",
+          "required": true,
+          "default": "",
+          "description": "The event ID to append.",
+          "validators": []
+        }
+      ],
+      "output_type": "Story",
+      "error_cases": [
+        {
+          "name": "story_not_open",
+          "condition": "story.status != 'open'",
+          "error_type": "ValueError",
+          "error_data": {
+            "message": "Cannot append event to a closed story"
+          }
+        },
+        {
+          "name": "duplicate_event_id",
+          "condition": "event_id already in story.events",
+          "error_type": "ValueError",
+          "error_data": {
+            "message": "Event ID already exists in story"
+          }
+        }
+      ],
+      "preconditions": [
+        "story.status == 'open'",
+        "event_id is a valid SHA-256 hex string",
+        "event_id is not already in story.events (no duplicates)"
+      ],
+      "postconditions": [
+        "Returned Story is frozen (immutable)",
+        "Returned story.events == story.events + (event_id,)",
+        "Returned story.event_count == story.event_count + 1",
+        "Returned story.status == 'open'",
+        "Returned story.story_id == story.story_id (same identity)",
+        "Original story is unchanged (immutable)"
+      ],
+      "idempotent": false,
+      "side_effects": [],
+      "structured_side_effects": [
+        {
+          "kind": "none",
+          "target": "",
+          "description": ""
+        }
+      ],
+      "performance_budget": null
+    },
+    {
+      "name": "close_story",
+      "description": "Produces a new Story with status='closed', the given close_reason, end_ts set, and duration computed as (end_ts - start_ts).total_seconds(). Uses model_copy(update={...}) on the source story.",
+      "inputs": [
+        {
+          "name": "story",
+          "type_ref": "Story",
+          "required": true,
+          "default": "",
+          "description": "The existing open story to close.",
+          "validators": []
+        },
+        {
+          "name": "close_reason",
+          "type_ref": "CloseReason",
+          "required": true,
+          "default": "",
+          "description": "Why the story is being closed: 'terminal', 'timeout', or 'evicted'.",
+          "validators": []
+        },
+        {
+          "name": "end_ts",
+          "type_ref": "AwareDatetime",
+          "required": true,
+          "default": "",
+          "description": "The timestamp at which the story is closed.",
+          "validators": []
+        }
+      ],
+      "output_type": "Story",
+      "error_cases": [
+        {
+          "name": "story_already_closed",
+          "condition": "story.status == 'closed'",
+          "error_type": "ValueError",
+          "error_data": {
+            "message": "Cannot close an already closed story"
+          }
+        },
+        {
+          "name": "end_before_start",
+          "condition": "end_ts < story.start_ts",
+          "error_type": "ValueError",
+          "error_data": {
+            "message": "end_ts must not be before start_ts"
+          }
+        }
+      ],
+      "preconditions": [
+        "story.status == 'open'",
+        "end_ts >= story.start_ts",
+        "end_ts is timezone-aware"
+      ],
+      "postconditions": [
+        "Returned Story is frozen (immutable)",
+        "Returned story.status == 'closed'",
+        "Returned story.close_reason == close_reason",
+        "Returned story.end_ts == end_ts",
+        "Returned story.duration == (end_ts - start_ts).total_seconds()",
+        "Returned story.duration >= 0.0",
+        "Returned story.story_id == story.story_id",
+        "Returned story.events == story.events (unchanged)",
+        "Original story is unchanged (immutable)"
+      ],
+      "idempotent": false,
+      "side_effects": [],
+      "structured_side_effects": [
+        {
+          "kind": "none",
+          "target": "",
+          "description": ""
+        }
+      ],
+      "performance_budget": null
+    },
+    {
+      "name": "validate_story_consistency",
+      "description": "Validates the internal consistency of a Story model. Checks that: open stories have no end_ts/duration/close_reason; closed stories have all three set; event_count matches len(events); duration matches (end_ts - start_ts).total_seconds() for closed stories. This is used by the model_validator(mode='after') and can also be called explicitly for testing.",
+      "inputs": [
+        {
+          "name": "story",
+          "type_ref": "Story",
+          "required": true,
+          "default": "",
+          "description": "The story to validate.",
+          "validators": []
+        }
+      ],
+      "output_type": "bool",
+      "error_cases": [
+        {
+          "name": "open_story_has_end_ts",
+          "condition": "story.status == 'open' and story.end_ts is not None",
+          "error_type": "ValidationError",
+          "error_data": {
+            "message": "Open story must not have end_ts"
+          }
+        },
+        {
+          "name": "open_story_has_close_reason",
+          "condition": "story.status == 'open' and story.close_reason is not None",
+          "error_type": "ValidationError",
+          "error_data": {
+            "message": "Open story must not have close_reason"
+          }
+        },
+        {
+          "name": "open_story_has_duration",
+          "condition": "story.status == 'open' and story.duration is not None",
+          "error_type": "ValidationError",
+          "error_data": {
+            "message": "Open story must not have duration"
+          }
+        },
+        {
+          "name": "closed_story_missing_end_ts",
+          "condition": "story.status == 'closed' and story.end_ts is None",
+          "error_type": "ValidationError",
+          "error_data": {
+            "message": "Closed story must have end_ts"
+          }
+        },
+        {
+          "name": "closed_story_missing_close_reason",
+          "condition": "story.status == 'closed' and story.close_reason is None",
+          "error_type": "ValidationError",
+          "error_data": {
+            "message": "Closed story must have close_reason"
+          }
+        },
+        {
+          "name": "closed_story_missing_duration",
+          "condition": "story.status == 'closed' and story.duration is None",
+          "error_type": "ValidationError",
+          "error_data": {
+            "message": "Closed story must have duration"
+          }
+        },
+        {
+          "name": "event_count_mismatch",
+          "condition": "story.event_count != len(story.events)",
+          "error_type": "ValidationError",
+          "error_data": {
+            "message": "event_count must equal len(events)"
+          }
+        }
+      ],
+      "preconditions": [],
+      "postconditions": [
+        "Returns True if story is internally consistent",
+        "Raises ValidationError if any consistency check fails"
+      ],
+      "idempotent": true,
+      "side_effects": [],
+      "structured_side_effects": [
+        {
+          "kind": "none",
+          "target": "",
+          "description": ""
+        }
+      ],
+      "performance_budget": null
+    },
+    {
+      "name": "matches_terminal_pattern",
+      "description": "Checks whether an Event matches a TerminalEventPattern from a CorrelationRule. For each key-value pair in the pattern, the event must have a matching value at the specified field path. Supports 'event_kind', 'entity_kind', 'entity_id', 'actor' as direct field paths, and 'context.<key>' or 'correlation_keys.<key>' for nested access.",
+      "inputs": [
+        {
+          "name": "event",
+          "type_ref": "Event",
+          "required": true,
+          "default": "",
+          "description": "The event to check.",
+          "validators": []
+        },
+        {
+          "name": "pattern",
+          "type_ref": "TerminalEventPattern",
+          "required": true,
+          "default": "",
+          "description": "The terminal event pattern (field path→expected value pairs).",
+          "validators": []
+        }
+      ],
+      "output_type": "bool",
+      "error_cases": [
+        {
+          "name": "invalid_field_path",
+          "condition": "A pattern key is not a recognized field path (not event_kind/entity_kind/entity_id/actor/context.*/correlation_keys.*)",
+          "error_type": "ValueError",
+          "error_data": {
+            "message": "Unrecognized terminal event pattern field path"
+          }
+        }
+      ],
+      "preconditions": [
+        "event is a valid Event instance",
+        "pattern keys are valid field paths"
+      ],
+      "postconditions": [
+        "Returns True if all pattern entries match the event's field values",
+        "Returns False if any pattern entry does not match or field does not exist",
+        "Empty pattern matches all events (vacuously true)"
+      ],
+      "idempotent": true,
+      "side_effects": [],
+      "structured_side_effects": [
+        {
+          "kind": "none",
+          "target": "",
+          "description": ""
+        }
+      ],
+      "performance_budget": {
+        "p95_latency_ms": 1,
+        "max_memory_mb": null,
+        "complexity": "O(p) where p is number of pattern entries"
+      }
+    },
+    {
+      "name": "extract_group_key",
+      "description": "Extracts the group key values from an Event according to a CorrelationRule's group_by field paths. Returns a CorrelationKeys dict mapping each group_by path to the corresponding value from the event. Field paths reference 'correlation_keys.<key>', 'context.<key>', or top-level event fields.",
+      "inputs": [
+        {
+          "name": "event",
+          "type_ref": "Event",
+          "required": true,
+          "default": "",
+          "description": "The event to extract group key from.",
+          "validators": []
+        },
+        {
+          "name": "group_by",
+          "type_ref": "GroupByKeys",
+          "required": true,
+          "default": "",
+          "description": "Ordered tuple of field paths to extract.",
+          "validators": []
+        }
+      ],
+      "output_type": "CorrelationKeys",
+      "error_cases": [
+        {
+          "name": "missing_field",
+          "condition": "A group_by field path does not resolve to a value on the event",
+          "error_type": "KeyError",
+          "error_data": {
+            "message": "Event is missing required group_by field"
+          }
+        },
+        {
+          "name": "non_string_value",
+          "condition": "A resolved field value is not a string and cannot be deterministically converted",
+          "error_type": "TypeError",
+          "error_data": {
+            "message": "Group key field must resolve to a string value"
+          }
+        }
+      ],
+      "preconditions": [
+        "event is a valid Event instance",
+        "group_by contains at least one field path",
+        "All field paths in group_by resolve to string values on the event"
+      ],
+      "postconditions": [
+        "Returned dict has exactly len(group_by) entries",
+        "Each key in the returned dict is the field path from group_by",
+        "Each value is the string representation of the event's field at that path"
+      ],
+      "idempotent": true,
+      "side_effects": [],
+      "structured_side_effects": [
+        {
+          "kind": "none",
+          "target": "",
+          "description": ""
+        }
+      ],
+      "performance_budget": {
+        "p95_latency_ms": 1,
+        "max_memory_mb": null,
+        "complexity": "O(g) where g is number of group_by fields"
+      }
+    },
+    {
+      "name": "load_chronicler_config",
+      "description": "Loads and validates a ChroniclerConfig from a YAML file path. Uses Pydantic v2 validation on the parsed YAML. Fails fast with a clear error if the config is invalid (fatal startup error per SOP). Validates all source/sink configs via discriminated unions, all CorrelationRules, and memory limits.",
+      "inputs": [
+        {
+          "name": "config_path",
+          "type_ref": "str",
+          "required": true,
+          "default": "",
+          "description": "Filesystem path to the YAML configuration file.",
+          "validators": []
+        }
+      ],
+      "output_type": "ChroniclerConfig",
+      "error_cases": [
+        {
+          "name": "file_not_found",
+          "condition": "config_path does not exist or is not readable",
+          "error_type": "FileNotFoundError",
+          "error_data": {
+            "message": "Configuration file not found"
+          }
+        },
+        {
+          "name": "invalid_yaml",
+          "condition": "File content is not valid YAML",
+          "error_type": "ValueError",
+          "error_data": {
+            "message": "Configuration file contains invalid YAML"
+          }
+        },
+        {
+          "name": "validation_error",
+          "condition": "Parsed YAML does not conform to ChroniclerConfig schema",
+          "error_type": "ValidationError",
+          "error_data": {
+            "message": "Configuration validation failed"
+          }
+        },
+        {
+          "name": "duplicate_rule_names",
+          "condition": "Two or more CorrelationRules have the same name",
+          "error_type": "ValidationError",
+          "error_data": {
+            "message": "CorrelationRule names must be unique"
+          }
+        },
+        {
+          "name": "empty_sources",
+          "condition": "No sources configured",
+          "error_type": "ValidationError",
+          "error_data": {
+            "message": "At least one source must be configured"
+          }
+        },
+        {
+          "name": "empty_sinks",
+          "condition": "No sinks configured",
+          "error_type": "ValidationError",
+          "error_data": {
+            "message": "At least one sink must be configured"
+          }
+        },
+        {
+          "name": "empty_rules",
+          "condition": "No correlation rules configured",
+          "error_type": "ValidationError",
+          "error_data": {
+            "message": "At least one correlation rule must be configured"
+          }
+        }
+      ],
+      "preconditions": [
+        "config_path is a readable file path",
+        "File contains valid YAML"
+      ],
+      "postconditions": [
+        "Returned ChroniclerConfig is fully validated",
+        "All source configs are valid instances of their discriminated types",
+        "All sink configs are valid instances of their discriminated types",
+        "All CorrelationRules are valid",
+        "memory_limits has valid max_open_stories and max_events_per_story",
+        "At least one source, one sink, and one correlation rule are configured"
+      ],
+      "idempotent": true,
+      "side_effects": [],
+      "structured_side_effects": [
+        {
+          "kind": "reads_file",
+          "target": "YAML configuration file at config_path",
+          "description": "Reads the YAML configuration file from disk"
+        }
+      ],
+      "performance_budget": {
+        "p95_latency_ms": 100,
+        "max_memory_mb": null,
+        "complexity": null
+      }
+    },
+    {
+      "name": "event_to_dict",
+      "description": "Serializes an Event to a plain dict suitable for JSON serialization. Uses Pydantic's model_dump(mode='json'). Timestamps are serialized as ISO 8601 strings. The id field is included.",
+      "inputs": [
+        {
+          "name": "event",
+          "type_ref": "Event",
+          "required": true,
+          "default": "",
+          "description": "The Event to serialize.",
+          "validators": []
+        }
+      ],
+      "output_type": "dict",
+      "error_cases": [],
+      "preconditions": [
+        "event is a valid Event instance"
+      ],
+      "postconditions": [
+        "Returned dict contains all Event fields",
+        "Returned dict is JSON-serializable",
+        "Timestamp fields are ISO 8601 strings",
+        "Round-tripping through event_from_dict(event_to_dict(e)) produces an Event with the same id"
+      ],
+      "idempotent": true,
+      "side_effects": [],
+      "structured_side_effects": [
+        {
+          "kind": "none",
+          "target": "",
+          "description": ""
+        }
+      ],
+      "performance_budget": null
+    },
+    {
+      "name": "event_from_dict",
+      "description": "Deserializes an Event from a plain dict (e.g. parsed from JSON). Validates all fields. If 'id' is present in the dict, it is verified against the computed hash; if it mismatches, a ValidationError is raised. If 'id' is absent, it is computed.",
+      "inputs": [
+        {
+          "name": "data",
+          "type_ref": "dict",
+          "required": true,
+          "default": "",
+          "description": "The dict to deserialize into an Event.",
+          "validators": []
+        }
+      ],
+      "output_type": "Event",
+      "error_cases": [
+        {
+          "name": "missing_required_field",
+          "condition": "A required field (event_kind, entity_kind, entity_id, actor, timestamp, context, correlation_keys) is missing",
+          "error_type": "ValidationError",
+          "error_data": {
+            "message": "Missing required event field"
+          }
+        },
+        {
+          "name": "id_mismatch",
+          "condition": "The provided 'id' field does not match the computed SHA-256 hash",
+          "error_type": "ValidationError",
+          "error_data": {
+            "message": "Event ID does not match computed content hash"
+          }
+        },
+        {
+          "name": "invalid_field_value",
+          "condition": "A field value fails validation (e.g. naive timestamp, invalid event_kind pattern)",
+          "error_type": "ValidationError",
+          "error_data": {
+            "message": "Event field validation failed"
+          }
+        }
+      ],
+      "preconditions": [
+        "data contains at minimum: event_kind, entity_kind, entity_id, actor, timestamp, context, correlation_keys"
+      ],
+      "postconditions": [
+        "Returned Event is frozen and valid",
+        "Event.id matches the content hash of identity fields",
+        "If input dict had an 'id' field, it matches the computed id"
+      ],
+      "idempotent": true,
+      "side_effects": [],
+      "structured_side_effects": [
+        {
+          "kind": "none",
+          "target": "",
+          "description": ""
+        }
+      ],
+      "performance_budget": null
+    },
+    {
+      "name": "story_to_dict",
+      "description": "Serializes a Story to a plain dict suitable for JSON serialization. Uses Pydantic's model_dump(mode='json'). Events tuple is serialized as a JSON array of ID strings.",
+      "inputs": [
+        {
+          "name": "story",
+          "type_ref": "Story",
+          "required": true,
+          "default": "",
+          "description": "The Story to serialize.",
+          "validators": []
+        }
+      ],
+      "output_type": "dict",
+      "error_cases": [],
+      "preconditions": [
+        "story is a valid Story instance"
+      ],
+      "postconditions": [
+        "Returned dict contains all Story fields",
+        "Returned dict is JSON-serializable",
+        "events field is a list of SHA-256 hex strings",
+        "Timestamp fields are ISO 8601 strings or null"
+      ],
+      "idempotent": true,
+      "side_effects": [],
+      "structured_side_effects": [
+        {
+          "kind": "none",
+          "target": "",
+          "description": ""
+        }
+      ],
+      "performance_budget": null
+    },
+    {
+      "name": "story_from_dict",
+      "description": "Deserializes a Story from a plain dict (e.g. parsed from JSON). Validates all fields including the lifecycle consistency checks (model_validator(mode='after')).",
+      "inputs": [
+        {
+          "name": "data",
+          "type_ref": "dict",
+          "required": true,
+          "default": "",
+          "description": "The dict to deserialize into a Story.",
+          "validators": []
+        }
+      ],
+      "output_type": "Story",
+      "error_cases": [
+        {
+          "name": "missing_required_field",
+          "condition": "A required field is missing from the dict",
+          "error_type": "ValidationError",
+          "error_data": {
+            "message": "Missing required story field"
+          }
+        },
+        {
+          "name": "lifecycle_inconsistency",
+          "condition": "Story lifecycle invariants are violated (e.g. open story with end_ts)",
+          "error_type": "ValidationError",
+          "error_data": {
+            "message": "Story lifecycle consistency check failed"
+          }
+        },
+        {
+          "name": "event_count_mismatch",
+          "condition": "event_count does not match len(events)",
+          "error_type": "ValidationError",
+          "error_data": {
+            "message": "event_count must equal len(events)"
+          }
+        }
+      ],
+      "preconditions": [
+        "data contains all required Story fields"
+      ],
+      "postconditions": [
+        "Returned Story is frozen and valid",
+        "Lifecycle consistency checks pass (open↔closed invariants)",
+        "event_count matches len(events)"
+      ],
+      "idempotent": true,
+      "side_effects": [],
+      "structured_side_effects": [
+        {
+          "kind": "none",
+          "target": "",
+          "description": ""
+        }
+      ],
+      "performance_budget": null
+    }
+  ],
+  "dependencies": [],
+  "dependency_contracts": {},
+  "invariants": [
+    "All Event instances are frozen (immutable) — no attribute can be reassigned after construction",
+    "All Story instances are frozen (immutable) — mutation only via model_copy(update={...}) producing a new instance",
+    "All CorrelationRule instances are frozen (immutable)",
+    "Event.id is always the SHA-256 hex digest of canonical JSON of identity fields (event_kind, entity_kind, entity_id, actor, timestamp, context, correlation_keys)",
+    "Canonical JSON uses json.dumps(sort_keys=True, separators=(',',':'), ensure_ascii=True, default=str) with timestamps as ISO 8601 'Z' suffix",
+    "Two Events with identical identity fields always have the same id (content-addressable)",
+    "Event.source is excluded from the content hash — it is provenance metadata only",
+    "An open Story has status='open', end_ts=None, duration=None, close_reason=None",
+    "A closed Story has status='closed', end_ts set (timezone-aware), duration set (>=0), close_reason set to 'terminal'|'timeout'|'evicted'",
+    "Story.event_count always equals len(Story.events)",
+    "Story.events is a tuple of SHA-256 hex event ID strings (ordered by append time)",
+    "Story.duration (when set) equals (end_ts - start_ts).total_seconds()",
+    "CorrelationRule.event_kinds is a frozenset with at least one member",
+    "CorrelationRule.group_by is a non-empty tuple",
+    "All timestamps in Event and Story are timezone-aware (AwareDatetime) — naive datetimes are rejected at validation",
+    "SourceProtocol is a runtime_checkable typing.Protocol with async start(), async stop(), and subscribe(callback) methods",
+    "SinkProtocol is a runtime_checkable typing.Protocol with async start(), async stop(), and async emit(item: Event|Story) methods",
+    "ChroniclerConfig requires at least one source, one sink, and one correlation rule",
+    "CorrelationRule names are unique within a ChroniclerConfig",
+    "All config models use Pydantic v2 with frozen=True"
+  ],
+  "requires": [],
+  "processing_register": "rigorous-analytical",
+  "data_access": {
+    "reads": [
+      "PUBLIC"
+    ],
+    "writes": [],
+    "rationale": "Pure data model definitions with no I/O. Event ID computation performs in-memory SHA-256 hashing of canonical JSON. Story and CorrelationRule models are immutable value objects. No external data is read or written; all data resides in-process as Pydantic model instances.",
+    "side_effects": []
+  },
+  "authority": {
+    "domains": [
+      "chronicler.event_schema",
+      "chronicler.story_schema",
+      "chronicler.correlation_rule_schema",
+      "chronicler.config_schema",
+      "chronicler.source_protocol",
+      "chronicler.sink_protocol"
+    ],
+    "rationale": "This component is the single authoritative definition for all Chronicler data models: Event, Story, CorrelationRule, configuration structures, and the SourceProtocol/SinkProtocol interfaces. All other components depend on these canonical types."
+  }
+}

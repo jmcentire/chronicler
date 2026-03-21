@@ -1,0 +1,1191 @@
+{
+  "component_id": "root",
+  "contract_version": 1,
+  "test_cases": [
+    {
+      "id": "test_goodhart_type_ownership_no_duplicates",
+      "description": "The type ownership map must contain exactly one entry per type name — no type can have two owners, which would violate the single-source-of-truth invariant",
+      "function": "get_type_ownership_map",
+      "category": "invariant",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "No duplicate type_name entries exist in the ownership map",
+      "expected_error": "",
+      "assertions": [
+        "All type_name values in the returned list are unique"
+      ]
+    },
+    {
+      "id": "test_goodhart_type_ownership_contains_core_domain_types",
+      "description": "The type ownership map must include entries for all core domain types referenced across component contracts (Event, Story, CorrelationRule) to serve as the canonical import source",
+      "function": "get_type_ownership_map",
+      "category": "invariant",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "Core domain types are present in the map",
+      "expected_error": "",
+      "assertions": [
+        "Entries exist for at minimum Event, Story, and CorrelationRule types"
+      ]
+    },
+    {
+      "id": "test_goodhart_type_ownership_entries_are_typed",
+      "description": "Each entry in the type ownership map must be a proper TypeOwnershipEntry instance, not a plain dict or tuple",
+      "function": "get_type_ownership_map",
+      "category": "invariant",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Every element is an instance of TypeOwnershipEntry with type_name, owner_module, and category attributes"
+      ]
+    },
+    {
+      "id": "test_goodhart_type_ownership_categories_valid",
+      "description": "Every entry in the type ownership map must use a valid TypeCategory enum value, ensuring the classification taxonomy is respected",
+      "function": "get_type_ownership_map",
+      "category": "invariant",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Every entry's category is a valid TypeCategory enum member"
+      ]
+    },
+    {
+      "id": "test_goodhart_integration_seams_unique",
+      "description": "Each integration seam must appear exactly once — no duplicate seam identifiers — to avoid ambiguous routing specifications",
+      "function": "get_integration_seams",
+      "category": "invariant",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "All seam values in the returned list are unique IntegrationSeam enum members"
+      ]
+    },
+    {
+      "id": "test_goodhart_integration_seams_are_typed",
+      "description": "Each entry returned by get_integration_seams must be a proper IntegrationSeamSpec instance with all structural fields",
+      "function": "get_integration_seams",
+      "category": "invariant",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Every element is an IntegrationSeamSpec with seam, producer, consumer, transport, data_type, back_pressure, error_boundary attributes"
+      ]
+    },
+    {
+      "id": "test_goodhart_integration_seams_error_boundaries_valid",
+      "description": "Each integration seam must reference a valid ErrorBoundaryZone so that error handling policies can be looked up at runtime",
+      "function": "get_integration_seams",
+      "category": "invariant",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Every seam's error_boundary is a valid ErrorBoundaryZone enum member"
+      ]
+    },
+    {
+      "id": "test_goodhart_error_policies_are_typed",
+      "description": "Each error boundary policy must be a proper ErrorBoundaryPolicy instance, not a plain dict or ad-hoc object",
+      "function": "get_error_boundary_policies",
+      "category": "invariant",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Every element is an ErrorBoundaryPolicy instance with zone, strategy, log_level, restartable, fatal attributes"
+      ]
+    },
+    {
+      "id": "test_goodhart_error_policies_no_duplicate_zones",
+      "description": "Each error boundary zone must have exactly one policy — duplicate zone entries would create ambiguous error handling behavior",
+      "function": "get_error_boundary_policies",
+      "category": "invariant",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "All zone values in the returned list are unique"
+      ]
+    },
+    {
+      "id": "test_goodhart_error_policies_log_levels_valid",
+      "description": "All error boundary policies must use valid Python log level strings as specified by the regex validator",
+      "function": "get_error_boundary_policies",
+      "category": "invariant",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Every policy's log_level matches ^(DEBUG|INFO|WARNING|ERROR|CRITICAL)$"
+      ]
+    },
+    {
+      "id": "test_goodhart_error_policies_strategies_valid",
+      "description": "All error boundary policies must reference valid ErrorHandlingStrategy enum values",
+      "function": "get_error_boundary_policies",
+      "category": "invariant",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Every policy's strategy is a valid ErrorHandlingStrategy enum member"
+      ]
+    },
+    {
+      "id": "test_goodhart_public_api_exports_are_typed",
+      "description": "Each public API export must be a proper PublicApiExport instance with all structural fields populated",
+      "function": "get_public_api_exports",
+      "category": "invariant",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Every element is a PublicApiExport instance with name, source_module, kind attributes"
+      ]
+    },
+    {
+      "id": "test_goodhart_public_api_exports_no_duplicate_names",
+      "description": "The public API surface must not declare the same symbol name twice, which would indicate a misconfiguration",
+      "function": "get_public_api_exports",
+      "category": "invariant",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "All name values in the returned list are unique"
+      ]
+    },
+    {
+      "id": "test_goodhart_public_api_exports_valid_kinds",
+      "description": "Every public API export must declare a valid kind matching the allowed set (class, function, enum, type_alias)",
+      "function": "get_public_api_exports",
+      "category": "invariant",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Every export's kind is one of: class, function, enum, type_alias"
+      ]
+    },
+    {
+      "id": "test_goodhart_public_api_cli_main_is_function",
+      "description": "The cli_main export must be declared as a function (not a class), reflecting its role as a callable entry point",
+      "function": "get_public_api_exports",
+      "category": "invariant",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "The entry with name='cli_main' has kind='function'"
+      ]
+    },
+    {
+      "id": "test_goodhart_public_api_event_kind",
+      "description": "The Event export must be declared as a class (domain model), not a function or enum",
+      "function": "get_public_api_exports",
+      "category": "invariant",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "The entry with name='Event' has kind='class'"
+      ]
+    },
+    {
+      "id": "test_goodhart_startup_result_boundary_zero_duration",
+      "description": "StartupResult must accept duration_seconds=0.0 as the lower boundary of the valid range",
+      "function": "StartupResult",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {
+        "success": "true",
+        "completed_steps": "[]",
+        "failed_step": "",
+        "error_message": "",
+        "duration_seconds": "0.0"
+      },
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "StartupResult is created successfully with duration_seconds=0.0"
+      ]
+    },
+    {
+      "id": "test_goodhart_startup_result_boundary_max_duration",
+      "description": "StartupResult must accept duration_seconds=3600.0 as the upper boundary of the valid range",
+      "function": "StartupResult",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {
+        "success": "true",
+        "completed_steps": "[]",
+        "failed_step": "",
+        "error_message": "",
+        "duration_seconds": "3600.0"
+      },
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "StartupResult is created successfully with duration_seconds=3600.0"
+      ]
+    },
+    {
+      "id": "test_goodhart_shutdown_result_boundary_max_events",
+      "description": "ShutdownResult must accept events_drained at its upper boundary of 1000000000",
+      "function": "ShutdownResult",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {
+        "events_drained": "1000000000"
+      },
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "ShutdownResult is created successfully with events_drained=1000000000"
+      ]
+    },
+    {
+      "id": "test_goodhart_shutdown_result_boundary_max_stories",
+      "description": "ShutdownResult must accept stories_flushed at its upper boundary of 1000000",
+      "function": "ShutdownResult",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {
+        "stories_flushed": "1000000"
+      },
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "ShutdownResult is created successfully with stories_flushed=1000000"
+      ]
+    },
+    {
+      "id": "test_goodhart_shutdown_result_exceeds_max_events",
+      "description": "ShutdownResult must reject events_drained exceeding its upper bound of 1000000000",
+      "function": "ShutdownResult",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {
+        "events_drained": "1000000001"
+      },
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "ValidationError",
+      "assertions": [
+        "ShutdownResult rejects events_drained=1000000001"
+      ]
+    },
+    {
+      "id": "test_goodhart_system_health_rejects_negative_sources_healthy",
+      "description": "SystemHealth must reject negative values for sources_healthy since it has a minimum of 0",
+      "function": "SystemHealth",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {
+        "sources_healthy": "-1"
+      },
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "ValidationError",
+      "assertions": [
+        "SystemHealth rejects sources_healthy=-1"
+      ]
+    },
+    {
+      "id": "test_goodhart_system_health_rejects_negative_queue_depth",
+      "description": "SystemHealth must reject negative queue_depth since the valid range starts at 0",
+      "function": "SystemHealth",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {
+        "queue_depth": "-1"
+      },
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "ValidationError",
+      "assertions": [
+        "SystemHealth rejects queue_depth=-1"
+      ]
+    },
+    {
+      "id": "test_goodhart_system_health_rejects_exceeds_sinks_total",
+      "description": "SystemHealth must reject sinks_total exceeding its upper bound of 100",
+      "function": "SystemHealth",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {
+        "sinks_total": "101"
+      },
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "ValidationError",
+      "assertions": [
+        "SystemHealth rejects sinks_total=101"
+      ]
+    },
+    {
+      "id": "test_goodhart_system_health_rejects_exceeds_open_stories",
+      "description": "SystemHealth must reject open_stories exceeding its upper bound of 1000000",
+      "function": "SystemHealth",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {
+        "open_stories": "1000001"
+      },
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "ValidationError",
+      "assertions": [
+        "SystemHealth rejects open_stories=1000001"
+      ]
+    },
+    {
+      "id": "test_goodhart_system_health_rejects_exceeds_queue_depth",
+      "description": "SystemHealth must reject queue_depth exceeding its upper bound of 100000",
+      "function": "SystemHealth",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {
+        "queue_depth": "100001"
+      },
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "ValidationError",
+      "assertions": [
+        "SystemHealth rejects queue_depth=100001"
+      ]
+    },
+    {
+      "id": "test_goodhart_system_health_rejects_negative_uptime",
+      "description": "SystemHealth must reject negative uptime_seconds since it has a minimum of 0.0",
+      "function": "SystemHealth",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {
+        "uptime_seconds": "-0.001"
+      },
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "ValidationError",
+      "assertions": [
+        "SystemHealth rejects uptime_seconds=-0.001"
+      ]
+    },
+    {
+      "id": "test_goodhart_system_health_rejects_exceeds_uptime",
+      "description": "SystemHealth must reject uptime_seconds exceeding its upper bound of 31536000.0 (1 year)",
+      "function": "SystemHealth",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {
+        "uptime_seconds": "31536001.0"
+      },
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "ValidationError",
+      "assertions": [
+        "SystemHealth rejects uptime_seconds=31536001.0"
+      ]
+    },
+    {
+      "id": "test_goodhart_type_ownership_entry_long_name_boundary",
+      "description": "TypeOwnershipEntry must accept type_name at its maximum allowed length of 256 characters",
+      "function": "TypeOwnershipEntry",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {
+        "type_name": "A",
+        "length": "256",
+        "owner_module": "chronicler.schemas",
+        "category": "DOMAIN_MODEL"
+      },
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "TypeOwnershipEntry is created successfully with a 256-character type_name"
+      ]
+    },
+    {
+      "id": "test_goodhart_type_ownership_entry_exceeds_name_length",
+      "description": "TypeOwnershipEntry must reject type_name exceeding the maximum length of 256 characters",
+      "function": "TypeOwnershipEntry",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {
+        "type_name": "A*257",
+        "owner_module": "chronicler.schemas",
+        "category": "DOMAIN_MODEL"
+      },
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "ValidationError",
+      "assertions": [
+        "TypeOwnershipEntry rejects a 257-character type_name"
+      ]
+    },
+    {
+      "id": "test_goodhart_public_api_export_max_name_length",
+      "description": "PublicApiExport must accept a name at its maximum allowed length of 128 characters",
+      "function": "PublicApiExport",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {
+        "name": "A*128",
+        "source_module": "chronicler.schemas",
+        "kind": "class"
+      },
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "PublicApiExport is created with a 128-character name"
+      ]
+    },
+    {
+      "id": "test_goodhart_public_api_export_exceeds_name_length",
+      "description": "PublicApiExport must reject a name exceeding the maximum length of 129 characters",
+      "function": "PublicApiExport",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {
+        "name": "A*129",
+        "source_module": "chronicler.schemas",
+        "kind": "class"
+      },
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "ValidationError",
+      "assertions": [
+        "PublicApiExport rejects a 129-character name"
+      ]
+    },
+    {
+      "id": "test_goodhart_error_boundary_policy_all_log_levels",
+      "description": "ErrorBoundaryPolicy must accept all five valid log level strings, not just the ones used in the default policies",
+      "function": "ErrorBoundaryPolicy",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "ErrorBoundaryPolicy accepts each of DEBUG, INFO, WARNING, ERROR, CRITICAL as log_level"
+      ]
+    },
+    {
+      "id": "test_goodhart_error_boundary_policy_rejects_lowercase_log_level",
+      "description": "ErrorBoundaryPolicy must reject lowercase log level strings like 'error' since the regex requires uppercase",
+      "function": "ErrorBoundaryPolicy",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {
+        "log_level": "error"
+      },
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "ValidationError",
+      "assertions": [
+        "ErrorBoundaryPolicy rejects log_level='error'"
+      ]
+    },
+    {
+      "id": "test_goodhart_serialization_convention_rejects_xml_format",
+      "description": "SerializationConvention must reject any format other than 'json', such as 'xml'",
+      "function": "SerializationConvention",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {
+        "format": "xml"
+      },
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "ValidationError",
+      "assertions": [
+        "SerializationConvention rejects format='xml'"
+      ]
+    },
+    {
+      "id": "test_goodhart_serialization_convention_rejects_invalid_datetime_format",
+      "description": "SerializationConvention must reject datetime_format values other than 'iso8601_utc'",
+      "function": "SerializationConvention",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {
+        "datetime_format": "unix_epoch"
+      },
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "ValidationError",
+      "assertions": [
+        "SerializationConvention rejects datetime_format='unix_epoch'"
+      ]
+    },
+    {
+      "id": "test_goodhart_package_version_rejects_two_segment",
+      "description": "PackageVersion must reject version strings with only two segments like '1.0' since the regex requires three numeric segments",
+      "function": "PackageVersion",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {
+        "version": "1.0"
+      },
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "ValidationError",
+      "assertions": [
+        "PackageVersion rejects version='1.0'"
+      ]
+    },
+    {
+      "id": "test_goodhart_package_version_rejects_leading_v",
+      "description": "PackageVersion must reject version strings with a leading 'v' prefix like 'v1.0.0'",
+      "function": "PackageVersion",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {
+        "version": "v1.0.0"
+      },
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "ValidationError",
+      "assertions": [
+        "PackageVersion rejects version='v1.0.0'"
+      ]
+    },
+    {
+      "id": "test_goodhart_package_version_accepts_build_metadata",
+      "description": "PackageVersion must accept version strings with build metadata like '1.0.0+build.123' per the regex allowing alphanumeric suffixes",
+      "function": "PackageVersion",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {
+        "version": "1.0.0+build.123",
+        "python_requires": ">=3.11"
+      },
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "PackageVersion is created successfully with version='1.0.0+build.123'"
+      ]
+    },
+    {
+      "id": "test_goodhart_wiring_validates_all_seam_error_zones_covered",
+      "description": "validate_component_wiring must actually check that every error_boundary zone referenced by integration seams has a corresponding policy, not just return True for any input",
+      "function": "validate_component_wiring",
+      "category": "error_case",
+      "setup_description": "Provide valid type_ownership_map and integration_seams but remove the policy for the SOURCE zone (which is used by SOURCE_TO_ENGINE seam)",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "ValueError",
+      "assertions": [
+        "validate_component_wiring raises ValueError when a seam's error zone has no policy"
+      ]
+    },
+    {
+      "id": "test_goodhart_wiring_validates_against_actual_introspection_data",
+      "description": "validate_component_wiring must return True when given the actual data from the three introspection functions, proving consistency of static configuration",
+      "function": "validate_component_wiring",
+      "category": "happy_path",
+      "setup_description": "Call get_type_ownership_map(), get_integration_seams(), and get_error_boundary_policies() and pass their results to validate_component_wiring",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "validate_component_wiring returns True with the real introspection data"
+      ]
+    },
+    {
+      "id": "test_goodhart_initialize_success_has_all_12_steps",
+      "description": "A successful initialization must report exactly 12 completed steps matching all StartupStep enum members in order",
+      "function": "initialize",
+      "category": "invariant",
+      "setup_description": "Mock all dependencies to succeed, provide valid config path",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "StartupResult.completed_steps contains exactly 12 elements",
+        "The steps correspond to all StartupStep enum values in their defined order"
+      ]
+    },
+    {
+      "id": "test_goodhart_initialize_success_duration_positive",
+      "description": "A successful initialization must report a positive duration_seconds reflecting actual elapsed time, not a hardcoded zero",
+      "function": "initialize",
+      "category": "invariant",
+      "setup_description": "Mock all dependencies to succeed",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "StartupResult.duration_seconds >= 0.0"
+      ]
+    },
+    {
+      "id": "test_goodhart_initialize_failure_sets_error_phase",
+      "description": "When initialization fails at any step, the engine must transition to ERROR phase (not remain in CREATED or STARTING)",
+      "function": "initialize",
+      "category": "invariant",
+      "setup_description": "Mock config loading to succeed but correlation engine init to fail",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "After failed initialize, get_system_health reports phase=ERROR or engine_not_initialized"
+      ]
+    },
+    {
+      "id": "test_goodhart_initialize_failure_mid_sequence_steps",
+      "description": "When initialization fails at INIT_CORRELATION_ENGINE, completed_steps must contain exactly the steps before it (LOAD_CONFIG, VALIDATE_CONFIG, RECOVER_STATE) in order",
+      "function": "initialize",
+      "category": "edge_case",
+      "setup_description": "Mock config load and validate to succeed, state recovery to succeed, but correlation engine init to raise an exception",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "completed_steps equals [LOAD_CONFIG, VALIDATE_CONFIG, RECOVER_STATE]",
+        "failed_step is INIT_CORRELATION_ENGINE"
+      ]
+    },
+    {
+      "id": "test_goodhart_shutdown_success_has_all_7_steps",
+      "description": "A successful shutdown must report exactly 7 completed steps matching all ShutdownStep enum members in order",
+      "function": "shutdown",
+      "category": "invariant",
+      "setup_description": "Initialize engine fully, then shut down with sufficient drain timeout",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "ShutdownResult.completed_steps contains exactly 7 elements corresponding to all ShutdownStep values"
+      ]
+    },
+    {
+      "id": "test_goodhart_shutdown_continues_after_nonfatal_error",
+      "description": "Shutdown must continue executing subsequent steps even when a non-fatal error occurs at an earlier step (e.g., sink close failure does not prevent state persistence)",
+      "function": "shutdown",
+      "category": "edge_case",
+      "setup_description": "Initialize engine, mock one sink's close() to raise an exception, then call shutdown",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "ShutdownResult.completed_steps includes steps after the failing step",
+        "ShutdownResult.errors is non-empty"
+      ]
+    },
+    {
+      "id": "test_goodhart_health_unhealthy_no_healthy_sources",
+      "description": "System health must report UNHEALTHY when the engine is RUNNING but zero sources are healthy, even if sinks are all healthy",
+      "function": "get_system_health",
+      "category": "edge_case",
+      "setup_description": "Initialize engine with sources that all report unhealthy but sinks are fine",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "SystemHealth.status is UNHEALTHY",
+        "SystemHealth.sources_healthy == 0"
+      ]
+    },
+    {
+      "id": "test_goodhart_health_degraded_partial_sinks",
+      "description": "System health must report DEGRADED when all sources are healthy but some sinks have failed, since the system is partially operational",
+      "function": "get_system_health",
+      "category": "edge_case",
+      "setup_description": "Initialize engine with all sources healthy and some sinks failed",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "SystemHealth.status is DEGRADED"
+      ]
+    },
+    {
+      "id": "test_goodhart_integration_seams_source_to_engine_boundary",
+      "description": "The SOURCE_TO_ENGINE seam must specify SOURCE as its error boundary zone, reflecting that source errors are handled by the source supervisor",
+      "function": "get_integration_seams",
+      "category": "invariant",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "The seam with SOURCE_TO_ENGINE has error_boundary=SOURCE"
+      ]
+    },
+    {
+      "id": "test_goodhart_integration_seams_story_manager_to_sinks_boundary",
+      "description": "The STORY_MANAGER_TO_SINKS seam must specify SINK as its error boundary zone, reflecting the fire-and-forget sink error handling",
+      "function": "get_integration_seams",
+      "category": "invariant",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "The seam with STORY_MANAGER_TO_SINKS has error_boundary=SINK"
+      ]
+    },
+    {
+      "id": "test_goodhart_integration_seams_engine_to_correlation_boundary",
+      "description": "The ENGINE_TO_CORRELATION seam must specify CORRELATION as its error boundary zone",
+      "function": "get_integration_seams",
+      "category": "invariant",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "The seam with ENGINE_TO_CORRELATION has error_boundary=CORRELATION"
+      ]
+    },
+    {
+      "id": "test_goodhart_type_ownership_entry_chronicler_dot_required",
+      "description": "TypeOwnershipEntry must reject owner_module='chronicler' without a dot suffix since the regex requires ^chronicler\\.",
+      "function": "TypeOwnershipEntry",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {
+        "type_name": "Event",
+        "owner_module": "chronicler",
+        "category": "DOMAIN_MODEL"
+      },
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "ValidationError",
+      "assertions": [
+        "TypeOwnershipEntry rejects owner_module='chronicler' (no dot)"
+      ]
+    },
+    {
+      "id": "test_goodhart_create_engine_no_io_performed",
+      "description": "create_engine_from_config must not perform any I/O — the returned engine is in CREATED phase with no tasks started, files opened, or network connections made",
+      "function": "create_engine_from_config",
+      "category": "invariant",
+      "setup_description": "Provide valid config with mocked dependencies, verify no start/open/connect methods were called",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "No source.start() was called",
+        "No sink.start() was called",
+        "Engine phase is CREATED"
+      ]
+    },
+    {
+      "id": "test_goodhart_create_engine_sink_callbacks_registered",
+      "description": "create_engine_from_config must register sink callbacks with the story manager so closed stories are emitted to sinks",
+      "function": "create_engine_from_config",
+      "category": "invariant",
+      "setup_description": "Provide valid config and verify StoryManager.register_sink was called for each sink",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "StoryManager.register_sink was called at least once"
+      ]
+    },
+    {
+      "id": "test_goodhart_cli_returns_integer",
+      "description": "run_cli must always return an integer exit code, not None or a string, regardless of the command outcome",
+      "function": "run_cli",
+      "category": "invariant",
+      "setup_description": "Mock cli_main to return various values",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Return value is an int"
+      ]
+    },
+    {
+      "id": "test_goodhart_cli_nonzero_on_runtime_error",
+      "description": "run_cli must return a non-zero exit code when the engine encounters an unrecoverable runtime error during operation",
+      "function": "run_cli",
+      "category": "error_case",
+      "setup_description": "Mock cli_main to simulate a runtime error",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Return value is non-zero integer"
+      ]
+    },
+    {
+      "id": "test_goodhart_enum_lifecycle_phase_count",
+      "description": "LifecyclePhase enum must have exactly 6 members — no extra phases that could break the state machine invariant",
+      "function": "LifecyclePhase",
+      "category": "invariant",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "len(LifecyclePhase) == 6"
+      ]
+    },
+    {
+      "id": "test_goodhart_enum_startup_step_count",
+      "description": "StartupStep enum must have exactly 12 members matching the strict startup sequence",
+      "function": "StartupStep",
+      "category": "invariant",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "len(StartupStep) == 12"
+      ]
+    },
+    {
+      "id": "test_goodhart_enum_shutdown_step_count",
+      "description": "ShutdownStep enum must have exactly 7 members matching the strict shutdown sequence",
+      "function": "ShutdownStep",
+      "category": "invariant",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "len(ShutdownStep) == 7"
+      ]
+    },
+    {
+      "id": "test_goodhart_error_boundary_policy_frozen",
+      "description": "ErrorBoundaryPolicy instances should be immutable (frozen=True) per the invariant that all domain types use Pydantic v2 with frozen=True",
+      "function": "ErrorBoundaryPolicy",
+      "category": "invariant",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Attempting to mutate a field on an ErrorBoundaryPolicy instance raises an error"
+      ]
+    },
+    {
+      "id": "test_goodhart_system_health_frozen",
+      "description": "SystemHealth instances should be immutable (frozen=True) per the invariant that all domain types use Pydantic v2 with frozen=True",
+      "function": "SystemHealth",
+      "category": "invariant",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Attempting to mutate a field on a SystemHealth instance raises an error"
+      ]
+    },
+    {
+      "id": "test_goodhart_startup_result_frozen",
+      "description": "StartupResult instances should be immutable (frozen=True) per the invariant that all domain types use Pydantic v2 with frozen=True",
+      "function": "StartupResult",
+      "category": "invariant",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Attempting to mutate a field on a StartupResult instance raises an error"
+      ]
+    },
+    {
+      "id": "test_goodhart_shutdown_result_frozen",
+      "description": "ShutdownResult instances should be immutable (frozen=True) per the invariant that all domain types use Pydantic v2 with frozen=True",
+      "function": "ShutdownResult",
+      "category": "invariant",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Attempting to mutate a field on a ShutdownResult instance raises an error"
+      ]
+    },
+    {
+      "id": "test_goodhart_get_type_ownership_map_idempotent",
+      "description": "get_type_ownership_map is a pure function returning static data — calling it twice must return identical results",
+      "function": "get_type_ownership_map",
+      "category": "invariant",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Two consecutive calls return equal lists"
+      ]
+    },
+    {
+      "id": "test_goodhart_get_integration_seams_idempotent",
+      "description": "get_integration_seams is a pure function — calling it twice must return identical results",
+      "function": "get_integration_seams",
+      "category": "invariant",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Two consecutive calls return equal lists"
+      ]
+    },
+    {
+      "id": "test_goodhart_get_error_boundary_policies_idempotent",
+      "description": "get_error_boundary_policies is a pure function — calling it twice must return identical results",
+      "function": "get_error_boundary_policies",
+      "category": "invariant",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Two consecutive calls return equal lists"
+      ]
+    },
+    {
+      "id": "test_goodhart_serialization_convention_rejects_null_handling_none",
+      "description": "SerializationConvention must reject null_handling='none' since only 'omit' and 'explicit_null' are valid",
+      "function": "SerializationConvention",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {
+        "format": "json",
+        "datetime_format": "iso8601_utc",
+        "id_format": "sha256_hex",
+        "null_handling": "none",
+        "discriminator_field": "record_type"
+      },
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "ValidationError",
+      "assertions": [
+        "SerializationConvention rejects null_handling='none'"
+      ]
+    },
+    {
+      "id": "test_goodhart_shutdown_result_negative_duration",
+      "description": "ShutdownResult must reject negative duration_seconds values since the valid range starts at 0.0",
+      "function": "ShutdownResult",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {
+        "duration_seconds": "-0.1"
+      },
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "ValidationError",
+      "assertions": [
+        "ShutdownResult rejects duration_seconds=-0.1"
+      ]
+    },
+    {
+      "id": "test_goodhart_shutdown_result_negative_stories",
+      "description": "ShutdownResult must reject negative stories_flushed values",
+      "function": "ShutdownResult",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {
+        "stories_flushed": "-1"
+      },
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "ValidationError",
+      "assertions": [
+        "ShutdownResult rejects stories_flushed=-1"
+      ]
+    },
+    {
+      "id": "test_goodhart_system_health_max_boundary_open_stories",
+      "description": "SystemHealth must accept open_stories at its upper boundary of 1000000",
+      "function": "SystemHealth",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {
+        "open_stories": "1000000"
+      },
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "SystemHealth is created successfully with open_stories=1000000"
+      ]
+    },
+    {
+      "id": "test_goodhart_system_health_max_boundary_queue_depth",
+      "description": "SystemHealth must accept queue_depth at its upper boundary of 100000",
+      "function": "SystemHealth",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {
+        "queue_depth": "100000"
+      },
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "SystemHealth is created successfully with queue_depth=100000"
+      ]
+    },
+    {
+      "id": "test_goodhart_error_boundary_policy_rejects_mixed_case_log_level",
+      "description": "ErrorBoundaryPolicy must reject mixed-case log level strings like 'Warning' since the regex requires exact uppercase",
+      "function": "ErrorBoundaryPolicy",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {
+        "log_level": "Warning"
+      },
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "ValidationError",
+      "assertions": [
+        "ErrorBoundaryPolicy rejects log_level='Warning'"
+      ]
+    }
+  ],
+  "test_language": "python",
+  "generated_code": "\"\"\"\nAdversarial hidden acceptance tests for the Root component.\nThese tests detect implementations that pass visible tests via shortcuts\n(hardcoded returns, missing validation, etc.) rather than truly satisfying the contract.\n\"\"\"\nimport pytest\nfrom unittest.mock import MagicMock, AsyncMock, patch\nfrom pydantic import ValidationError\n\nfrom src.root import *\n\n\n# ============================================================\n# Struct validation boundary tests\n# ============================================================\n\nclass TestGoodhartStartupResultBoundaries:\n    \"\"\"StartupResult range validation beyond visible test values.\"\"\"\n\n    def test_goodhart_startup_result_boundary_zero_duration(self):\n        \"\"\"StartupResult must accept duration_seconds=0.0 as the lower boundary of the valid range.\"\"\"\n        result = StartupResult(\n            success=True, completed_steps=[], failed_step=\"\",\n            error_message=\"\", duration_seconds=0.0\n        )\n        assert result.duration_seconds == 0.0\n\n    def test_goodhart_startup_result_boundary_max_duration(self):\n        \"\"\"StartupResult must accept duration_seconds=3600.0 as the upper boundary of the valid range.\"\"\"\n        result = StartupResult(\n            success=True, completed_steps=[], failed_step=\"\",\n            error_message=\"\", duration_seconds=3600.0\n        )\n        assert result.duration_seconds == 3600.0\n\n    def test_goodhart_startup_result_frozen(self):\n        \"\"\"StartupResult instances should be immutable (frozen=True) per the contract invariant.\"\"\"\n        result = StartupResult(\n            success=True, completed_steps=[], failed_step=\"\",\n            error_message=\"\", duration_seconds=1.0\n        )\n        with pytest.raises(Exception):  # ValidationError or AttributeError\n            result.success = False\n\n\nclass TestGoodhartShutdownResultBoundaries:\n    \"\"\"ShutdownResult range validation beyond visible test values.\"\"\"\n\n    def test_goodhart_shutdown_result_boundary_max_events(self):\n        \"\"\"ShutdownResult must accept events_drained at its upper boundary of 1000000000.\"\"\"\n        result = ShutdownResult(\n            success=True, completed_steps=[], errors=[],\n            events_drained=1000000000, stories_flushed=0,\n            duration_seconds=1.0\n        )\n        assert result.events_drained == 1000000000\n\n    def test_goodhart_shutdown_result_boundary_max_stories(self):\n        \"\"\"ShutdownResult must accept stories_flushed at its upper boundary of 1000000.\"\"\"\n        result = ShutdownResult(\n            success=True, completed_steps=[], errors=[],\n            events_drained=0, stories_flushed=1000000,\n            duration_seconds=1.0\n        )\n        assert result.stories_flushed == 1000000\n\n    def test_goodhart_shutdown_result_exceeds_max_events(self):\n        \"\"\"ShutdownResult must reject events_drained exceeding its upper bound of 1000000000.\"\"\"\n        with pytest.raises(ValidationError):\n            ShutdownResult(\n                success=True, completed_steps=[], errors=[],\n                events_drained=1000000001, stories_flushed=0,\n                duration_seconds=1.0\n            )\n\n    def test_goodhart_shutdown_result_negative_duration(self):\n        \"\"\"ShutdownResult must reject negative duration_seconds values.\"\"\"\n        with pytest.raises(ValidationError):\n            ShutdownResult(\n                success=True, completed_steps=[], errors=[],\n                events_drained=0, stories_flushed=0,\n                duration_seconds=-0.1\n            )\n\n    def test_goodhart_shutdown_result_negative_stories(self):\n        \"\"\"ShutdownResult must reject negative stories_flushed values.\"\"\"\n        with pytest.raises(ValidationError):\n            ShutdownResult(\n                success=True, completed_steps=[], errors=[],\n                events_drained=0, stories_flushed=-1,\n                duration_seconds=1.0\n            )\n\n    def test_goodhart_shutdown_result_frozen(self):\n        \"\"\"ShutdownResult instances should be immutable (frozen=True) per the contract invariant.\"\"\"\n        result = ShutdownResult(\n            success=True, completed_steps=[], errors=[],\n            events_drained=0, stories_flushed=0,\n            duration_seconds=1.0\n        )\n        with pytest.raises(Exception):\n            result.success = False\n\n\nclass TestGoodhartSystemHealthBoundaries:\n    \"\"\"SystemHealth range validation for fields not covered by visible tests.\"\"\"\n\n    def test_goodhart_system_health_rejects_negative_sources_healthy(self):\n        \"\"\"SystemHealth must reject negative values for sources_healthy.\"\"\"\n        with pytest.raises(ValidationError):\n            SystemHealth(\n                status=HealthStatus.HEALTHY, phase=LifecyclePhase.RUNNING,\n                sources_healthy=-1, sources_total=2,\n                sinks_healthy=1, sinks_total=1,\n                open_stories=0, queue_depth=0,\n                uptime_seconds=100.0, detail=\"\"\n            )\n\n    def test_goodhart_system_health_rejects_negative_queue_depth(self):\n        \"\"\"SystemHealth must reject negative queue_depth.\"\"\"\n        with pytest.raises(ValidationError):\n            SystemHealth(\n                status=HealthStatus.HEALTHY, phase=LifecyclePhase.RUNNING,\n                sources_healthy=1, sources_total=2,\n                sinks_healthy=1, sinks_total=1,\n                open_stories=0, queue_depth=-1,\n                uptime_seconds=100.0, detail=\"\"\n            )\n\n    def test_goodhart_system_health_rejects_exceeds_sinks_total(self):\n        \"\"\"SystemHealth must reject sinks_total exceeding its upper bound of 100.\"\"\"\n        with pytest.raises(ValidationError):\n            SystemHealth(\n                status=HealthStatus.HEALTHY, phase=LifecyclePhase.RUNNING,\n                sources_healthy=1, sources_total=1,\n                sinks_healthy=1, sinks_total=101,\n                open_stories=0, queue_depth=0,\n                uptime_seconds=100.0, detail=\"\"\n            )\n\n    def test_goodhart_system_health_rejects_exceeds_open_stories(self):\n        \"\"\"SystemHealth must reject open_stories exceeding its upper bound of 1000000.\"\"\"\n        with pytest.raises(ValidationError):\n            SystemHealth(\n                status=HealthStatus.HEALTHY, phase=LifecyclePhase.RUNNING,\n                sources_healthy=1, sources_total=1,\n                sinks_healthy=1, sinks_total=1,\n                open_stories=1000001, queue_depth=0,\n                uptime_seconds=100.0, detail=\"\"\n            )\n\n    def test_goodhart_system_health_rejects_exceeds_queue_depth(self):\n        \"\"\"SystemHealth must reject queue_depth exceeding its upper bound of 100000.\"\"\"\n        with pytest.raises(ValidationError):\n            SystemHealth(\n                status=HealthStatus.HEALTHY, phase=LifecyclePhase.RUNNING,\n                sources_healthy=1, sources_total=1,\n                sinks_healthy=1, sinks_total=1,\n                open_stories=0, queue_depth=100001,\n                uptime_seconds=100.0, detail=\"\"\n            )\n\n    def test_goodhart_system_health_rejects_negative_uptime(self):\n        \"\"\"SystemHealth must reject negative uptime_seconds.\"\"\"\n        with pytest.raises(ValidationError):\n            SystemHealth(\n                status=HealthStatus.HEALTHY, phase=LifecyclePhase.RUNNING,\n                sources_healthy=1, sources_total=1,\n                sinks_healthy=1, sinks_total=1,\n                open_stories=0, queue_depth=0,\n                uptime_seconds=-0.001, detail=\"\"\n            )\n\n    def test_goodhart_system_health_rejects_exceeds_uptime(self):\n        \"\"\"SystemHealth must reject uptime_seconds exceeding 31536000.0 (1 year).\"\"\"\n        with pytest.raises(ValidationError):\n            SystemHealth(\n                status=HealthStatus.HEALTHY, phase=LifecyclePhase.RUNNING,\n                sources_healthy=1, sources_total=1,\n                sinks_healthy=1, sinks_total=1,\n                open_stories=0, queue_depth=0,\n                uptime_seconds=31536001.0, detail=\"\"\n            )\n\n    def test_goodhart_system_health_max_boundary_open_stories(self):\n        \"\"\"SystemHealth must accept open_stories at its upper boundary of 1000000.\"\"\"\n        h = SystemHealth(\n            status=HealthStatus.HEALTHY, phase=LifecyclePhase.RUNNING,\n            sources_healthy=1, sources_total=1,\n            sinks_healthy=1, sinks_total=1,\n            open_stories=1000000, queue_depth=0,\n            uptime_seconds=100.0, detail=\"\"\n        )\n        assert h.open_stories == 1000000\n\n    def test_goodhart_system_health_max_boundary_queue_depth(self):\n        \"\"\"SystemHealth must accept queue_depth at its upper boundary of 100000.\"\"\"\n        h = SystemHealth(\n            status=HealthStatus.HEALTHY, phase=LifecyclePhase.RUNNING,\n            sources_healthy=1, sources_total=1,\n            sinks_healthy=1, sinks_total=1,\n            open_stories=0, queue_depth=100000,\n            uptime_seconds=100.0, detail=\"\"\n        )\n        assert h.queue_depth == 100000\n\n    def test_goodhart_system_health_frozen(self):\n        \"\"\"SystemHealth instances should be immutable (frozen=True).\"\"\"\n        h = SystemHealth(\n            status=HealthStatus.HEALTHY, phase=LifecyclePhase.RUNNING,\n            sources_healthy=1, sources_total=1,\n            sinks_healthy=1, sinks_total=1,\n            open_stories=0, queue_depth=0,\n            uptime_seconds=100.0, detail=\"\"\n        )\n        with pytest.raises(Exception):\n            h.status = HealthStatus.DEGRADED\n\n\nclass TestGoodhartTypeOwnershipEntryBoundaries:\n    \"\"\"TypeOwnershipEntry boundary tests not covered by visible tests.\"\"\"\n\n    def test_goodhart_type_ownership_entry_max_name_length(self):\n        \"\"\"TypeOwnershipEntry must accept type_name at its maximum allowed length of 256 characters.\"\"\"\n        entry = TypeOwnershipEntry(\n            type_name=\"A\" * 256,\n            owner_module=\"chronicler.schemas\",\n            category=TypeCategory.DOMAIN_MODEL\n        )\n        assert len(entry.type_name) == 256\n\n    def test_goodhart_type_ownership_entry_exceeds_name_length(self):\n        \"\"\"TypeOwnershipEntry must reject type_name exceeding the maximum length of 256 characters.\"\"\"\n        with pytest.raises(ValidationError):\n            TypeOwnershipEntry(\n                type_name=\"A\" * 257,\n                owner_module=\"chronicler.schemas\",\n                category=TypeCategory.DOMAIN_MODEL\n            )\n\n    def test_goodhart_type_ownership_entry_chronicler_dot_required(self):\n        \"\"\"TypeOwnershipEntry must reject owner_module='chronicler' without a dot suffix.\"\"\"\n        with pytest.raises(ValidationError):\n            TypeOwnershipEntry(\n                type_name=\"Event\",\n                owner_module=\"chronicler\",\n                category=TypeCategory.DOMAIN_MODEL\n            )\n\n\nclass TestGoodhartPublicApiExportBoundaries:\n    \"\"\"PublicApiExport boundary tests.\"\"\"\n\n    def test_goodhart_public_api_export_max_name_length(self):\n        \"\"\"PublicApiExport must accept a name at its maximum allowed length of 128 characters.\"\"\"\n        export = PublicApiExport(\n            name=\"A\" * 128,\n            source_module=\"chronicler.schemas\",\n            kind=\"class\"\n        )\n        assert len(export.name) == 128\n\n    def test_goodhart_public_api_export_exceeds_name_length(self):\n        \"\"\"PublicApiExport must reject a name exceeding 128 characters.\"\"\"\n        with pytest.raises(ValidationError):\n            PublicApiExport(\n                name=\"A\" * 129,\n                source_module=\"chronicler.schemas\",\n                kind=\"class\"\n            )\n\n\nclass TestGoodhartErrorBoundaryPolicyValidation:\n    \"\"\"ErrorBoundaryPolicy log_level validation beyond visible tests.\"\"\"\n\n    def test_goodhart_error_boundary_policy_all_log_levels(self):\n        \"\"\"ErrorBoundaryPolicy must accept all five valid log level strings.\"\"\"\n        for level in [\"DEBUG\", \"INFO\", \"WARNING\", \"ERROR\", \"CRITICAL\"]:\n            policy = ErrorBoundaryPolicy(\n                zone=ErrorBoundaryZone.SOURCE,\n                strategy=ErrorHandlingStrategy.CATCH_LOG_CONTINUE,\n                log_level=level,\n                restartable=True,\n                fatal=False\n            )\n            assert policy.log_level == level\n\n    def test_goodhart_error_boundary_policy_rejects_lowercase_log_level(self):\n        \"\"\"ErrorBoundaryPolicy must reject lowercase log level strings like 'error'.\"\"\"\n        with pytest.raises(ValidationError):\n            ErrorBoundaryPolicy(\n                zone=ErrorBoundaryZone.SOURCE,\n                strategy=ErrorHandlingStrategy.CATCH_LOG_CONTINUE,\n                log_level=\"error\",\n                restartable=True,\n                fatal=False\n            )\n\n    def test_goodhart_error_boundary_policy_rejects_mixed_case_log_level(self):\n        \"\"\"ErrorBoundaryPolicy must reject mixed-case log level strings like 'Warning'.\"\"\"\n        with pytest.raises(ValidationError):\n            ErrorBoundaryPolicy(\n                zone=ErrorBoundaryZone.SOURCE,\n                strategy=ErrorHandlingStrategy.CATCH_LOG_CONTINUE,\n                log_level=\"Warning\",\n                restartable=True,\n                fatal=False\n            )\n\n    def test_goodhart_error_boundary_policy_frozen(self):\n        \"\"\"ErrorBoundaryPolicy instances should be immutable (frozen=True).\"\"\"\n        policy = ErrorBoundaryPolicy(\n            zone=ErrorBoundaryZone.SOURCE,\n            strategy=ErrorHandlingStrategy.CATCH_LOG_CONTINUE,\n            log_level=\"WARNING\",\n            restartable=True,\n            fatal=False\n        )\n        with pytest.raises(Exception):\n            policy.fatal = True\n\n\nclass TestGoodhartSerializationConventionValidation:\n    \"\"\"SerializationConvention validation beyond visible tests.\"\"\"\n\n    def test_goodhart_serialization_convention_rejects_xml_format(self):\n        \"\"\"SerializationConvention must reject format='xml'.\"\"\"\n        with pytest.raises(ValidationError):\n            SerializationConvention(\n                format=\"xml\",\n                datetime_format=\"iso8601_utc\",\n                id_format=\"sha256_hex\",\n                null_handling=\"omit\",\n                discriminator_field=\"record_type\"\n            )\n\n    def test_goodhart_serialization_convention_rejects_invalid_datetime_format(self):\n        \"\"\"SerializationConvention must reject datetime_format values other than 'iso8601_utc'.\"\"\"\n        with pytest.raises(ValidationError):\n            SerializationConvention(\n                format=\"json\",\n                datetime_format=\"unix_epoch\",\n                id_format=\"sha256_hex\",\n                null_handling=\"omit\",\n                discriminator_field=\"record_type\"\n            )\n\n    def test_goodhart_serialization_convention_rejects_null_handling_none(self):\n        \"\"\"SerializationConvention must reject null_handling='none'.\"\"\"\n        with pytest.raises(ValidationError):\n            SerializationConvention(\n                format=\"json\",\n                datetime_format=\"iso8601_utc\",\n                id_format=\"sha256_hex\",\n                null_handling=\"none\",\n                discriminator_field=\"record_type\"\n            )\n\n\nclass TestGoodhartPackageVersionValidation:\n    \"\"\"PackageVersion validation beyond visible tests.\"\"\"\n\n    def test_goodhart_package_version_rejects_two_segment(self):\n        \"\"\"PackageVersion must reject version strings with only two segments like '1.0'.\"\"\"\n        with pytest.raises(ValidationError):\n            PackageVersion(version=\"1.0\", python_requires=\">=3.11\")\n\n    def test_goodhart_package_version_rejects_leading_v(self):\n        \"\"\"PackageVersion must reject version strings with a leading 'v' prefix.\"\"\"\n        with pytest.raises(ValidationError):\n            PackageVersion(version=\"v1.0.0\", python_requires=\">=3.11\")\n\n    def test_goodhart_package_version_accepts_build_metadata(self):\n        \"\"\"PackageVersion must accept version strings with build metadata.\"\"\"\n        pv = PackageVersion(version=\"1.0.0+build.123\", python_requires=\">=3.11\")\n        assert pv.version == \"1.0.0+build.123\"\n\n\n# ============================================================\n# Enum count and exhaustiveness tests\n# ============================================================\n\nclass TestGoodhartEnumCounts:\n    \"\"\"Verify enum member counts to detect extra or missing members.\"\"\"\n\n    def test_goodhart_enum_lifecycle_phase_count(self):\n        \"\"\"LifecyclePhase enum must have exactly 6 members.\"\"\"\n        assert len(LifecyclePhase) == 6\n\n    def test_goodhart_enum_startup_step_count(self):\n        \"\"\"StartupStep enum must have exactly 12 members.\"\"\"\n        assert len(StartupStep) == 12\n\n    def test_goodhart_enum_shutdown_step_count(self):\n        \"\"\"ShutdownStep enum must have exactly 7 members.\"\"\"\n        assert len(ShutdownStep) == 7\n\n\n# ============================================================\n# Pure function introspection tests — structure and consistency\n# ============================================================\n\nclass TestGoodhartTypeOwnershipMap:\n    \"\"\"Detect hardcoded or incomplete type ownership map implementations.\"\"\"\n\n    def test_goodhart_type_ownership_no_duplicates(self):\n        \"\"\"The type ownership map must contain no duplicate type names.\"\"\"\n        entries = get_type_ownership_map()\n        names = [e.type_name for e in entries]\n        assert len(names) == len(set(names)), f\"Duplicate type names found: {[n for n in names if names.count(n) > 1]}\"\n\n    def test_goodhart_type_ownership_contains_core_domain_types(self):\n        \"\"\"The type ownership map must include entries for Event, Story, and CorrelationRule.\"\"\"\n        entries = get_type_ownership_map()\n        names = {e.type_name for e in entries}\n        for core_type in [\"Event\", \"Story\", \"CorrelationRule\"]:\n            assert core_type in names, f\"Missing core type: {core_type}\"\n\n    def test_goodhart_type_ownership_entries_are_typed(self):\n        \"\"\"Each entry must be a proper TypeOwnershipEntry instance.\"\"\"\n        entries = get_type_ownership_map()\n        for entry in entries:\n            assert isinstance(entry, TypeOwnershipEntry), f\"Entry is not TypeOwnershipEntry: {type(entry)}\"\n            assert hasattr(entry, 'type_name')\n            assert hasattr(entry, 'owner_module')\n            assert hasattr(entry, 'category')\n\n    def test_goodhart_type_ownership_categories_valid(self):\n        \"\"\"Every entry must use a valid TypeCategory enum value.\"\"\"\n        entries = get_type_ownership_map()\n        for entry in entries:\n            assert isinstance(entry.category, TypeCategory), f\"Invalid category for {entry.type_name}: {entry.category}\"\n\n    def test_goodhart_get_type_ownership_map_idempotent(self):\n        \"\"\"get_type_ownership_map is a pure function — two calls must return identical results.\"\"\"\n        result1 = get_type_ownership_map()\n        result2 = get_type_ownership_map()\n        assert result1 == result2\n\n\nclass TestGoodhartIntegrationSeams:\n    \"\"\"Detect hardcoded or structurally invalid integration seam implementations.\"\"\"\n\n    def test_goodhart_integration_seams_unique(self):\n        \"\"\"Each integration seam must appear exactly once.\"\"\"\n        seams = get_integration_seams()\n        seam_ids = [s.seam for s in seams]\n        assert len(seam_ids) == len(set(seam_ids)), \"Duplicate seam identifiers found\"\n\n    def test_goodhart_integration_seams_are_typed(self):\n        \"\"\"Each entry must be a proper IntegrationSeamSpec instance.\"\"\"\n        seams = get_integration_seams()\n        for seam in seams:\n            assert isinstance(seam, IntegrationSeamSpec), f\"Entry is not IntegrationSeamSpec: {type(seam)}\"\n            assert hasattr(seam, 'seam')\n            assert hasattr(seam, 'producer')\n            assert hasattr(seam, 'consumer')\n            assert hasattr(seam, 'transport')\n            assert hasattr(seam, 'data_type')\n            assert hasattr(seam, 'back_pressure')\n            assert hasattr(seam, 'error_boundary')\n\n    def test_goodhart_integration_seams_error_boundaries_valid(self):\n        \"\"\"Each integration seam must reference a valid ErrorBoundaryZone.\"\"\"\n        seams = get_integration_seams()\n        for seam in seams:\n            assert isinstance(seam.error_boundary, ErrorBoundaryZone), \\\n                f\"Invalid error_boundary for {seam.seam}: {seam.error_boundary}\"\n\n    def test_goodhart_integration_seams_source_to_engine_boundary(self):\n        \"\"\"SOURCE_TO_ENGINE seam must specify SOURCE as its error boundary zone.\"\"\"\n        seams = get_integration_seams()\n        source_seam = [s for s in seams if s.seam == IntegrationSeam.SOURCE_TO_ENGINE]\n        assert len(source_seam) == 1\n        assert source_seam[0].error_boundary == ErrorBoundaryZone.SOURCE\n\n    def test_goodhart_integration_seams_engine_to_correlation_boundary(self):\n        \"\"\"ENGINE_TO_CORRELATION seam must specify CORRELATION as its error boundary zone.\"\"\"\n        seams = get_integration_seams()\n        corr_seam = [s for s in seams if s.seam == IntegrationSeam.ENGINE_TO_CORRELATION]\n        assert len(corr_seam) == 1\n        assert corr_seam[0].error_boundary == ErrorBoundaryZone.CORRELATION\n\n    def test_goodhart_integration_seams_story_manager_to_sinks_boundary(self):\n        \"\"\"STORY_MANAGER_TO_SINKS seam must specify SINK as its error boundary zone.\"\"\"\n        seams = get_integration_seams()\n        sink_seam = [s for s in seams if s.seam == IntegrationSeam.STORY_MANAGER_TO_SINKS]\n        assert len(sink_seam) == 1\n        assert sink_seam[0].error_boundary == ErrorBoundaryZone.SINK\n\n    def test_goodhart_get_integration_seams_idempotent(self):\n        \"\"\"get_integration_seams is a pure function — two calls must return identical results.\"\"\"\n        result1 = get_integration_seams()\n        result2 = get_integration_seams()\n        assert result1 == result2\n\n\nclass TestGoodhartErrorBoundaryPolicies:\n    \"\"\"Detect hardcoded or structurally invalid error boundary policy implementations.\"\"\"\n\n    def test_goodhart_error_policies_are_typed(self):\n        \"\"\"Each policy must be a proper ErrorBoundaryPolicy instance.\"\"\"\n        policies = get_error_boundary_policies()\n        for p in policies:\n            assert isinstance(p, ErrorBoundaryPolicy), f\"Entry is not ErrorBoundaryPolicy: {type(p)}\"\n\n    def test_goodhart_error_policies_no_duplicate_zones(self):\n        \"\"\"Each error boundary zone must have exactly one policy.\"\"\"\n        policies = get_error_boundary_policies()\n        zones = [p.zone for p in policies]\n        assert len(zones) == len(set(zones)), \"Duplicate zone entries found\"\n\n    def test_goodhart_error_policies_log_levels_valid(self):\n        \"\"\"All error boundary policies must use valid Python log level strings.\"\"\"\n        import re\n        policies = get_error_boundary_policies()\n        pattern = re.compile(r'^(DEBUG|INFO|WARNING|ERROR|CRITICAL)$')\n        for p in policies:\n            assert pattern.match(p.log_level), f\"Invalid log_level for {p.zone}: {p.log_level}\"\n\n    def test_goodhart_error_policies_strategies_valid(self):\n        \"\"\"All error boundary policies must reference valid ErrorHandlingStrategy enum values.\"\"\"\n        policies = get_error_boundary_policies()\n        for p in policies:\n            assert isinstance(p.strategy, ErrorHandlingStrategy), \\\n                f\"Invalid strategy for {p.zone}: {p.strategy}\"\n\n    def test_goodhart_get_error_boundary_policies_idempotent(self):\n        \"\"\"get_error_boundary_policies is a pure function — two calls must return identical results.\"\"\"\n        result1 = get_error_boundary_policies()\n        result2 = get_error_boundary_policies()\n        assert result1 == result2\n\n\nclass TestGoodhartPublicApiExports:\n    \"\"\"Detect hardcoded or structurally invalid public API export implementations.\"\"\"\n\n    def test_goodhart_public_api_exports_are_typed(self):\n        \"\"\"Each export must be a proper PublicApiExport instance.\"\"\"\n        exports = get_public_api_exports()\n        for e in exports:\n            assert isinstance(e, PublicApiExport), f\"Entry is not PublicApiExport: {type(e)}\"\n            assert hasattr(e, 'name')\n            assert hasattr(e, 'source_module')\n            assert hasattr(e, 'kind')\n\n    def test_goodhart_public_api_exports_no_duplicate_names(self):\n        \"\"\"No symbol name should appear twice in the public API.\"\"\"\n        exports = get_public_api_exports()\n        names = [e.name for e in exports]\n        assert len(names) == len(set(names)), f\"Duplicate API exports: {[n for n in names if names.count(n) > 1]}\"\n\n    def test_goodhart_public_api_exports_valid_kinds(self):\n        \"\"\"Every export must declare a valid kind.\"\"\"\n        exports = get_public_api_exports()\n        valid_kinds = {\"class\", \"function\", \"enum\", \"type_alias\"}\n        for e in exports:\n            assert e.kind in valid_kinds, f\"Invalid kind for {e.name}: {e.kind}\"\n\n    def test_goodhart_public_api_cli_main_is_function(self):\n        \"\"\"cli_main must be declared as a function.\"\"\"\n        exports = get_public_api_exports()\n        cli_main_entries = [e for e in exports if e.name == \"cli_main\"]\n        assert len(cli_main_entries) == 1, \"cli_main not found in public API exports\"\n        assert cli_main_entries[0].kind == \"function\"\n\n    def test_goodhart_public_api_event_kind(self):\n        \"\"\"Event must be declared as a class.\"\"\"\n        exports = get_public_api_exports()\n        event_entries = [e for e in exports if e.name == \"Event\"]\n        assert len(event_entries) == 1, \"Event not found in public API exports\"\n        assert event_entries[0].kind == \"class\"\n\n\nclass TestGoodhartWiringValidation:\n    \"\"\"Detect validate_component_wiring that always returns True or doesn't actually validate.\"\"\"\n\n    def test_goodhart_wiring_validates_against_actual_introspection_data(self):\n        \"\"\"validate_component_wiring must return True with the real introspection data.\"\"\"\n        types = get_type_ownership_map()\n        seams = get_integration_seams()\n        policies = get_error_boundary_policies()\n        result = validate_component_wiring(types, seams, policies)\n        assert result is True\n\n    def test_goodhart_wiring_rejects_empty_policies(self):\n        \"\"\"validate_component_wiring must reject when no error policies are provided but seams reference error zones.\"\"\"\n        types = get_type_ownership_map()\n        seams = get_integration_seams()\n        with pytest.raises(ValueError):\n            validate_component_wiring(types, seams, [])\n\n    def test_goodhart_wiring_rejects_partial_policies(self):\n        \"\"\"validate_component_wiring must reject when only some error zones are covered.\"\"\"\n        types = get_type_ownership_map()\n        seams = get_integration_seams()\n        policies = get_error_boundary_policies()\n        # Remove one policy that is used by a seam\n        partial_policies = [p for p in policies if p.zone != ErrorBoundaryZone.SOURCE]\n        with pytest.raises(ValueError):\n            validate_component_wiring(types, seams, partial_policies)\n\n    def test_goodhart_wiring_rejects_empty_type_map_if_seams_exist(self):\n        \"\"\"validate_component_wiring should raise ValueError when type ownership map is empty but seams reference types.\"\"\"\n        seams = get_integration_seams()\n        policies = get_error_boundary_policies()\n        # This should fail because seams reference data types that should be in the ownership map\n        with pytest.raises(ValueError):\n            validate_component_wiring([], seams, policies)\n\n\nclass TestGoodhartCliReturnType:\n    \"\"\"Verify run_cli always returns an integer.\"\"\"\n\n    def test_goodhart_cli_returns_integer(self):\n        \"\"\"run_cli must always return an integer exit code.\"\"\"\n        # Test with an empty argv to trigger help or error\n        result = run_cli([\"--help\"])\n        assert isinstance(result, int), f\"run_cli returned {type(result)}, expected int\"\n"
+}

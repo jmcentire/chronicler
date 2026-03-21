@@ -1,0 +1,191 @@
+{
+  "risks": [
+    "**R1: Unbounded scope masquerading as a single task.** This spec describes 10 distinct subsystems (event model, story model, correlation engine, story manager, 4 sources, 4 sinks, config, engine, CLI, MCP server). This is a multi-sprint project stuffed into one task. High risk of partial delivery, integration gaps, and cut corners.",
+    "**R2: OTLP gRPC source requires heavy dependencies not listed.** gRPC requires `grpcio` and `grpcio-tools` (or `betterproto`), plus protobuf compilation for OTLP proto definitions. The SOP explicitly limits dependencies to 'pydantic, aiohttp, aiofiles'. This is a direct contradiction — OTLP/gRPC cannot be built with aiohttp alone.",
+    "**R3: MCP server has zero specification.** No protocol definition, no transport (stdio? SSE? HTTP?), no schema for queries, no dependency listed. 'Query open/closed stories, check status, replay' is hand-waving. Engineers will invent incompatible MCP implementations.",
+    "**R4: Content-addressable ID algorithm unspecified.** 'Content-addressable ID' could mean SHA-256 of canonical JSON, BLAKE3, or any hash. Which fields are included in the hash? Is the timestamp included (making identical events at different times distinct) or excluded? Different choices produce incompatible event stores.",
+    "**R5: LRU eviction causes silent data loss.** When max_open_stories is hit and an active story is evicted, its accumulated events are lost (or are they? Spec doesn't say). If evicted stories aren't emitted to sinks, this is silent data loss. If they ARE emitted, they're incomplete stories polluting downstream consumers.",
+    "**R6: 'No external broker' constraint vs. inter-component communication.** Four sinks need to communicate with Stigmergy, Apprentice, and Kindex. How? HTTP? Direct Python imports? Shared filesystem? 'No external broker' rules out message queues but doesn't specify what IS allowed.",
+    "**R7: Sentinel source is circular/undefined.** Sentinel is described as producing 'incident lifecycle events' but what IS Sentinel? Is it another service in the FOSS governance stack? What protocol does it expose? HTTP webhook? gRPC? File? Without this, the Sentinel source cannot be implemented.",
+    "**R8: chain_by semantics are critically underspecified.** 'Support chain_by for following entities across stories' — this single sentence describes what could be an extremely complex feature (cross-story correlation). Does this mean closing one story and opening another? Linking stories? Merging events across stories? This is a design decision, not an implementation detail.",
+    "**R9: Story timeout configuration and sweep interval unspecified.** 'Periodic timeout sweep' — how periodic? Configurable? What's the default? Is timeout per-story-type or global? Is it wall-clock time since last event, or since story creation?",
+    "**R10: JSONL persistence provides no crash recovery guarantees.** If the engine crashes mid-write, JSONL files can be corrupted (partial lines). No mention of fsync policy, write-ahead logging, or recovery procedures. 'Append-only where possible' is vague — when is it NOT possible?",
+    "**R11: Constraints C001–C013 are referenced but not provided.** The spec says 'See constraints.yaml for 13 hard constraints' but doesn't include them. Every constraint needs a test, but we don't know what they are. This is a blocking omission.",
+    "**R12: File source ('JSONL tail') on non-Unix systems.** Tailing a file requires inotify (Linux), kqueue (macOS), or polling. No dependency for file watching is listed (e.g., watchdog). aiofiles doesn't provide tail/watch functionality."
+  ],
+  "ambiguities": [
+    "**A1: Event immutability enforcement mechanism.** 'Immutable event envelope' — enforced how? Pydantic frozen=True prevents mutation in Python, but what about deserialized copies? Is this just a Python-level guarantee or does content-addressable ID serve as a tamper check?",
+    "**A2: 'Arbitrary context payload' type.** Is this Dict[str, Any]? A JSON blob? Nested Pydantic models? Can it contain binary data? Size limits? This affects serialization strategy and storage.",
+    "**A3: correlation_keys map — keys AND values unspecified.** What are correlation keys? Strings to strings? Strings to lists of strings? Are these extracted from the context payload or top-level fields? Who defines them — the event producer or the correlation rule?",
+    "**A4: Story ordering guarantees.** 'Accumulates ordered events' — ordered by what? Arrival time? Event timestamp? What happens with out-of-order events (common in distributed systems)?",
+    "**A5: 'Terminal event' definition.** What makes an event terminal? Is this configured per correlation rule? Per story type? Is it a field on the event? A pattern match on event_kind?",
+    "**A6: Stigmergy SourceAdapter protocol.** The integration says 'Chronicler → Stigmergy (SourceAdapter protocol)' but doesn't define this protocol. Is this an existing interface in Stigmergy that we must conform to?",
+    "**A7: Apprentice training sequence format.** What does Apprentice expect? A list of events? A summary? Tokenized text? Without the target schema, the Apprentice sink cannot be correctly implemented.",
+    "**A8: Kindex 'noteworthy stories' filtering.** Who decides what's noteworthy? A config rule? A score threshold? All closed stories? This is a product decision hiding as an implementation detail.",
+    "**A9: CLI 'replay' semantics.** Replay what, to where? Re-emit stored events through the correlation engine? Re-emit closed stories to sinks? From a specific JSONL file? With what time semantics (original timestamps or wall clock)?",
+    "**A10: Webhook source authentication/authorization.** HTTP POST from anywhere? API key? HMAC signature verification? No mention of any security model.",
+    "**A11: dotted event_kind namespace.** What's the schema? Is it hierarchical (e.g., 'baton.task.started')? Who owns the namespace? Are there reserved prefixes? Can correlation rules match on prefixes/wildcards?",
+    "**A12: entity_kind/id semantics.** Is this the 'subject' of the event? Can an event have multiple entities? Is entity_kind an enum or freeform string?"
+  ],
+  "questions": [
+    "**Q1:** Can you provide constraints.yaml (C001–C013)? The spec requires tests for each constraint but doesn't include them. This is a hard blocker.",
+    "**Q2:** What dependency is allowed for gRPC/OTLP? The SOP limits dependencies to pydantic/aiohttp/aiofiles, but OTLP gRPC requires grpcio + protobuf at minimum. Should we drop gRPC and accept OTLP over HTTP/protobuf instead, or expand the allowed dependency list?",
+    "**Q3:** What MCP protocol implementation are you expecting? Is there an existing MCP SDK/library in the stack (e.g., `mcp` Python package)? What transport — stdio, SSE, or streamable HTTP?",
+    "**Q4:** What happens to evicted stories (LRU)? Options: (a) emit as incomplete/timed-out to sinks, (b) persist to disk for later recovery, (c) silently drop. Each has very different implications.",
+    "**Q5:** What are the Stigmergy SourceAdapter, Apprentice training sequence, and Kindex knowledge node interfaces? Are these existing protocols with published schemas, or are we designing them here?",
+    "**Q6:** What is the Sentinel source's transport protocol? Does Sentinel push events to Chronicler (webhook callback), or does Chronicler poll Sentinel?",
+    "**Q7:** Should this task be decomposed into phases? E.g., Phase 1: core (event/story/correlation/engine/disk sink), Phase 2: sources, Phase 3: external sinks, Phase 4: CLI/MCP. Building all 10 subsystems simultaneously is high-risk.",
+    "**Q8:** What is the content-addressable ID algorithm? SHA-256 of canonical JSON of which fields?",
+    "**Q9:** For chain_by: can you provide a concrete example of the intended behavior? E.g., 'When a deploy event arrives, it should be correlated with the preceding PR story because they share a commit_sha.'",
+    "**Q10:** What is the expected throughput? 10 events/sec? 10,000? This determines whether the O(1) correlation lookup is sufficient or whether we need batching, backpressure, etc.",
+    "**Q11:** For the File source (JSONL tail), what library/mechanism should be used for file watching? aiofiles doesn't support inotify/tail. Is `watchdog` or polling acceptable?",
+    "**Q12:** Is there an existing chronicler.yaml example or schema, or are we designing the configuration format from scratch?"
+  ],
+  "assumptions": [
+    "**AS1:** If constraints.yaml is not provided before implementation starts, we will define our own constraints based on the spec text and flag them for review.",
+    "**AS2:** Content-addressable ID will be SHA-256 of the canonical JSON serialization of (event_kind, entity_kind, entity_id, actor, timestamp, context, correlation_keys), hex-encoded.",
+    "**AS3:** OTLP source will use HTTP/JSON (OTLP/HTTP) rather than gRPC to stay within the aiohttp dependency constraint. This is a significant deviation from 'gRPC span collector' in the spec.",
+    "**AS4:** LRU-evicted stories will be emitted to sinks as closed stories with a status of 'evicted' or 'timeout', not silently dropped.",
+    "**AS5:** MCP server will use stdio transport with the `mcp` Python SDK (added to allowed dependencies), as this is the standard MCP pattern.",
+    "**AS6:** 'Terminal event' is configured per correlation rule as an event_kind pattern (e.g., 'request.completed').",
+    "**AS7:** Story ordering is by event timestamp, with arrival-time as tiebreaker.",
+    "**AS8:** chain_by means: when a story closes, its chain_by keys are used to create a new correlation lookup entry so that subsequent events with matching keys are correlated into a new story linked to the previous one via a parent_story_id.",
+    "**AS9:** Sentinel pushes events to Chronicler via the same webhook HTTP POST source, with a sentinel-specific event_kind prefix. The 'Sentinel source' is a specialized webhook handler, not a separate transport.",
+    "**AS10:** File watching will use asyncio polling (periodic stat/read) rather than inotify, to avoid adding watchdog as a dependency.",
+    "**AS11:** Downstream sink protocols (Stigmergy, Apprentice, Kindex) will be defined as Protocol classes with placeholder implementations, since their actual interfaces are not specified.",
+    "**AS12:** 'Noteworthy' stories for Kindex will be determined by a configurable filter in chronicler.yaml (e.g., story_type, minimum event count, duration threshold)."
+  ],
+  "acceptance_criteria": [
+    "**AC1:** Event model is a frozen Pydantic v2 model with fields: id (content-addressable), event_kind (dotted string), entity_kind, entity_id, actor, timestamp (datetime), context (dict), correlation_keys (dict). Creating an Event with identical fields always produces the same id.",
+    "**AC2:** Story model tracks lifecycle (open → closed), accumulates events in order, records story_type, correlation_rule, start/end timestamps, duration, and event_count. Stories are closeable by timeout or terminal event.",
+    "**AC3:** Correlation engine matches events to open stories in O(1) via dict keyed by (rule_name, key_tuple). Events matching no rule create a new story. At least one test demonstrates multi-rule matching.",
+    "**AC4:** Story manager enforces max_open_stories with LRU eviction. When limit is hit, least-recently-updated story is evicted. Evicted stories are emitted to sinks with appropriate status.",
+    "**AC5:** Timeout sweep runs periodically and closes stories that have exceeded their configured timeout. Closed stories are emitted to all registered sinks.",
+    "**AC6:** At least 4 sources implement SourceProtocol (start/stop/subscribe): webhook, OTLP, file, sentinel. Each source can be started, stopped, and delivers events to a subscriber callback.",
+    "**AC7:** At least 4 sinks implement SinkProtocol (emit/start/stop): stigmergy, apprentice, disk, kindex. Each sink receives closed stories and handles errors without crashing the engine.",
+    "**AC8:** Disk sink writes closed stories as JSONL. Stories written can be read back and deserialized into valid Story objects.",
+    "**AC9:** Configuration loads from chronicler.yaml, validated by Pydantic. Invalid configuration causes a fatal startup error with a clear error message. Valid config produces typed CorrelationRule, source, and sink configurations.",
+    "**AC10:** Engine (async orchestrator) starts all configured sources, runs correlation on incoming events, manages story lifecycle, and emits closed stories to all configured sinks. Engine runs until explicitly stopped.",
+    "**AC11:** CLI provides: `chronicler start` (launches engine), `chronicler status` (shows running state), `chronicler stories list` (lists open/closed stories), `chronicler stories show <id>` (shows story detail), `chronicler replay <file>` (replays JSONL events).",
+    "**AC12:** Every constraint C001–C013 has at least one dedicated test (pending constraints.yaml being provided).",
+    "**AC13:** All I/O is async (asyncio). No blocking calls on the event loop. Sources and sinks use async start/stop lifecycle.",
+    "**AC14:** No external broker or message queue is used. All inter-component communication is in-process async.",
+    "**AC15:** Test suite passes with `pytest` without requiring GPU, API keys, network access, or external services.",
+    "**AC16:** Project structure matches the SOP-specified layout exactly.",
+    "**AC17:** Fire-and-forget sink errors: a failing sink does not prevent other sinks from receiving stories, and does not crash the engine. Demonstrated by test with a deliberately failing sink."
+  ],
+  "user_answers": {
+    "**Q1:** Can you provide constraints.yaml (C001–C013)? The spec requires tests for each constraint but doesn't include them. This is a hard blocker.": "**AS1:** If constraints.yaml is not provided before implementation starts, we will define our own constraints based on the spec text and flag them for review.",
+    "**Q2:** What dependency is allowed for gRPC/OTLP? The SOP limits dependencies to pydantic/aiohttp/aiofiles, but OTLP gRPC requires grpcio + protobuf at minimum. Should we drop gRPC and accept OTLP over HTTP/protobuf instead, or expand the allowed dependency list?": "**AS3:** OTLP source will use HTTP/JSON (OTLP/HTTP) rather than gRPC to stay within the aiohttp dependency constraint. This is a significant deviation from 'gRPC span collector' in the spec.",
+    "**Q3:** What MCP protocol implementation are you expecting? Is there an existing MCP SDK/library in the stack (e.g., `mcp` Python package)? What transport — stdio, SSE, or streamable HTTP?": "**AS5:** MCP server will use stdio transport with the `mcp` Python SDK (added to allowed dependencies), as this is the standard MCP pattern.",
+    "**Q4:** What happens to evicted stories (LRU)? Options: (a) emit as incomplete/timed-out to sinks, (b) persist to disk for later recovery, (c) silently drop. Each has very different implications.": "**AS4:** LRU-evicted stories will be emitted to sinks as closed stories with a status of 'evicted' or 'timeout', not silently dropped.",
+    "**Q5:** What are the Stigmergy SourceAdapter, Apprentice training sequence, and Kindex knowledge node interfaces? Are these existing protocols with published schemas, or are we designing them here?": "**AS11:** Downstream sink protocols (Stigmergy, Apprentice, Kindex) will be defined as Protocol classes with placeholder implementations, since their actual interfaces are not specified.",
+    "**Q6:** What is the Sentinel source's transport protocol? Does Sentinel push events to Chronicler (webhook callback), or does Chronicler poll Sentinel?": "**AS9:** Sentinel pushes events to Chronicler via the same webhook HTTP POST source, with a sentinel-specific event_kind prefix. The 'Sentinel source' is a specialized webhook handler, not a separate transport.",
+    "**Q7:** Should this task be decomposed into phases? E.g., Phase 1: core (event/story/correlation/engine/disk sink), Phase 2: sources, Phase 3: external sinks, Phase 4: CLI/MCP. Building all 10 subsystems simultaneously is high-risk.": "**AS7:** Story ordering is by event timestamp, with arrival-time as tiebreaker.",
+    "**Q8:** What is the content-addressable ID algorithm? SHA-256 of canonical JSON of which fields?": "**AS2:** Content-addressable ID will be SHA-256 of the canonical JSON serialization of (event_kind, entity_kind, entity_id, actor, timestamp, context, correlation_keys), hex-encoded.",
+    "**Q9:** For chain_by: can you provide a concrete example of the intended behavior? E.g., 'When a deploy event arrives, it should be correlated with the preceding PR story because they share a commit_sha.'": "**AS8:** chain_by means: when a story closes, its chain_by keys are used to create a new correlation lookup entry so that subsequent events with matching keys are correlated into a new story linked to the previous one via a parent_story_id.",
+    "**Q10:** What is the expected throughput? 10 events/sec? 10,000? This determines whether the O(1) correlation lookup is sufficient or whether we need batching, backpressure, etc.": "**AS8:** chain_by means: when a story closes, its chain_by keys are used to create a new correlation lookup entry so that subsequent events with matching keys are correlated into a new story linked to the previous one via a parent_story_id.",
+    "**Q11:** For the File source (JSONL tail), what library/mechanism should be used for file watching? aiofiles doesn't support inotify/tail. Is `watchdog` or polling acceptable?": "**AS10:** File watching will use asyncio polling (periodic stat/read) rather than inotify, to avoid adding watchdog as a dependency.",
+    "**Q12:** Is there an existing chronicler.yaml example or schema, or are we designing the configuration format from scratch?": "**AS12:** 'Noteworthy' stories for Kindex will be determined by a configurable filter in chronicler.yaml (e.g., story_type, minimum event count, duration threshold)."
+  },
+  "approved": true,
+  "audited_answers": [
+    {
+      "question_id": "q_000",
+      "answer": "**AS1:** If constraints.yaml is not provided before implementation starts, we will define our own constraints based on the spec text and flag them for review.",
+      "source": "cli_approve",
+      "confidence": 0.16666666666666666,
+      "timestamp": "2026-03-21T01:09:55.607666+00:00",
+      "matched_assumption": null
+    },
+    {
+      "question_id": "q_001",
+      "answer": "**AS3:** OTLP source will use HTTP/JSON (OTLP/HTTP) rather than gRPC to stay within the aiohttp dependency constraint. This is a significant deviation from 'gRPC span collector' in the spec.",
+      "source": "cli_approve",
+      "confidence": 0.14285714285714285,
+      "timestamp": "2026-03-21T01:09:55.607866+00:00",
+      "matched_assumption": null
+    },
+    {
+      "question_id": "q_002",
+      "answer": "**AS5:** MCP server will use stdio transport with the `mcp` Python SDK (added to allowed dependencies), as this is the standard MCP pattern.",
+      "source": "cli_approve",
+      "confidence": 0.2777777777777778,
+      "timestamp": "2026-03-21T01:09:55.607871+00:00",
+      "matched_assumption": null
+    },
+    {
+      "question_id": "q_003",
+      "answer": "**AS4:** LRU-evicted stories will be emitted to sinks as closed stories with a status of 'evicted' or 'timeout', not silently dropped.",
+      "source": "cli_approve",
+      "confidence": 0.21052631578947367,
+      "timestamp": "2026-03-21T01:09:55.607874+00:00",
+      "matched_assumption": null
+    },
+    {
+      "question_id": "q_004",
+      "answer": "**AS11:** Downstream sink protocols (Stigmergy, Apprentice, Kindex) will be defined as Protocol classes with placeholder implementations, since their actual interfaces are not specified.",
+      "source": "cli_approve",
+      "confidence": 0.3125,
+      "timestamp": "2026-03-21T01:09:55.607876+00:00",
+      "matched_assumption": null
+    },
+    {
+      "question_id": "q_005",
+      "answer": "**AS9:** Sentinel pushes events to Chronicler via the same webhook HTTP POST source, with a sentinel-specific event_kind prefix. The 'Sentinel source' is a specialized webhook handler, not a separate transport.",
+      "source": "cli_approve",
+      "confidence": 0.29411764705882354,
+      "timestamp": "2026-03-21T01:09:55.607879+00:00",
+      "matched_assumption": null
+    },
+    {
+      "question_id": "q_006",
+      "answer": "**AS7:** Story ordering is by event timestamp, with arrival-time as tiebreaker.",
+      "source": "cli_approve",
+      "confidence": 0.5,
+      "timestamp": "2026-03-21T01:09:55.607883+00:00",
+      "matched_assumption": null
+    },
+    {
+      "question_id": "q_007",
+      "answer": "**AS2:** Content-addressable ID will be SHA-256 of the canonical JSON serialization of (event_kind, entity_kind, entity_id, actor, timestamp, context, correlation_keys), hex-encoded.",
+      "source": "cli_approve",
+      "confidence": 0.3333333333333333,
+      "timestamp": "2026-03-21T01:09:55.607886+00:00",
+      "matched_assumption": null
+    },
+    {
+      "question_id": "q_008",
+      "answer": "**AS8:** chain_by means: when a story closes, its chain_by keys are used to create a new correlation lookup entry so that subsequent events with matching keys are correlated into a new story linked to the previous one via a parent_story_id.",
+      "source": "cli_approve",
+      "confidence": 0.14285714285714285,
+      "timestamp": "2026-03-21T01:09:55.607888+00:00",
+      "matched_assumption": null
+    },
+    {
+      "question_id": "q_009",
+      "answer": "**AS8:** chain_by means: when a story closes, its chain_by keys are used to create a new correlation lookup entry so that subsequent events with matching keys are correlated into a new story linked to the previous one via a parent_story_id.",
+      "source": "cli_approve",
+      "confidence": 0.09523809523809523,
+      "timestamp": "2026-03-21T01:09:55.607891+00:00",
+      "matched_assumption": null
+    },
+    {
+      "question_id": "q_010",
+      "answer": "**AS10:** File watching will use asyncio polling (periodic stat/read) rather than inotify, to avoid adding watchdog as a dependency.",
+      "source": "cli_approve",
+      "confidence": 0.2,
+      "timestamp": "2026-03-21T01:09:55.607893+00:00",
+      "matched_assumption": null
+    },
+    {
+      "question_id": "q_011",
+      "answer": "**AS12:** 'Noteworthy' stories for Kindex will be determined by a configurable filter in chronicler.yaml (e.g., story_type, minimum event count, duration threshold).",
+      "source": "cli_approve",
+      "confidence": 0.5,
+      "timestamp": "2026-03-21T01:09:55.607895+00:00",
+      "matched_assumption": null
+    }
+  ],
+  "processing_register": "rigorous-analytical"
+}

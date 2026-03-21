@@ -1,0 +1,638 @@
+{
+  "component_id": "sinks",
+  "contract_version": 1,
+  "test_cases": [
+    {
+      "id": "TC_GOODHART_NOTEWORTHY_ALL_FAIL",
+      "description": "is_noteworthy must return False when ALL three conditions fail simultaneously, not just when one fails — verifies the function evaluates conditions conjunctively rather than hardcoding results for specific inputs",
+      "function": "is_noteworthy",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "is_noteworthy returns False when story_type mismatches, event count is below threshold, AND duration is below threshold"
+      ]
+    },
+    {
+      "id": "TC_GOODHART_NOTEWORTHY_DURATION_FRACTIONAL",
+      "description": "is_noteworthy correctly computes sub-second duration differences — verifies actual timestamp arithmetic rather than integer-second rounding",
+      "function": "is_noteworthy",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "is_noteworthy returns False when duration is 0.5 seconds below min_duration_seconds threshold of 1.5s",
+        "is_noteworthy returns True when duration is 0.1 seconds above min_duration_seconds threshold of 1.5s"
+      ]
+    },
+    {
+      "id": "TC_GOODHART_NOTEWORTHY_LARGE_EVENT_COUNT",
+      "description": "is_noteworthy handles large event counts and high min_event_count thresholds correctly — not just small counts like 1-5",
+      "function": "is_noteworthy",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "is_noteworthy returns True with 100 events and min_event_count=100",
+        "is_noteworthy returns False with 99 events and min_event_count=100"
+      ]
+    },
+    {
+      "id": "TC_GOODHART_NOTEWORTHY_ZERO_DURATION",
+      "description": "is_noteworthy correctly handles zero-duration stories (opened_at == closed_at) with min_duration_seconds=0.0",
+      "function": "is_noteworthy",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "is_noteworthy returns True when opened_at equals closed_at and min_duration_seconds is 0.0"
+      ]
+    },
+    {
+      "id": "TC_GOODHART_NOTEWORTHY_TIMEZONE_AWARE",
+      "description": "is_noteworthy correctly computes duration when timestamps include timezone offsets — duration must be based on absolute time difference not string comparison",
+      "function": "is_noteworthy",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "is_noteworthy correctly computes duration from timezone-aware ISO-8601 timestamps"
+      ]
+    },
+    {
+      "id": "TC_GOODHART_NOTEWORTHY_EMPTY_STORY_TYPES_SET",
+      "description": "is_noteworthy returns False when story_types is an empty set (not None) — empty set means nothing matches, while None means no filter",
+      "function": "is_noteworthy",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "is_noteworthy returns False when config.story_types is an empty set"
+      ]
+    },
+    {
+      "id": "TC_GOODHART_NOTEWORTHY_MULTIPLE_STORY_TYPES",
+      "description": "is_noteworthy correctly checks membership in a multi-element story_types set with various matching and non-matching types",
+      "function": "is_noteworthy",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "is_noteworthy returns True when story_type matches one of several types in the set",
+        "is_noteworthy returns False when story_type matches none of several types in the set"
+      ]
+    },
+    {
+      "id": "TC_GOODHART_NOTEWORTHY_ONLY_DURATION_FAILS",
+      "description": "is_noteworthy returns False when story_type matches and event count meets threshold but duration is just below threshold — all three conditions must hold",
+      "function": "is_noteworthy",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "is_noteworthy returns False when only the duration condition fails by a tiny margin"
+      ]
+    },
+    {
+      "id": "TC_GOODHART_NOTEWORTHY_ONLY_EVENT_COUNT_FAILS",
+      "description": "is_noteworthy returns False when story_type matches and duration meets threshold but event count is one below — verifies event count is not ignored",
+      "function": "is_noteworthy",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "is_noteworthy returns False when only the event count condition fails by exactly 1"
+      ]
+    },
+    {
+      "id": "TC_GOODHART_DISK_EMIT_VALID_JSON_LINES",
+      "description": "Each line written by DiskSink.emit is independently valid JSON — verifies the output is proper JSONL, not a JSON array or other format",
+      "function": "DiskSink.emit",
+      "category": "invariant",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Each line in the output file is independently parseable as JSON",
+        "No line contains embedded newlines that would break JSONL format"
+      ]
+    },
+    {
+      "id": "TC_GOODHART_DISK_EMIT_STORY_FIELDS_PRESERVED",
+      "description": "DiskSink.emit preserves all Story fields including metadata, events, and timestamps — not just story_id",
+      "function": "DiskSink.emit",
+      "category": "invariant",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "The deserialized JSON line contains story_id, story_type, events, opened_at, closed_at, and metadata fields",
+        "Complex nested metadata and event structures are preserved exactly"
+      ]
+    },
+    {
+      "id": "TC_GOODHART_DISK_FLUSH_ON_WRITE_FALSE",
+      "description": "DiskSink with flush_on_write=False does NOT force-flush after each emit — verifies the flag is actually respected in both directions",
+      "function": "DiskSink.emit",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "With flush_on_write=False, the sink does not call flush after emit"
+      ]
+    },
+    {
+      "id": "TC_GOODHART_DISK_CLOSE_THEN_EMIT_RUNTIME_ERROR",
+      "description": "DiskSink raises RuntimeError specifically (not just any exception) when emit is called after close — verifies exact exception type",
+      "function": "DiskSink.emit",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "RuntimeError",
+      "assertions": [
+        "The raised exception is exactly RuntimeError, not a subclass or different exception type"
+      ]
+    },
+    {
+      "id": "TC_GOODHART_DISK_NOT_STARTED_EMIT_RUNTIME_ERROR",
+      "description": "DiskSink raises RuntimeError specifically (not just any exception) when emit is called before start — verifies exact exception type",
+      "function": "DiskSink.emit",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "RuntimeError",
+      "assertions": [
+        "The raised exception is exactly RuntimeError"
+      ]
+    },
+    {
+      "id": "TC_GOODHART_READ_STORIES_MIXED_CORRUPTION",
+      "description": "read_stories correctly handles files with interleaved valid lines, corrupt JSON, valid-JSON-but-invalid-Story lines, and blank lines — yielding only truly valid Story objects",
+      "function": "read_stories",
+      "category": "invariant",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Only lines that are both valid JSON AND valid Story schema are yielded",
+        "Blank lines and partial JSON are skipped without raising",
+        "Valid stories before and after corrupt lines are all yielded"
+      ]
+    },
+    {
+      "id": "TC_GOODHART_READ_STORIES_CLOSES_HANDLE",
+      "description": "read_stories closes the file handle even if iteration is abandoned early (e.g., via break or exception) — postcondition requires handle closure in all cases",
+      "function": "read_stories",
+      "category": "invariant",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "The file handle is closed after partial iteration"
+      ]
+    },
+    {
+      "id": "TC_GOODHART_SAFE_EMIT_PRESERVES_SINK_NAME_AND_STORY_ID",
+      "description": "safe_emit correctly populates sink_name and story_id fields in the outcome from its arguments, not from hardcoded values",
+      "function": "safe_emit",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "Use a unique sink_name like 'custom_test_sink_xyz' and story_id like 'story_unique_abc_789' that couldn't be hardcoded",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "SafeEmitOutcome.sink_name matches the sink_name argument passed to safe_emit",
+        "SafeEmitOutcome.story_id matches the story's story_id"
+      ]
+    },
+    {
+      "id": "TC_GOODHART_SAFE_EMIT_ERROR_MESSAGE_CONTENT",
+      "description": "safe_emit captures the exception message string in error_message field — not just an empty string or generic message",
+      "function": "safe_emit",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "Emit callable that raises ValueError('specific_unique_error_text_12345')",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "SafeEmitOutcome.error_message contains the original exception's message text",
+        "SafeEmitOutcome.result is 'error'"
+      ]
+    },
+    {
+      "id": "TC_GOODHART_SAFE_EMIT_CAPTURES_KEYBOARD_INTERRUPT",
+      "description": "safe_emit's contract says it never raises — but KeyboardInterrupt and SystemExit are BaseException, not Exception. Verify the contract boundary: safe_emit catches Exception, so BaseException subclasses may or may not be caught depending on implementation",
+      "function": "safe_emit",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "safe_emit handles Exception subclasses without raising"
+      ]
+    },
+    {
+      "id": "TC_GOODHART_SAFE_EMIT_EMITTED_HAS_EMPTY_ERROR",
+      "description": "safe_emit returns empty error_message when emit succeeds — error_message should not contain residual data from previous calls",
+      "function": "safe_emit",
+      "category": "invariant",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "SafeEmitOutcome.error_message is empty string when result is 'emitted'"
+      ]
+    },
+    {
+      "id": "TC_GOODHART_FILEPATH_TABS_AND_MIXED_WHITESPACE",
+      "description": "FilePath rejects strings containing only tabs, mixed whitespace (tabs+spaces+newlines) — the isspace() check must work for all Unicode whitespace",
+      "function": "FilePath",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "ValidationError",
+      "assertions": [
+        "FilePath rejects a string of only tab characters",
+        "FilePath rejects a string of mixed spaces, tabs, and newlines"
+      ]
+    },
+    {
+      "id": "TC_GOODHART_FILEPATH_WHITESPACE_WITH_CONTENT",
+      "description": "FilePath accepts strings that contain whitespace but also contain non-whitespace characters — only pure-whitespace is rejected",
+      "function": "FilePath",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "FilePath accepts ' /tmp/file.txt ' (leading/trailing spaces with real path content)",
+        "FilePath accepts 'path with spaces/file.txt'"
+      ]
+    },
+    {
+      "id": "TC_GOODHART_FILEPATH_LENGTH_4095",
+      "description": "FilePath accepts a string of exactly 4095 characters — boundary just below the 4096 maximum",
+      "function": "FilePath",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "FilePath accepts a 4095-character string"
+      ]
+    },
+    {
+      "id": "TC_GOODHART_FILEPATH_LENGTH_1",
+      "description": "FilePath accepts a single-character string — minimum valid length boundary",
+      "function": "FilePath",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "FilePath accepts a single non-whitespace character like '/'"
+      ]
+    },
+    {
+      "id": "TC_GOODHART_POSITIVE_INT_ONE",
+      "description": "PositiveInt accepts exactly 1 — the minimum valid value boundary",
+      "function": "PositiveInt",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "PositiveInt(1) succeeds and stores value 1"
+      ]
+    },
+    {
+      "id": "TC_GOODHART_POSITIVE_INT_LARGE",
+      "description": "PositiveInt accepts large integers — not just small test values like 1-10",
+      "function": "PositiveInt",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "PositiveInt(999999) succeeds"
+      ]
+    },
+    {
+      "id": "TC_GOODHART_NONNEG_FLOAT_ZERO_EXACT",
+      "description": "NonNegativeFloat accepts exactly 0.0 — the boundary minimum",
+      "function": "NonNegativeFloat",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "NonNegativeFloat(0.0) succeeds"
+      ]
+    },
+    {
+      "id": "TC_GOODHART_NONNEG_FLOAT_VERY_SMALL_NEGATIVE",
+      "description": "NonNegativeFloat rejects very small negative values like -0.001 — verifies the boundary is strictly >= 0",
+      "function": "NonNegativeFloat",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "ValidationError",
+      "assertions": [
+        "NonNegativeFloat(-0.001) raises ValidationError"
+      ]
+    },
+    {
+      "id": "TC_GOODHART_STIGMERGY_EMIT_BEFORE_START",
+      "description": "StigmergySink.emit before start() should either raise or behave as documented — placeholder sinks should still enforce start() precondition",
+      "function": "StigmergySink.emit",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "StigmergySink enforces start() precondition or handles gracefully"
+      ]
+    },
+    {
+      "id": "TC_GOODHART_APPRENTICE_EMIT_LOGS_EVENT_COUNT",
+      "description": "ApprenticeSink.emit log message contains the actual event count from the story, not a hardcoded number — verifies dynamic content in log",
+      "function": "ApprenticeSink.emit",
+      "category": "invariant",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "Story with exactly 7 events — an unusual count not likely hardcoded",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Log message contains the string representation of the actual number of events in the story"
+      ]
+    },
+    {
+      "id": "TC_GOODHART_STIGMERGY_EMIT_LOGS_STORY_TYPE",
+      "description": "StigmergySink.emit log message contains the actual story_type from the story, not a hardcoded value — verifies dynamic log content",
+      "function": "StigmergySink.emit",
+      "category": "invariant",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "Story with unusual story_type like 'xyzzy_custom_type_42'",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Log message contains the actual story_type string from the story"
+      ]
+    },
+    {
+      "id": "TC_GOODHART_DISK_EMIT_NEWLINE_TERMINATED",
+      "description": "Each emit appends exactly one newline after the JSON — no double newlines, no missing newlines",
+      "function": "DiskSink.emit",
+      "category": "invariant",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "The file contents after N emits contain exactly N newline-terminated lines",
+        "No blank lines exist between story lines"
+      ]
+    },
+    {
+      "id": "TC_GOODHART_NOTEWORTHY_MIN_DURATION_JUST_ABOVE",
+      "description": "is_noteworthy returns True when duration exceeds min_duration_seconds by a tiny fractional amount — verifies >= comparison not >",
+      "function": "is_noteworthy",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "is_noteworthy returns True when duration is min_duration_seconds + 0.001"
+      ]
+    },
+    {
+      "id": "TC_GOODHART_NOTEWORTHY_MIN_EVENT_JUST_ABOVE",
+      "description": "is_noteworthy returns True when event count is exactly min_event_count + 1 — verifies >= comparison not ==",
+      "function": "is_noteworthy",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "is_noteworthy returns True when events count is min_event_count + 1"
+      ]
+    },
+    {
+      "id": "TC_GOODHART_READ_STORIES_ONLY_CORRUPT",
+      "description": "read_stories yields nothing when every line in the file is corrupted — verifies it doesn't crash or return partial objects",
+      "function": "read_stories",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "No Story objects are yielded",
+        "No exception is raised"
+      ]
+    },
+    {
+      "id": "TC_GOODHART_DISK_EMIT_STORY_WITH_EMPTY_EVENTS",
+      "description": "DiskSink.emit handles stories with an empty events list — verifies no special-casing for event count",
+      "function": "DiskSink.emit",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Story with events=[] is written as valid JSONL",
+        "read_stories can read it back with empty events list"
+      ]
+    },
+    {
+      "id": "TC_GOODHART_SAFE_EMIT_RETURNS_CORRECT_TYPE",
+      "description": "safe_emit returns an actual SafeEmitOutcome instance (or equivalent), not a dict or tuple",
+      "function": "safe_emit",
+      "category": "invariant",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "The return value has sink_name, story_id, result, and error_message attributes"
+      ]
+    },
+    {
+      "id": "TC_GOODHART_DISK_MULTIPLE_START_CLOSE_CYCLES",
+      "description": "DiskSink does not support restarting after close — second start() after close() should raise or the implementation should handle this edge case per contract (contract says start() precondition is no double-start)",
+      "function": "DiskSink.start",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Attempting start() after close() either works correctly for a fresh cycle or raises an error consistently"
+      ]
+    },
+    {
+      "id": "TC_GOODHART_NOTEWORTHY_CASE_SENSITIVE_STORY_TYPE",
+      "description": "is_noteworthy story_type matching is case-sensitive — 'HTTP' should not match 'http' in the story_types set",
+      "function": "is_noteworthy",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "is_noteworthy returns False when story_type differs only by case from entries in story_types set"
+      ]
+    },
+    {
+      "id": "TC_GOODHART_KINDEX_CONFIG_FIELDS",
+      "description": "KindexSinkConfig stores all three configuration fields accessibly — story_types, min_event_count, min_duration_seconds",
+      "function": "KindexSinkConfig",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Constructed KindexSinkConfig has accessible story_types, min_event_count, and min_duration_seconds attributes matching construction args"
+      ]
+    },
+    {
+      "id": "TC_GOODHART_READ_STORIES_VALID_JSON_INVALID_STORY",
+      "description": "read_stories skips lines that are valid JSON but don't conform to Story schema (e.g., missing required fields) — not just malformed JSON",
+      "function": "read_stories",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "A JSON line like '{\"foo\": \"bar\"}' is skipped",
+        "A JSON line with only story_id but missing other required fields is skipped"
+      ]
+    }
+  ],
+  "test_language": "python",
+  "generated_code": "\"\"\"\nHidden adversarial acceptance tests for the Story Sinks component.\n\nThese tests target gaps in visible test coverage to catch implementations\nthat pass visible tests through shortcuts (hardcoded returns, missing validation, etc.)\n\"\"\"\n\nimport asyncio\nimport json\nimport logging\nimport os\nimport tempfile\nfrom datetime import datetime, timedelta, timezone\nfrom unittest.mock import AsyncMock, MagicMock\n\nimport pytest\n\n# Import everything from the sinks module\nfrom src.sinks import *\n\n\n# ─── Helpers ───────────────────────────────────────────────────────────────────\n\ndef make_story(\n    story_id=\"test-story-001\",\n    story_type=\"http_request\",\n    events=None,\n    opened_at=None,\n    closed_at=None,\n    metadata=None,\n):\n    \"\"\"Helper to construct a Story-like object for testing.\"\"\"\n    if events is None:\n        events = [{\"event\": \"e1\"}, {\"event\": \"e2\"}, {\"event\": \"e3\"}]\n    if opened_at is None:\n        opened_at = \"2024-01-01T00:00:00+00:00\"\n    if closed_at is None:\n        closed_at = \"2024-01-01T00:10:00+00:00\"\n    if metadata is None:\n        metadata = {}\n    # Try to use the actual Story class if available\n    try:\n        from src.schemas import Story as SchemaStory\n        return SchemaStory(\n            story_id=story_id,\n            story_type=story_type,\n            events=events,\n            opened_at=opened_at,\n            closed_at=closed_at,\n            metadata=metadata,\n        )\n    except (ImportError, Exception):\n        # Fallback: create a simple namespace object\n        class _Story:\n            def __init__(self, **kwargs):\n                for k, v in kwargs.items():\n                    setattr(self, k, v)\n            def model_dump(self):\n                return {\n                    \"story_id\": self.story_id,\n                    \"story_type\": self.story_type,\n                    \"events\": self.events,\n                    \"opened_at\": self.opened_at,\n                    \"closed_at\": self.closed_at,\n                    \"metadata\": self.metadata,\n                }\n            def model_dump_json(self):\n                return json.dumps(self.model_dump())\n        return _Story(\n            story_id=story_id,\n            story_type=story_type,\n            events=events,\n            opened_at=opened_at,\n            closed_at=closed_at,\n            metadata=metadata,\n        )\n\n\ndef make_kindex_config(story_types=None, min_event_count=1, min_duration_seconds=0.0):\n    \"\"\"Helper to construct a KindexSinkConfig.\"\"\"\n    return KindexSinkConfig(\n        story_types=story_types,\n        min_event_count=min_event_count,\n        min_duration_seconds=min_duration_seconds,\n    )\n\n\ndef make_disk_config(path, flush_on_write=False):\n    \"\"\"Helper to construct a DiskSinkConfig.\"\"\"\n    return DiskSinkConfig(path=path, flush_on_write=flush_on_write)\n\n\n# ─── is_noteworthy tests ──────────────────────────────────────────────────────\n\ndef test_goodhart_noteworthy_all_fail():\n    \"\"\"is_noteworthy must return False when ALL three conditions fail simultaneously.\"\"\"\n    config = make_kindex_config(\n        story_types={\"database\", \"grpc\"},\n        min_event_count=10,\n        min_duration_seconds=300.0,\n    )\n    story = make_story(\n        story_type=\"http_request\",  # not in set\n        events=[{\"e\": 1}],  # 1 < 10\n        opened_at=\"2024-01-01T00:00:00+00:00\",\n        closed_at=\"2024-01-01T00:00:30+00:00\",  # 30s < 300s\n    )\n    assert is_noteworthy(story, config) is False\n\n\ndef test_goodhart_noteworthy_duration_fractional():\n    \"\"\"is_noteworthy correctly computes sub-second duration differences.\"\"\"\n    config = make_kindex_config(\n        story_types=None,\n        min_event_count=1,\n        min_duration_seconds=1.5,\n    )\n    # Duration = 1.0s < 1.5s → False\n    story_below = make_story(\n        events=[{\"e\": 1}],\n        opened_at=\"2024-06-15T12:00:00.000+00:00\",\n        closed_at=\"2024-06-15T12:00:01.000+00:00\",\n    )\n    assert is_noteworthy(story_below, config) is False\n\n    # Duration = 1.6s >= 1.5s → True\n    story_above = make_story(\n        events=[{\"e\": 1}],\n        opened_at=\"2024-06-15T12:00:00.000+00:00\",\n        closed_at=\"2024-06-15T12:00:01.600+00:00\",\n    )\n    assert is_noteworthy(story_above, config) is True\n\n\ndef test_goodhart_noteworthy_large_event_count():\n    \"\"\"is_noteworthy handles large event counts and high thresholds correctly.\"\"\"\n    config = make_kindex_config(\n        story_types=None,\n        min_event_count=100,\n        min_duration_seconds=0.0,\n    )\n    events_100 = [{\"e\": i} for i in range(100)]\n    events_99 = [{\"e\": i} for i in range(99)]\n\n    story_exact = make_story(events=events_100)\n    story_below = make_story(events=events_99)\n\n    assert is_noteworthy(story_exact, config) is True\n    assert is_noteworthy(story_below, config) is False\n\n\ndef test_goodhart_noteworthy_zero_duration():\n    \"\"\"is_noteworthy handles zero-duration stories with min_duration_seconds=0.0.\"\"\"\n    config = make_kindex_config(\n        story_types=None,\n        min_event_count=1,\n        min_duration_seconds=0.0,\n    )\n    ts = \"2024-01-01T00:00:00+00:00\"\n    story = make_story(events=[{\"e\": 1}], opened_at=ts, closed_at=ts)\n    assert is_noteworthy(story, config) is True\n\n\ndef test_goodhart_noteworthy_timezone_aware():\n    \"\"\"is_noteworthy correctly computes duration from timezone-aware timestamps.\"\"\"\n    config = make_kindex_config(\n        story_types=None,\n        min_event_count=1,\n        min_duration_seconds=3600.0,  # 1 hour\n    )\n    # These are the same absolute instant separated by 2 hours,\n    # but expressed in different timezones\n    story = make_story(\n        events=[{\"e\": 1}],\n        opened_at=\"2024-01-01T10:00:00+05:00\",   # = 05:00 UTC\n        closed_at=\"2024-01-01T08:00:00+01:00\",    # = 07:00 UTC → 2 hours later\n    )\n    assert is_noteworthy(story, config) is True\n\n\ndef test_goodhart_noteworthy_empty_story_types_set():\n    \"\"\"is_noteworthy returns False when story_types is an empty set (not None).\"\"\"\n    config = make_kindex_config(\n        story_types=set(),  # empty set → nothing matches\n        min_event_count=1,\n        min_duration_seconds=0.0,\n    )\n    story = make_story(events=[{\"e\": 1}])\n    assert is_noteworthy(story, config) is False\n\n\ndef test_goodhart_noteworthy_multiple_story_types():\n    \"\"\"is_noteworthy checks membership in multi-element story_types sets.\"\"\"\n    config = make_kindex_config(\n        story_types={\"http_request\", \"grpc_call\", \"database_query\", \"websocket\"},\n        min_event_count=1,\n        min_duration_seconds=0.0,\n    )\n    # Match\n    story_match = make_story(story_type=\"grpc_call\", events=[{\"e\": 1}])\n    assert is_noteworthy(story_match, config) is True\n\n    # No match\n    story_miss = make_story(story_type=\"file_access\", events=[{\"e\": 1}])\n    assert is_noteworthy(story_miss, config) is False\n\n\ndef test_goodhart_noteworthy_only_duration_fails():\n    \"\"\"is_noteworthy returns False when only the duration condition fails.\"\"\"\n    config = make_kindex_config(\n        story_types={\"http_request\"},\n        min_event_count=2,\n        min_duration_seconds=60.0,\n    )\n    story = make_story(\n        story_type=\"http_request\",\n        events=[{\"e\": 1}, {\"e\": 2}],  # meets event count\n        opened_at=\"2024-01-01T00:00:00+00:00\",\n        closed_at=\"2024-01-01T00:00:59+00:00\",  # 59s < 60s\n    )\n    assert is_noteworthy(story, config) is False\n\n\ndef test_goodhart_noteworthy_only_event_count_fails():\n    \"\"\"is_noteworthy returns False when only event count is one below threshold.\"\"\"\n    config = make_kindex_config(\n        story_types={\"http_request\"},\n        min_event_count=5,\n        min_duration_seconds=0.0,\n    )\n    story = make_story(\n        story_type=\"http_request\",\n        events=[{\"e\": i} for i in range(4)],  # 4 < 5\n        opened_at=\"2024-01-01T00:00:00+00:00\",\n        closed_at=\"2024-01-01T01:00:00+00:00\",  # plenty of duration\n    )\n    assert is_noteworthy(story, config) is False\n\n\ndef test_goodhart_noteworthy_min_duration_just_above():\n    \"\"\"is_noteworthy returns True when duration exceeds threshold by tiny amount.\"\"\"\n    config = make_kindex_config(\n        story_types=None,\n        min_event_count=1,\n        min_duration_seconds=120.0,\n    )\n    # 120.001 seconds\n    story = make_story(\n        events=[{\"e\": 1}],\n        opened_at=\"2024-01-01T00:00:00.000+00:00\",\n        closed_at=\"2024-01-01T00:02:00.001+00:00\",\n    )\n    assert is_noteworthy(story, config) is True\n\n\ndef test_goodhart_noteworthy_min_event_just_above():\n    \"\"\"is_noteworthy returns True when event count is min_event_count + 1.\"\"\"\n    config = make_kindex_config(\n        story_types=None,\n        min_event_count=3,\n        min_duration_seconds=0.0,\n    )\n    story = make_story(events=[{\"e\": i} for i in range(4)])  # 4 > 3\n    assert is_noteworthy(story, config) is True\n\n\ndef test_goodhart_noteworthy_case_sensitive_story_type():\n    \"\"\"is_noteworthy story_type matching is case-sensitive.\"\"\"\n    config = make_kindex_config(\n        story_types={\"http_request\"},\n        min_event_count=1,\n        min_duration_seconds=0.0,\n    )\n    story_upper = make_story(story_type=\"HTTP_REQUEST\", events=[{\"e\": 1}])\n    story_mixed = make_story(story_type=\"Http_Request\", events=[{\"e\": 1}])\n\n    assert is_noteworthy(story_upper, config) is False\n    assert is_noteworthy(story_mixed, config) is False\n\n\n# ─── DiskSink tests ───────────────────────────────────────────────────────────\n\n@pytest.mark.asyncio\nasync def test_goodhart_disk_emit_valid_json_lines():\n    \"\"\"Each line written by DiskSink.emit is independently valid JSON (proper JSONL).\"\"\"\n    with tempfile.NamedTemporaryFile(suffix=\".jsonl\", delete=False) as f:\n        path = f.name\n    try:\n        config = make_disk_config(path=path, flush_on_write=True)\n        sink = DiskSink(config)\n        await sink.start()\n\n        for i in range(5):\n            story = make_story(\n                story_id=f\"story-{i}\",\n                events=[{\"e\": j} for j in range(i + 1)],\n            )\n            await sink.emit(story)\n\n        await sink.close()\n\n        with open(path, \"r\") as f:\n            lines = f.readlines()\n\n        assert len(lines) == 5\n        for i, line in enumerate(lines):\n            # Each line must be independently valid JSON\n            parsed = json.loads(line.strip())\n            assert parsed[\"story_id\"] == f\"story-{i}\"\n            # No embedded newlines in a line\n            assert \"\\n\" not in line.rstrip(\"\\n\")\n    finally:\n        os.unlink(path)\n\n\n@pytest.mark.asyncio\nasync def test_goodhart_disk_emit_story_fields_preserved():\n    \"\"\"DiskSink.emit preserves all Story fields including complex nested structures.\"\"\"\n    with tempfile.NamedTemporaryFile(suffix=\".jsonl\", delete=False) as f:\n        path = f.name\n    try:\n        config = make_disk_config(path=path, flush_on_write=True)\n        sink = DiskSink(config)\n        await sink.start()\n\n        complex_events = [\n            {\"type\": \"start\", \"data\": {\"nested\": [1, 2, 3]}},\n            {\"type\": \"middle\", \"data\": {\"key\": \"value\", \"list\": [{\"a\": 1}]}},\n        ]\n        complex_metadata = {\n            \"source\": \"test\",\n            \"tags\": [\"a\", \"b\", \"c\"],\n            \"nested\": {\"deep\": {\"value\": 42}},\n        }\n        story = make_story(\n            story_id=\"complex-story-xyz\",\n            story_type=\"unusual_type_foobar\",\n            events=complex_events,\n            opened_at=\"2024-06-15T08:30:00+00:00\",\n            closed_at=\"2024-06-15T09:45:30+00:00\",\n            metadata=complex_metadata,\n        )\n        await sink.emit(story)\n        await sink.close()\n\n        with open(path, \"r\") as f:\n            data = json.loads(f.readline())\n\n        assert data[\"story_id\"] == \"complex-story-xyz\"\n        assert data[\"story_type\"] == \"unusual_type_foobar\"\n        assert data[\"opened_at\"] == \"2024-06-15T08:30:00+00:00\"\n        assert data[\"closed_at\"] == \"2024-06-15T09:45:30+00:00\"\n        assert len(data[\"events\"]) == 2\n        assert data[\"events\"][0][\"data\"][\"nested\"] == [1, 2, 3]\n        assert data[\"metadata\"][\"nested\"][\"deep\"][\"value\"] == 42\n    finally:\n        os.unlink(path)\n\n\n@pytest.mark.asyncio\nasync def test_goodhart_disk_flush_on_write_false():\n    \"\"\"DiskSink with flush_on_write=False does not force-flush after each emit.\"\"\"\n    with tempfile.NamedTemporaryFile(suffix=\".jsonl\", delete=False) as f:\n        path = f.name\n    try:\n        config = make_disk_config(path=path, flush_on_write=False)\n        sink = DiskSink(config)\n        await sink.start()\n\n        story = make_story()\n        # This should succeed without flush being forced\n        await sink.emit(story)\n        await sink.close()\n\n        # After close, data should be there (flushed on close)\n        with open(path, \"r\") as f:\n            lines = f.readlines()\n        assert len(lines) == 1\n    finally:\n        os.unlink(path)\n\n\n@pytest.mark.asyncio\nasync def test_goodhart_disk_close_then_emit_runtime_error():\n    \"\"\"DiskSink raises exactly RuntimeError when emit is called after close.\"\"\"\n    with tempfile.NamedTemporaryFile(suffix=\".jsonl\", delete=False) as f:\n        path = f.name\n    try:\n        config = make_disk_config(path=path)\n        sink = DiskSink(config)\n        await sink.start()\n        await sink.close()\n\n        with pytest.raises(RuntimeError):\n            await sink.emit(make_story())\n    finally:\n        os.unlink(path)\n\n\n@pytest.mark.asyncio\nasync def test_goodhart_disk_not_started_emit_runtime_error():\n    \"\"\"DiskSink raises exactly RuntimeError when emit is called before start.\"\"\"\n    with tempfile.NamedTemporaryFile(suffix=\".jsonl\", delete=False) as f:\n        path = f.name\n    try:\n        config = make_disk_config(path=path)\n        sink = DiskSink(config)\n\n        with pytest.raises(RuntimeError):\n            await sink.emit(make_story())\n    finally:\n        os.unlink(path)\n\n\n@pytest.mark.asyncio\nasync def test_goodhart_disk_emit_newline_terminated():\n    \"\"\"Each emit produces exactly one newline-terminated line — no double newlines.\"\"\"\n    with tempfile.NamedTemporaryFile(suffix=\".jsonl\", delete=False) as f:\n        path = f.name\n    try:\n        config = make_disk_config(path=path, flush_on_write=True)\n        sink = DiskSink(config)\n        await sink.start()\n\n        for i in range(4):\n            await sink.emit(make_story(story_id=f\"s-{i}\"))\n\n        await sink.close()\n\n        with open(path, \"r\") as f:\n            content = f.read()\n\n        # Should end with exactly one newline\n        lines = content.split(\"\\n\")\n        # Last element after split should be empty string (trailing newline)\n        assert lines[-1] == \"\", \"File should end with a newline\"\n        # All non-empty lines should be valid JSON\n        non_empty = [l for l in lines if l.strip()]\n        assert len(non_empty) == 4\n        for line in non_empty:\n            json.loads(line)  # Should not raise\n    finally:\n        os.unlink(path)\n\n\n@pytest.mark.asyncio\nasync def test_goodhart_disk_emit_story_with_empty_events():\n    \"\"\"DiskSink handles stories with empty events list.\"\"\"\n    with tempfile.NamedTemporaryFile(suffix=\".jsonl\", delete=False) as f:\n        path = f.name\n    try:\n        config = make_disk_config(path=path, flush_on_write=True)\n        sink = DiskSink(config)\n        await sink.start()\n\n        story = make_story(story_id=\"empty-events\", events=[])\n        await sink.emit(story)\n        await sink.close()\n\n        with open(path, \"r\") as f:\n            data = json.loads(f.readline())\n\n        assert data[\"story_id\"] == \"empty-events\"\n        assert data[\"events\"] == []\n    finally:\n        os.unlink(path)\n\n\n# ─── read_stories tests ───────────────────────────────────────────────────────\n\n@pytest.mark.asyncio\nasync def test_goodhart_read_stories_mixed_corruption():\n    \"\"\"read_stories handles mix of valid, corrupt, blank, and schema-invalid lines.\"\"\"\n    with tempfile.NamedTemporaryFile(suffix=\".jsonl\", delete=False, mode=\"w\") as f:\n        path = f.name\n        # Valid story line\n        valid1 = json.dumps({\n            \"story_id\": \"s1\", \"story_type\": \"http\",\n            \"events\": [{\"e\": 1}],\n            \"opened_at\": \"2024-01-01T00:00:00+00:00\",\n            \"closed_at\": \"2024-01-01T00:01:00+00:00\",\n            \"metadata\": {},\n        })\n        f.write(valid1 + \"\\n\")\n        # Corrupt JSON\n        f.write(\"{this is not json\\n\")\n        # Blank line\n        f.write(\"\\n\")\n        # Valid JSON but not a valid Story (missing fields)\n        f.write('{\"foo\": \"bar\"}\\n')\n        # Another valid story\n        valid2 = json.dumps({\n            \"story_id\": \"s2\", \"story_type\": \"grpc\",\n            \"events\": [],\n            \"opened_at\": \"2024-01-01T00:00:00+00:00\",\n            \"closed_at\": \"2024-01-01T00:02:00+00:00\",\n            \"metadata\": {\"key\": \"val\"},\n        })\n        f.write(valid2 + \"\\n\")\n\n    try:\n        stories = []\n        async for story in read_stories(path):\n            stories.append(story)\n\n        # Should get at least the valid stories, possibly depending on\n        # how strictly \"valid Story\" is enforced\n        story_ids = [s.story_id for s in stories]\n        assert \"s1\" in story_ids\n        assert \"s2\" in story_ids\n    finally:\n        os.unlink(path)\n\n\n@pytest.mark.asyncio\nasync def test_goodhart_read_stories_only_corrupt():\n    \"\"\"read_stories yields nothing when every line is corrupted.\"\"\"\n    with tempfile.NamedTemporaryFile(suffix=\".jsonl\", delete=False, mode=\"w\") as f:\n        path = f.name\n        f.write(\"not json at all\\n\")\n        f.write(\"{broken: json}\\n\")\n        f.write(\"another bad line\\n\")\n\n    try:\n        stories = []\n        async for story in read_stories(path):\n            stories.append(story)\n        assert len(stories) == 0\n    finally:\n        os.unlink(path)\n\n\n@pytest.mark.asyncio\nasync def test_goodhart_read_stories_valid_json_invalid_story():\n    \"\"\"read_stories skips lines that are valid JSON but not valid Story objects.\"\"\"\n    with tempfile.NamedTemporaryFile(suffix=\".jsonl\", delete=False, mode=\"w\") as f:\n        path = f.name\n        # Valid JSON but missing required Story fields\n        f.write('{\"foo\": \"bar\"}\\n')\n        f.write('{\"story_id\": \"only-id\"}\\n')\n        f.write('[1, 2, 3]\\n')  # JSON array, not object\n        f.write('\"just a string\"\\n')  # JSON string\n        # One valid story\n        valid = json.dumps({\n            \"story_id\": \"valid-one\", \"story_type\": \"test\",\n            \"events\": [],\n            \"opened_at\": \"2024-01-01T00:00:00+00:00\",\n            \"closed_at\": \"2024-01-01T00:01:00+00:00\",\n            \"metadata\": {},\n        })\n        f.write(valid + \"\\n\")\n\n    try:\n        stories = []\n        async for story in read_stories(path):\n            stories.append(story)\n        assert len(stories) >= 1\n        assert any(s.story_id == \"valid-one\" for s in stories)\n    finally:\n        os.unlink(path)\n\n\n@pytest.mark.asyncio\nasync def test_goodhart_read_stories_closes_handle():\n    \"\"\"read_stories closes the file handle after partial iteration.\"\"\"\n    with tempfile.NamedTemporaryFile(suffix=\".jsonl\", delete=False, mode=\"w\") as f:\n        path = f.name\n        for i in range(10):\n            line = json.dumps({\n                \"story_id\": f\"s-{i}\", \"story_type\": \"test\",\n                \"events\": [], \"opened_at\": \"2024-01-01T00:00:00+00:00\",\n                \"closed_at\": \"2024-01-01T00:01:00+00:00\", \"metadata\": {},\n            })\n            f.write(line + \"\\n\")\n\n    try:\n        count = 0\n        async for story in read_stories(path):\n            count += 1\n            if count >= 2:\n                break\n\n        # If we get here without error, the generator cleanup worked.\n        # The file should remain readable (handle was properly closed).\n        assert count == 2\n        \n        # Verify file is accessible (not locked by an open handle)\n        with open(path, \"r\") as f:\n            f.read()\n    finally:\n        os.unlink(path)\n\n\n# ─── safe_emit tests ──────────────────────────────────────────────────────────\n\n@pytest.mark.asyncio\nasync def test_goodhart_safe_emit_preserves_sink_name_and_story_id():\n    \"\"\"safe_emit populates sink_name and story_id from its actual arguments.\"\"\"\n    unique_sink_name = \"custom_test_sink_xyz_unique_98765\"\n    unique_story_id = \"story_unique_abc_789_adversarial\"\n\n    async def mock_emit(story):\n        pass  # success\n\n    story = make_story(story_id=unique_story_id)\n    result = await safe_emit(unique_sink_name, mock_emit, story)\n\n    assert result.sink_name == unique_sink_name\n    assert result.story_id == unique_story_id\n    assert result.result == SinkEmitResult.emitted or str(result.result) == \"emitted\" or result.result == \"emitted\"\n\n\n@pytest.mark.asyncio\nasync def test_goodhart_safe_emit_error_message_content():\n    \"\"\"safe_emit captures the actual exception message in error_message.\"\"\"\n    unique_msg = \"specific_unique_error_text_12345_adversarial\"\n\n    async def failing_emit(story):\n        raise ValueError(unique_msg)\n\n    story = make_story(story_id=\"err-story\")\n    result = await safe_emit(\"test-sink\", failing_emit, story)\n\n    assert unique_msg in result.error_message\n    assert result.result == SinkEmitResult.error or str(result.result) == \"error\" or result.result == \"error\"\n\n\n@pytest.mark.asyncio\nasync def test_goodhart_safe_emit_emitted_has_empty_error():\n    \"\"\"safe_emit returns empty error_message when emit succeeds.\"\"\"\n    async def ok_emit(story):\n        pass\n\n    story = make_story()\n    result = await safe_emit(\"ok-sink\", ok_emit, story)\n    assert result.error_message == \"\"\n\n\n@pytest.mark.asyncio\nasync def test_goodhart_safe_emit_returns_correct_type():\n    \"\"\"safe_emit returns an object with the expected SafeEmitOutcome fields.\"\"\"\n    async def ok_emit(story):\n        pass\n\n    story = make_story(story_id=\"type-check\")\n    result = await safe_emit(\"type-sink\", ok_emit, story)\n\n    assert hasattr(result, \"sink_name\")\n    assert hasattr(result, \"story_id\")\n    assert hasattr(result, \"result\")\n    assert hasattr(result, \"error_message\")\n\n\n@pytest.mark.asyncio\nasync def test_goodhart_safe_emit_captures_runtime_error():\n    \"\"\"safe_emit captures RuntimeError (a common Exception subclass) without raising.\"\"\"\n    async def runtime_fail(story):\n        raise RuntimeError(\"runtime boom\")\n\n    story = make_story()\n    result = await safe_emit(\"rt-sink\", runtime_fail, story)\n    assert result.result == SinkEmitResult.error or str(result.result) == \"error\" or result.result == \"error\"\n    assert \"runtime boom\" in result.error_message\n\n\n# ─── FilePath validation tests ─────────────────────────────────────────────────\n\ndef test_goodhart_filepath_tabs_and_mixed_whitespace():\n    \"\"\"FilePath rejects strings of only tabs or mixed whitespace.\"\"\"\n    with pytest.raises(Exception):  # ValidationError\n        FilePath(value=\"\\t\\t\\t\")\n    with pytest.raises(Exception):\n        FilePath(value=\"\\t \\n \\r\")\n\n\ndef test_goodhart_filepath_whitespace_with_content():\n    \"\"\"FilePath accepts strings with whitespace that also contain non-whitespace.\"\"\"\n    # Should not raise\n    fp1 = FilePath(value=\" /tmp/file.txt \")\n    fp2 = FilePath(value=\"path with spaces/file.txt\")\n    # Just verify they were created\n    assert fp1 is not None\n    assert fp2 is not None\n\n\ndef test_goodhart_filepath_length_4095():\n    \"\"\"FilePath accepts exactly 4095 characters.\"\"\"\n    path_str = \"a\" * 4095\n    fp = FilePath(value=path_str)\n    assert fp is not None\n\n\ndef test_goodhart_filepath_length_1():\n    \"\"\"FilePath accepts a single-character string.\"\"\"\n    fp = FilePath(value=\"/\")\n    assert fp is not None\n\n\n# ─── PositiveInt / NonNegativeFloat tests ──────────────────────────────────────\n\ndef test_goodhart_positive_int_one():\n    \"\"\"PositiveInt accepts exactly 1 — the minimum valid value.\"\"\"\n    pi = PositiveInt(value=1)\n    assert pi is not None\n\n\ndef test_goodhart_positive_int_large():\n    \"\"\"PositiveInt accepts large integers.\"\"\"\n    pi = PositiveInt(value=999999)\n    assert pi is not None\n\n\ndef test_goodhart_nonneg_float_zero_exact():\n    \"\"\"NonNegativeFloat accepts exactly 0.0.\"\"\"\n    nf = NonNegativeFloat(value=0.0)\n    assert nf is not None\n\n\ndef test_goodhart_nonneg_float_very_small_negative():\n    \"\"\"NonNegativeFloat rejects very small negative values.\"\"\"\n    with pytest.raises(Exception):\n        NonNegativeFloat(value=-0.001)\n\n\n# ─── Placeholder sink tests ───────────────────────────────────────────────────\n\n@pytest.mark.asyncio\nasync def test_goodhart_stigmergy_emit_logs_story_type(caplog):\n    \"\"\"StigmergySink.emit log includes the actual story_type from the story.\"\"\"\n    sink = StigmergySink()\n    await sink.start()\n\n    unusual_type = \"xyzzy_custom_type_42\"\n    story = make_story(story_id=\"stig-test\", story_type=unusual_type)\n\n    with caplog.at_level(logging.DEBUG, logger=\"chronicler.sinks.stigmergy\"):\n        await sink.emit(story)\n\n    log_text = \" \".join(r.message for r in caplog.records)\n    assert unusual_type in log_text, (\n        f\"Expected story_type '{unusual_type}' in log output, got: {log_text}\"\n    )\n    await sink.close()\n\n\n@pytest.mark.asyncio\nasync def test_goodhart_apprentice_emit_logs_event_count(caplog):\n    \"\"\"ApprenticeSink.emit log includes the actual event count from the story.\"\"\"\n    sink = ApprenticeSink()\n    await sink.start()\n\n    events = [{\"e\": i} for i in range(7)]\n    story = make_story(story_id=\"app-test\", events=events)\n\n    with caplog.at_level(logging.DEBUG, logger=\"chronicler.sinks.apprentice\"):\n        await sink.emit(story)\n\n    log_text = \" \".join(r.message for r in caplog.records)\n    assert \"7\" in log_text, (\n        f\"Expected event count '7' in log output, got: {log_text}\"\n    )\n    await sink.close()\n\n\n@pytest.mark.asyncio\nasync def test_goodhart_stigmergy_emit_before_start():\n    \"\"\"StigmergySink should enforce start() precondition on emit().\"\"\"\n    sink = StigmergySink()\n    story = make_story()\n    # The contract says precondition: start() has been called.\n    # Implementation may raise or may not — but we test that\n    # the sink handles this case in some defined way.\n    try:\n        await sink.emit(story)\n        # If it doesn't raise, that's acceptable for a placeholder\n    except (RuntimeError, Exception):\n        # If it raises, that's also acceptable\n        pass\n\n\n# ─── KindexSinkConfig tests ───────────────────────────────────────────────────\n\ndef test_goodhart_kindex_config_fields():\n    \"\"\"KindexSinkConfig stores all three fields accessibly.\"\"\"\n    config = make_kindex_config(\n        story_types={\"alpha\", \"beta\"},\n        min_event_count=42,\n        min_duration_seconds=99.5,\n    )\n    assert config.story_types == {\"alpha\", \"beta\"}\n    assert config.min_event_count == 42\n    assert config.min_duration_seconds == 99.5\n\n\n# ─── DiskSink restart after close ─────────────────────────────────────────────\n\n@pytest.mark.asyncio\nasync def test_goodhart_disk_multiple_start_close_cycles():\n    \"\"\"DiskSink behavior after close() + start() again — contract says no double-start.\"\"\"\n    with tempfile.NamedTemporaryFile(suffix=\".jsonl\", delete=False) as f:\n        path = f.name\n    try:\n        config = make_disk_config(path=path, flush_on_write=True)\n        sink = DiskSink(config)\n        await sink.start()\n        await sink.emit(make_story(story_id=\"cycle-1\"))\n        await sink.close()\n\n        # Attempting to start again after close — implementation should\n        # either allow it (fresh start) or raise consistently\n        try:\n            await sink.start()\n            await sink.emit(make_story(story_id=\"cycle-2\"))\n            await sink.close()\n            # If restart works, verify both stories are in the file\n            with open(path, \"r\") as f:\n                lines = [l for l in f.readlines() if l.strip()]\n            assert len(lines) == 2\n        except (RuntimeError, Exception):\n            # If restart raises, that's also valid behavior\n            pass\n    finally:\n        os.unlink(path)\n"
+}

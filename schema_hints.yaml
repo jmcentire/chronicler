@@ -1,0 +1,35 @@
+version: "1.0"
+generated_by: constrain
+session_id: chronicler_001
+
+storage_backends:
+  - owner_component: "chronicler_core"
+    type: unknown
+    description: "in-memory story correlation state with bounded eviction"
+  - owner_component: "chronicler_core"
+    type: unknown
+    description: "JSONL file persistence for completed stories"
+
+field_hints:
+  - backend_owner: "chronicler_core"
+    field_description: "trace_id for request story correlation"
+    likely_classification: PUBLIC
+    likely_annotations: []
+    rationale: "correlation identifier for operational telemetry"
+  - backend_owner: "chronicler_core"
+    field_description: "entity_id and component_id for service story correlation"
+    likely_classification: PUBLIC
+    likely_annotations: []
+    rationale: "service identification for operational correlation"
+  - backend_owner: "chronicler_core"
+    field_description: "session_id for journey story correlation"
+    likely_classification: PUBLIC
+    likely_annotations: []
+    rationale: "session tracking for user journey assembly"
+  - backend_owner: "chronicler_core"
+    field_description: "story timeout timestamps"
+    likely_classification: PUBLIC
+    likely_annotations: []
+    rationale: "operational metadata for story lifecycle management"
+
+_note: "Interview did not surface specific storage technologies or detailed field schemas. Storage backend types marked as unknown pending implementation decisions."

@@ -1,0 +1,617 @@
+{
+  "component_id": "config",
+  "contract_version": 1,
+  "test_cases": [
+    {
+      "id": "GH_001",
+      "description": "Three or more correlation rules with the same name should trigger duplicate_rule_names error, not just exactly two duplicates",
+      "function": "validate_config_dict",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "Config with three rules all sharing the same name 'rule-alpha'",
+      "expected_output_description": "",
+      "expected_error": "duplicate_rule_names",
+      "assertions": [
+        "ConfigError is raised",
+        "error relates to duplicate rule names"
+      ]
+    },
+    {
+      "id": "GH_002",
+      "description": "Port conflict detection: two sources on the same bind_address and port should be rejected",
+      "function": "validate_config_dict",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "Two webhook sources both binding to 0.0.0.0:8080",
+      "expected_output_description": "",
+      "expected_error": "validation_error or port conflict error",
+      "assertions": [
+        "ConfigError is raised for port conflict on same bind_address"
+      ]
+    },
+    {
+      "id": "GH_003",
+      "description": "NoteworthinessThreshold must reject values slightly above 1.0 (e.g., 1.01)",
+      "function": "validate_config_dict",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "Kindex config with noteworthiness_threshold=1.01",
+      "expected_output_description": "",
+      "expected_error": "validation_error",
+      "assertions": [
+        "ConfigError is raised for threshold above 1.0"
+      ]
+    },
+    {
+      "id": "GH_004",
+      "description": "NoteworthinessThreshold must reject values slightly below 0.0 (e.g., -0.01)",
+      "function": "validate_config_dict",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "Kindex config with noteworthiness_threshold=-0.01",
+      "expected_output_description": "",
+      "expected_error": "validation_error",
+      "assertions": [
+        "ConfigError is raised for negative threshold"
+      ]
+    },
+    {
+      "id": "GH_005",
+      "description": "bind_address at maximum length 253 should be accepted; length 254 should be rejected",
+      "function": "validate_config_dict",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "Webhook source with bind_address of exactly 253 chars, and separately 254 chars",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "253-char bind_address is accepted",
+        "254-char bind_address raises ConfigError"
+      ]
+    },
+    {
+      "id": "GH_006",
+      "description": "CorrelationRuleConfig name at exactly 128 characters should be accepted",
+      "function": "validate_config_dict",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "Rule with name of exactly 128 alphanumeric characters",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "128-char name is accepted and present in returned config"
+      ]
+    },
+    {
+      "id": "GH_007",
+      "description": "MatchCondition pattern must not accept empty string (min length 1)",
+      "function": "validate_config_dict",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "Match condition with empty pattern string",
+      "expected_output_description": "",
+      "expected_error": "validation_error",
+      "assertions": [
+        "ConfigError raised for empty pattern"
+      ]
+    },
+    {
+      "id": "GH_008",
+      "description": "CorrelationRuleConfig group_by must have at least one element (min length 1)",
+      "function": "validate_config_dict",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "Rule with empty group_by list",
+      "expected_output_description": "",
+      "expected_error": "validation_error",
+      "assertions": [
+        "ConfigError raised for empty group_by"
+      ]
+    },
+    {
+      "id": "GH_009",
+      "description": "Multiple invalid regex patterns across different rules should all be caught",
+      "function": "validate_config_dict",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "Two rules each with an is_regex=true match condition containing invalid regex patterns like '[unclosed' and '(?P<bad'",
+      "expected_output_description": "",
+      "expected_error": "invalid_regex_pattern",
+      "assertions": [
+        "ConfigError is raised for invalid regex"
+      ]
+    },
+    {
+      "id": "GH_010",
+      "description": "DiskSinkConfig should reject empty output_dir string",
+      "function": "validate_config_dict",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "Disk sink with output_dir=''",
+      "expected_output_description": "",
+      "expected_error": "validation_error",
+      "assertions": [
+        "ConfigError raised for empty output_dir"
+      ]
+    },
+    {
+      "id": "GH_011",
+      "description": "ApprenticeSinkConfig should reject URLs not matching ^https?://.+ pattern, such as 'ftp://example.com'",
+      "function": "validate_config_dict",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "Apprentice sink with url='ftp://example.com'",
+      "expected_output_description": "",
+      "expected_error": "validation_error",
+      "assertions": [
+        "ConfigError raised for non-http(s) URL in apprentice sink"
+      ]
+    },
+    {
+      "id": "GH_012",
+      "description": "KindexSinkConfig should reject URLs not matching ^https?://.+ pattern",
+      "function": "validate_config_dict",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "Kindex sink with url='not-a-url'",
+      "expected_output_description": "",
+      "expected_error": "validation_error",
+      "assertions": [
+        "ConfigError raised for invalid kindex sink URL"
+      ]
+    },
+    {
+      "id": "GH_013",
+      "description": "OtlpSourceConfig should reject port=0 and port=65536 just like WebhookSourceConfig",
+      "function": "validate_config_dict",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "OTLP source with port=0",
+      "expected_output_description": "",
+      "expected_error": "validation_error",
+      "assertions": [
+        "ConfigError raised for OTLP port below minimum"
+      ]
+    },
+    {
+      "id": "GH_014",
+      "description": "SentinelSourceConfig should reject port=0 and empty bind_address",
+      "function": "validate_config_dict",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "Sentinel source with port=0",
+      "expected_output_description": "",
+      "expected_error": "validation_error",
+      "assertions": [
+        "ConfigError raised for sentinel port below minimum"
+      ]
+    },
+    {
+      "id": "GH_015",
+      "description": "FileSourceConfig should reject empty path string (min length 1)",
+      "function": "validate_config_dict",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "File source with path=''",
+      "expected_output_description": "",
+      "expected_error": "validation_error",
+      "assertions": [
+        "ConfigError raised for empty file source path"
+      ]
+    },
+    {
+      "id": "GH_016",
+      "description": "Config with only file and sentinel sources (no webhook/otlp) should validate correctly to ensure all union branches work independently",
+      "function": "validate_config_dict",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "Config with one file source and one sentinel source, disk sink, one rule",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Config validates successfully",
+        "sources list has 2 elements of correct types"
+      ]
+    },
+    {
+      "id": "GH_017",
+      "description": "Kindex config with null/missing kindex section but no kindex sink should still validate successfully",
+      "function": "validate_config_dict",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "Config with kindex field explicitly set to None/null and only disk sink",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Config validates successfully without kindex section when no kindex sink present"
+      ]
+    },
+    {
+      "id": "GH_018",
+      "description": "WebhookSourceConfig path with just '/' should be accepted (regex ^/.*)",
+      "function": "validate_config_dict",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "Webhook source with path='/'",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Path '/' is accepted as valid"
+      ]
+    },
+    {
+      "id": "GH_019",
+      "description": "Returned config preserves exact values for uncommon but valid field values, not just typical test values",
+      "function": "validate_config_dict",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "Config with max_open_stories=42, story_timeout_seconds=999, unusual but valid field values",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "max_open_stories equals 42",
+        "story_timeout_seconds equals 999"
+      ]
+    },
+    {
+      "id": "GH_020",
+      "description": "Kindex config with noteworthiness_threshold=0.5 and non-empty event_type_filters and tag_patterns should be accessible on the returned config",
+      "function": "validate_config_dict",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "Full config with kindex section containing threshold=0.5, event_type_filters=['alert','incident'], tag_patterns=['security.*']",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "kindex.noteworthiness_threshold equals 0.5",
+        "kindex.event_type_filters has 2 items",
+        "kindex.tag_patterns has 1 item"
+      ]
+    },
+    {
+      "id": "GH_021",
+      "description": "CorrelationRuleConfig name with dots and hyphens should be accepted (regex ^[a-zA-Z0-9_.-]+$)",
+      "function": "validate_config_dict",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "Rule with name='my-rule.v2_test'",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Name with dots, hyphens, and underscores is accepted"
+      ]
+    },
+    {
+      "id": "GH_022",
+      "description": "CorrelationRuleConfig name with spaces should be rejected by the regex ^[a-zA-Z0-9_.-]+$",
+      "function": "validate_config_dict",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "Rule with name='my rule'",
+      "expected_output_description": "",
+      "expected_error": "validation_error",
+      "assertions": [
+        "ConfigError raised for name containing spaces"
+      ]
+    },
+    {
+      "id": "GH_023",
+      "description": "Passing a non-dict (e.g., a list) to validate_config_dict should raise an appropriate error",
+      "function": "validate_config_dict",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "data=[{'sources': []}] (a list instead of dict)",
+      "expected_output_description": "",
+      "expected_error": "validation_error",
+      "assertions": [
+        "ConfigError or TypeError raised for non-dict input"
+      ]
+    },
+    {
+      "id": "GH_024",
+      "description": "Config with a complex regex pattern in match_condition (is_regex=true) that is valid should pass, e.g., lookahead",
+      "function": "validate_config_dict",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "Match condition with is_regex=true and pattern='(?=.*error)(?=.*critical).*'",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Complex but valid regex pattern is accepted"
+      ]
+    },
+    {
+      "id": "GH_025",
+      "description": "StigmergySinkConfig should accept both http and https URLs",
+      "function": "validate_config_dict",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "Config with one stigmergy sink using http:// and another using https://",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Both http and https URLs are accepted for stigmergy sink"
+      ]
+    },
+    {
+      "id": "GH_026",
+      "description": "FileSourceConfig poll_interval_seconds just below 0.1 (e.g., 0.09) should be rejected",
+      "function": "validate_config_dict",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "File source with poll_interval_seconds=0.09",
+      "expected_output_description": "",
+      "expected_error": "validation_error",
+      "assertions": [
+        "ConfigError raised for poll_interval just below minimum"
+      ]
+    },
+    {
+      "id": "GH_027",
+      "description": "Multiple match conditions in a single rule should all be validated, including regex checks",
+      "function": "validate_config_dict",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "Rule with two match_conditions: first is valid (is_regex=false), second has is_regex=true with invalid regex '*invalid'",
+      "expected_output_description": "",
+      "expected_error": "invalid_regex_pattern",
+      "assertions": [
+        "ConfigError raised even when invalid regex is not the first match condition"
+      ]
+    },
+    {
+      "id": "GH_028",
+      "description": "The source_label parameter should be included or referenced in error context for validate_config_dict errors",
+      "function": "validate_config_dict",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "Invalid config dict with source_label='my-custom-label'",
+      "expected_output_description": "",
+      "expected_error": "validation_error",
+      "assertions": [
+        "ConfigError is raised",
+        "source_label context may be included in error"
+      ]
+    },
+    {
+      "id": "GH_029",
+      "description": "Frozen model invariant: nested config objects (sources, sinks, rules, kindex) should also be immutable",
+      "function": "validate_config_dict",
+      "category": "invariant",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "Valid config; attempt to mutate a nested source object's port",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Attempting to set attribute on nested source raises TypeError or similar"
+      ]
+    },
+    {
+      "id": "GH_030",
+      "description": "YAML that parses to a scalar (e.g., just a string 'hello') should raise validation_error or empty_config, not crash",
+      "function": "load_config",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "YAML file containing just the string 'hello'",
+      "expected_output_description": "",
+      "expected_error": "ConfigError is raised (validation_error)",
+      "assertions": [
+        "ConfigError is raised, not an unhandled exception"
+      ]
+    },
+    {
+      "id": "GH_031",
+      "description": "YAML that parses to a list should raise validation_error, not crash",
+      "function": "load_config",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "YAML file containing '- item1\\n- item2'",
+      "expected_output_description": "",
+      "expected_error": "ConfigError is raised (validation_error)",
+      "assertions": [
+        "ConfigError is raised for non-dict YAML root"
+      ]
+    },
+    {
+      "id": "GH_032",
+      "description": "OtlpSourceConfig should accept boundary port values 1 and 65535, same as WebhookSourceConfig",
+      "function": "validate_config_dict",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "OTLP source with port=1 and separately port=65535",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Port 1 is accepted for OTLP",
+        "Port 65535 is accepted for OTLP"
+      ]
+    },
+    {
+      "id": "GH_033",
+      "description": "SentinelSourceConfig should accept boundary port values and valid bind_address",
+      "function": "validate_config_dict",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "Sentinel source with port=1, bind_address='localhost'",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Sentinel source with port=1 is accepted"
+      ]
+    },
+    {
+      "id": "GH_034",
+      "description": "MatchCondition field at exactly 1 character should be accepted (min length 1)",
+      "function": "validate_config_dict",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "Match condition with field='x'",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Single character field name is accepted"
+      ]
+    },
+    {
+      "id": "GH_035",
+      "description": "Config with many rules (e.g., 10+) with unique names should validate; checks that uniqueness check works at scale, not just for 2",
+      "function": "validate_config_dict",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "Config with 10 rules, each with a distinct name like rule-1 through rule-10",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "All 10 rules validate successfully",
+        "rules list has 10 elements"
+      ]
+    },
+    {
+      "id": "GH_036",
+      "description": "WebhookSourceConfig path with deep nesting like '/api/v2/events/webhook' should be accepted",
+      "function": "validate_config_dict",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "Webhook source with path='/api/v2/events/webhook'",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Deep nested path is accepted"
+      ]
+    },
+    {
+      "id": "GH_037",
+      "description": "CorrelationRuleConfig name with only a single character should be accepted (min length 1, valid regex char)",
+      "function": "validate_config_dict",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "Rule with name='a'",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Single character name is accepted"
+      ]
+    },
+    {
+      "id": "GH_038",
+      "description": "SentinelSourceConfig with empty bind_address should be rejected",
+      "function": "validate_config_dict",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "Sentinel source with bind_address=''",
+      "expected_output_description": "",
+      "expected_error": "validation_error",
+      "assertions": [
+        "ConfigError raised for empty sentinel bind_address"
+      ]
+    },
+    {
+      "id": "GH_039",
+      "description": "OtlpSourceConfig with empty bind_address should be rejected",
+      "function": "validate_config_dict",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "OTLP source with bind_address=''",
+      "expected_output_description": "",
+      "expected_error": "validation_error",
+      "assertions": [
+        "ConfigError raised for empty OTLP bind_address"
+      ]
+    },
+    {
+      "id": "GH_040",
+      "description": "Port conflict: webhook and sentinel sources on same bind_address and same port should be detected",
+      "function": "validate_config_dict",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "Webhook source on 0.0.0.0:8080 and sentinel source on 0.0.0.0:8080",
+      "expected_output_description": "",
+      "expected_error": "port conflict or validation_error",
+      "assertions": [
+        "ConfigError raised for port conflict across different source types on same address"
+      ]
+    }
+  ],
+  "test_language": "python",
+  "generated_code": "\"\"\"\nHidden adversarial acceptance tests for Configuration Loading component.\n\nThese tests target gaps in the visible test suite to catch implementations\nthat hardcode returns or take shortcuts based on visible test inputs.\n\"\"\"\nimport os\nimport stat\nimport tempfile\nimport textwrap\n\nimport pytest\nimport yaml\n\nfrom src.config import (\n    ConfigError,\n    ChroniclerConfig,\n    load_config,\n    validate_config_dict,\n)\n\n\n# ── Helpers ──────────────────────────────────────────────────────────────\n\ndef _minimal_config(**overrides):\n    \"\"\"Return a minimal valid config dict, with optional overrides merged in.\"\"\"\n    base = {\n        \"sources\": [\n            {\"type\": \"webhook\", \"bind_address\": \"0.0.0.0\", \"port\": 8080, \"path\": \"/events\"}\n        ],\n        \"sinks\": [\n            {\"type\": \"stigmergy\", \"url\": \"http://stigmergy.local:9000\"}\n        ],\n        \"rules\": [\n            {\n                \"name\": \"default-rule\",\n                \"match_conditions\": [{\"field\": \"event_type\", \"pattern\": \"alert\", \"is_regex\": False}],\n                \"group_by\": [\"source_id\"],\n                \"window_seconds\": 60,\n            }\n        ],\n    }\n    base.update(overrides)\n    return base\n\n\ndef _write_yaml_tempfile(content: str) -> str:\n    \"\"\"Write content to a temp YAML file, return its path.\"\"\"\n    f = tempfile.NamedTemporaryFile(mode=\"w\", suffix=\".yaml\", delete=False)\n    f.write(content)\n    f.close()\n    return f.name\n\n\n# ── Tests ────────────────────────────────────────────────────────────────\n\nclass TestGoodhartDuplicateRuleNames:\n    def test_goodhart_three_duplicate_rule_names(self):\n        \"\"\"Three or more correlation rules with the same name should trigger duplicate_rule_names error, not just exactly two duplicates.\"\"\"\n        data = _minimal_config(rules=[\n            {\"name\": \"rule-alpha\", \"match_conditions\": [{\"field\": \"f\", \"pattern\": \"p\", \"is_regex\": False}], \"group_by\": [\"g\"], \"window_seconds\": 10},\n            {\"name\": \"rule-alpha\", \"match_conditions\": [{\"field\": \"f\", \"pattern\": \"p\", \"is_regex\": False}], \"group_by\": [\"g\"], \"window_seconds\": 20},\n            {\"name\": \"rule-alpha\", \"match_conditions\": [{\"field\": \"f\", \"pattern\": \"p\", \"is_regex\": False}], \"group_by\": [\"g\"], \"window_seconds\": 30},\n        ])\n        with pytest.raises(ConfigError):\n            validate_config_dict(data, \"test\")\n\n\nclass TestGoodhartPortConflicts:\n    def test_goodhart_same_address_same_port_two_webhooks(self):\n        \"\"\"Port conflict detection: two sources on the same bind_address and port should be rejected.\"\"\"\n        data = _minimal_config(sources=[\n            {\"type\": \"webhook\", \"bind_address\": \"0.0.0.0\", \"port\": 8080, \"path\": \"/a\"},\n            {\"type\": \"webhook\", \"bind_address\": \"0.0.0.0\", \"port\": 8080, \"path\": \"/b\"},\n        ])\n        with pytest.raises(ConfigError):\n            validate_config_dict(data, \"test\")\n\n    def test_goodhart_cross_type_port_conflict(self):\n        \"\"\"Port conflict: webhook and sentinel sources on same bind_address and same port should be detected.\"\"\"\n        data = _minimal_config(sources=[\n            {\"type\": \"webhook\", \"bind_address\": \"0.0.0.0\", \"port\": 8080, \"path\": \"/hook\"},\n            {\"type\": \"sentinel\", \"bind_address\": \"0.0.0.0\", \"port\": 8080},\n        ])\n        with pytest.raises(ConfigError):\n            validate_config_dict(data, \"test\")\n\n    def test_goodhart_different_address_same_port_no_conflict(self):\n        \"\"\"Same port on different bind addresses should NOT conflict.\"\"\"\n        data = _minimal_config(sources=[\n            {\"type\": \"webhook\", \"bind_address\": \"127.0.0.1\", \"port\": 8080, \"path\": \"/a\"},\n            {\"type\": \"webhook\", \"bind_address\": \"192.168.1.1\", \"port\": 8080, \"path\": \"/b\"},\n        ])\n        result = validate_config_dict(data, \"test\")\n        assert len(result.sources) == 2\n\n\nclass TestGoodhartNoteworthinessThresholdBoundaries:\n    def test_goodhart_threshold_slightly_above_one(self):\n        \"\"\"NoteworthinessThreshold must reject values slightly above 1.0.\"\"\"\n        data = _minimal_config(\n            sinks=[{\"type\": \"kindex\", \"url\": \"http://kindex.local\"}],\n            kindex={\"noteworthiness_threshold\": 1.01, \"event_type_filters\": [], \"tag_patterns\": []},\n        )\n        with pytest.raises(ConfigError):\n            validate_config_dict(data, \"test\")\n\n    def test_goodhart_threshold_slightly_below_zero(self):\n        \"\"\"NoteworthinessThreshold must reject negative values.\"\"\"\n        data = _minimal_config(\n            sinks=[{\"type\": \"kindex\", \"url\": \"http://kindex.local\"}],\n            kindex={\"noteworthiness_threshold\": -0.01, \"event_type_filters\": [], \"tag_patterns\": []},\n        )\n        with pytest.raises(ConfigError):\n            validate_config_dict(data, \"test\")\n\n\nclass TestGoodhartBindAddressLength:\n    def test_goodhart_bind_address_max_253_accepted(self):\n        \"\"\"bind_address at exactly 253 characters should be accepted.\"\"\"\n        addr = \"a\" * 253\n        data = _minimal_config(sources=[\n            {\"type\": \"webhook\", \"bind_address\": addr, \"port\": 8080, \"path\": \"/events\"}\n        ])\n        result = validate_config_dict(data, \"test\")\n        assert len(result.sources[0].bind_address) == 253\n\n    def test_goodhart_bind_address_254_rejected(self):\n        \"\"\"bind_address at 254 characters (above max 253) should be rejected.\"\"\"\n        addr = \"a\" * 254\n        data = _minimal_config(sources=[\n            {\"type\": \"webhook\", \"bind_address\": addr, \"port\": 8080, \"path\": \"/events\"}\n        ])\n        with pytest.raises(ConfigError):\n            validate_config_dict(data, \"test\")\n\n\nclass TestGoodhartRuleNameEdge:\n    def test_goodhart_name_exactly_128_accepted(self):\n        \"\"\"Rule name at exactly 128 characters should be accepted.\"\"\"\n        name = \"a\" * 128\n        data = _minimal_config(rules=[\n            {\"name\": name, \"match_conditions\": [{\"field\": \"f\", \"pattern\": \"p\", \"is_regex\": False}], \"group_by\": [\"g\"], \"window_seconds\": 60}\n        ])\n        result = validate_config_dict(data, \"test\")\n        assert result.rules[0].name == name\n\n    def test_goodhart_name_single_char(self):\n        \"\"\"Rule name with only a single character should be accepted.\"\"\"\n        data = _minimal_config(rules=[\n            {\"name\": \"a\", \"match_conditions\": [{\"field\": \"f\", \"pattern\": \"p\", \"is_regex\": False}], \"group_by\": [\"g\"], \"window_seconds\": 60}\n        ])\n        result = validate_config_dict(data, \"test\")\n        assert result.rules[0].name == \"a\"\n\n    def test_goodhart_name_with_dots_hyphens_underscores(self):\n        \"\"\"Rule name with dots, hyphens, and underscores should be accepted.\"\"\"\n        data = _minimal_config(rules=[\n            {\"name\": \"my-rule.v2_test\", \"match_conditions\": [{\"field\": \"f\", \"pattern\": \"p\", \"is_regex\": False}], \"group_by\": [\"g\"], \"window_seconds\": 60}\n        ])\n        result = validate_config_dict(data, \"test\")\n        assert result.rules[0].name == \"my-rule.v2_test\"\n\n    def test_goodhart_name_with_spaces_rejected(self):\n        \"\"\"Rule name containing spaces should be rejected by the name regex.\"\"\"\n        data = _minimal_config(rules=[\n            {\"name\": \"my rule\", \"match_conditions\": [{\"field\": \"f\", \"pattern\": \"p\", \"is_regex\": False}], \"group_by\": [\"g\"], \"window_seconds\": 60}\n        ])\n        with pytest.raises(ConfigError):\n            validate_config_dict(data, \"test\")\n\n\nclass TestGoodhartMatchConditionValidation:\n    def test_goodhart_empty_pattern_rejected(self):\n        \"\"\"MatchCondition pattern must not accept empty string.\"\"\"\n        data = _minimal_config(rules=[\n            {\"name\": \"r1\", \"match_conditions\": [{\"field\": \"f\", \"pattern\": \"\", \"is_regex\": False}], \"group_by\": [\"g\"], \"window_seconds\": 60}\n        ])\n        with pytest.raises(ConfigError):\n            validate_config_dict(data, \"test\")\n\n    def test_goodhart_empty_group_by_rejected(self):\n        \"\"\"CorrelationRuleConfig group_by must have at least one element.\"\"\"\n        data = _minimal_config(rules=[\n            {\"name\": \"r1\", \"match_conditions\": [{\"field\": \"f\", \"pattern\": \"p\", \"is_regex\": False}], \"group_by\": [], \"window_seconds\": 60}\n        ])\n        with pytest.raises(ConfigError):\n            validate_config_dict(data, \"test\")\n\n    def test_goodhart_single_char_field_accepted(self):\n        \"\"\"MatchCondition field at exactly 1 character should be accepted.\"\"\"\n        data = _minimal_config(rules=[\n            {\"name\": \"r1\", \"match_conditions\": [{\"field\": \"x\", \"pattern\": \"p\", \"is_regex\": False}], \"group_by\": [\"g\"], \"window_seconds\": 60}\n        ])\n        result = validate_config_dict(data, \"test\")\n        assert result.rules[0].match_conditions[0].field == \"x\"\n\n    def test_goodhart_second_match_condition_invalid_regex(self):\n        \"\"\"Invalid regex in a non-first match condition should still be caught.\"\"\"\n        data = _minimal_config(rules=[\n            {\n                \"name\": \"r1\",\n                \"match_conditions\": [\n                    {\"field\": \"f1\", \"pattern\": \"ok\", \"is_regex\": False},\n                    {\"field\": \"f2\", \"pattern\": \"*invalid\", \"is_regex\": True},\n                ],\n                \"group_by\": [\"g\"],\n                \"window_seconds\": 60,\n            }\n        ])\n        with pytest.raises(ConfigError):\n            validate_config_dict(data, \"test\")\n\n    def test_goodhart_complex_valid_regex_accepted(self):\n        \"\"\"Complex but valid regex with lookahead should be accepted.\"\"\"\n        data = _minimal_config(rules=[\n            {\n                \"name\": \"r1\",\n                \"match_conditions\": [{\"field\": \"msg\", \"pattern\": \"(?=.*error)(?=.*critical).*\", \"is_regex\": True}],\n                \"group_by\": [\"g\"],\n                \"window_seconds\": 60,\n            }\n        ])\n        result = validate_config_dict(data, \"test\")\n        assert result.rules[0].match_conditions[0].is_regex is True\n\n\nclass TestGoodhartSinkValidation:\n    def test_goodhart_disk_sink_empty_output_dir_rejected(self):\n        \"\"\"DiskSinkConfig should reject empty output_dir string.\"\"\"\n        data = _minimal_config(sinks=[{\"type\": \"disk\", \"output_dir\": \"\"}])\n        with pytest.raises(ConfigError):\n            validate_config_dict(data, \"test\")\n\n    def test_goodhart_apprentice_ftp_url_rejected(self):\n        \"\"\"ApprenticeSinkConfig should reject non-http(s) URLs like ftp://.\"\"\"\n        data = _minimal_config(sinks=[{\"type\": \"apprentice\", \"url\": \"ftp://example.com\"}])\n        with pytest.raises(ConfigError):\n            validate_config_dict(data, \"test\")\n\n    def test_goodhart_kindex_invalid_url_rejected(self):\n        \"\"\"KindexSinkConfig should reject URLs not matching ^https?://.+.\"\"\"\n        data = _minimal_config(\n            sinks=[{\"type\": \"kindex\", \"url\": \"not-a-url\"}],\n            kindex={\"noteworthiness_threshold\": 0.5, \"event_type_filters\": [], \"tag_patterns\": []},\n        )\n        with pytest.raises(ConfigError):\n            validate_config_dict(data, \"test\")\n\n    def test_goodhart_stigmergy_http_and_https_accepted(self):\n        \"\"\"Both http and https URLs should be accepted for stigmergy sink.\"\"\"\n        data = _minimal_config(sinks=[\n            {\"type\": \"stigmergy\", \"url\": \"http://stig.local:9000\"},\n            {\"type\": \"stigmergy\", \"url\": \"https://stig.secure:9443\"},\n        ])\n        result = validate_config_dict(data, \"test\")\n        assert len(result.sinks) == 2\n\n\nclass TestGoodhartSourceTypeValidation:\n    def test_goodhart_otlp_port_zero_rejected(self):\n        \"\"\"OtlpSourceConfig should reject port=0.\"\"\"\n        data = _minimal_config(sources=[\n            {\"type\": \"otlp\", \"bind_address\": \"0.0.0.0\", \"port\": 0}\n        ])\n        with pytest.raises(ConfigError):\n            validate_config_dict(data, \"test\")\n\n    def test_goodhart_sentinel_port_zero_rejected(self):\n        \"\"\"SentinelSourceConfig should reject port=0.\"\"\"\n        data = _minimal_config(sources=[\n            {\"type\": \"sentinel\", \"bind_address\": \"0.0.0.0\", \"port\": 0}\n        ])\n        with pytest.raises(ConfigError):\n            validate_config_dict(data, \"test\")\n\n    def test_goodhart_sentinel_empty_bind_address_rejected(self):\n        \"\"\"SentinelSourceConfig with empty bind_address should be rejected.\"\"\"\n        data = _minimal_config(sources=[\n            {\"type\": \"sentinel\", \"bind_address\": \"\", \"port\": 8080}\n        ])\n        with pytest.raises(ConfigError):\n            validate_config_dict(data, \"test\")\n\n    def test_goodhart_otlp_empty_bind_address_rejected(self):\n        \"\"\"OtlpSourceConfig with empty bind_address should be rejected.\"\"\"\n        data = _minimal_config(sources=[\n            {\"type\": \"otlp\", \"bind_address\": \"\", \"port\": 4317}\n        ])\n        with pytest.raises(ConfigError):\n            validate_config_dict(data, \"test\")\n\n    def test_goodhart_file_source_empty_path_rejected(self):\n        \"\"\"FileSourceConfig should reject empty path string.\"\"\"\n        data = _minimal_config(sources=[\n            {\"type\": \"file\", \"path\": \"\", \"poll_interval_seconds\": 1.0}\n        ])\n        with pytest.raises(ConfigError):\n            validate_config_dict(data, \"test\")\n\n    def test_goodhart_otlp_boundary_ports(self):\n        \"\"\"OtlpSourceConfig should accept boundary port values 1 and 65535.\"\"\"\n        for port in [1, 65535]:\n            data = _minimal_config(sources=[\n                {\"type\": \"otlp\", \"bind_address\": \"0.0.0.0\", \"port\": port}\n            ])\n            result = validate_config_dict(data, \"test\")\n            assert result.sources[0].port == port\n\n    def test_goodhart_sentinel_boundary_port(self):\n        \"\"\"SentinelSourceConfig should accept port=1.\"\"\"\n        data = _minimal_config(sources=[\n            {\"type\": \"sentinel\", \"bind_address\": \"localhost\", \"port\": 1}\n        ])\n        result = validate_config_dict(data, \"test\")\n        assert result.sources[0].port == 1\n\n\nclass TestGoodhartFileSourcePollInterval:\n    def test_goodhart_poll_interval_just_below_min_rejected(self):\n        \"\"\"FileSourceConfig poll_interval_seconds=0.09 should be rejected.\"\"\"\n        data = _minimal_config(sources=[\n            {\"type\": \"file\", \"path\": \"/var/log/events.jsonl\", \"poll_interval_seconds\": 0.09}\n        ])\n        with pytest.raises(ConfigError):\n            validate_config_dict(data, \"test\")\n\n\nclass TestGoodhartOnlyFileAndSentinelSources:\n    def test_goodhart_file_and_sentinel_only(self):\n        \"\"\"Config with only file and sentinel sources should validate.\"\"\"\n        data = _minimal_config(sources=[\n            {\"type\": \"file\", \"path\": \"/var/log/events.jsonl\", \"poll_interval_seconds\": 5.0},\n            {\"type\": \"sentinel\", \"bind_address\": \"0.0.0.0\", \"port\": 9090},\n        ])\n        result = validate_config_dict(data, \"test\")\n        assert len(result.sources) == 2\n\n\nclass TestGoodhartKindexConfigPresence:\n    def test_goodhart_explicit_null_kindex_no_kindex_sink(self):\n        \"\"\"Config with kindex explicitly null and no kindex sink should validate.\"\"\"\n        data = _minimal_config(kindex=None)\n        result = validate_config_dict(data, \"test\")\n        assert result.kindex is None\n\n\nclass TestGoodhartWebhookPath:\n    def test_goodhart_root_path_accepted(self):\n        \"\"\"WebhookSourceConfig path with just '/' should be accepted.\"\"\"\n        data = _minimal_config(sources=[\n            {\"type\": \"webhook\", \"bind_address\": \"0.0.0.0\", \"port\": 8080, \"path\": \"/\"}\n        ])\n        result = validate_config_dict(data, \"test\")\n        assert result.sources[0].path == \"/\"\n\n    def test_goodhart_deep_nested_path_accepted(self):\n        \"\"\"WebhookSourceConfig path with deep nesting should be accepted.\"\"\"\n        data = _minimal_config(sources=[\n            {\"type\": \"webhook\", \"bind_address\": \"0.0.0.0\", \"port\": 8080, \"path\": \"/api/v2/events/webhook\"}\n        ])\n        result = validate_config_dict(data, \"test\")\n        assert result.sources[0].path == \"/api/v2/events/webhook\"\n\n\nclass TestGoodhartUncommonButValidValues:\n    def test_goodhart_non_default_max_open_stories_and_timeout(self):\n        \"\"\"Returned config preserves exact values for non-typical field values.\"\"\"\n        data = _minimal_config(max_open_stories=42, story_timeout_seconds=999)\n        result = validate_config_dict(data, \"test\")\n        assert result.max_open_stories == 42\n        assert result.story_timeout_seconds == 999\n\n    def test_goodhart_kindex_with_filters_and_tags(self):\n        \"\"\"Kindex config with non-empty event_type_filters and tag_patterns should be accessible.\"\"\"\n        data = _minimal_config(\n            sinks=[{\"type\": \"kindex\", \"url\": \"http://kindex.local\"}],\n            kindex={\n                \"noteworthiness_threshold\": 0.5,\n                \"event_type_filters\": [\"alert\", \"incident\"],\n                \"tag_patterns\": [\"security.*\"],\n            },\n        )\n        result = validate_config_dict(data, \"test\")\n        assert result.kindex.noteworthiness_threshold == 0.5\n        assert len(result.kindex.event_type_filters) == 2\n        assert len(result.kindex.tag_patterns) == 1\n        assert \"alert\" in result.kindex.event_type_filters\n        assert \"security.*\" in result.kindex.tag_patterns\n\n\nclass TestGoodhartManyRules:\n    def test_goodhart_ten_unique_rules(self):\n        \"\"\"Config with 10 rules with unique names should validate.\"\"\"\n        rules = []\n        for i in range(10):\n            rules.append({\n                \"name\": f\"rule-{i}\",\n                \"match_conditions\": [{\"field\": \"f\", \"pattern\": \"p\", \"is_regex\": False}],\n                \"group_by\": [\"g\"],\n                \"window_seconds\": 60,\n            })\n        data = _minimal_config(rules=rules)\n        result = validate_config_dict(data, \"test\")\n        assert len(result.rules) == 10\n        names = [r.name for r in result.rules]\n        assert len(set(names)) == 10\n\n\nclass TestGoodhartFrozenNested:\n    def test_goodhart_nested_source_immutable(self):\n        \"\"\"Nested config objects (sources) should also be frozen/immutable.\"\"\"\n        data = _minimal_config()\n        result = validate_config_dict(data, \"test\")\n        with pytest.raises((TypeError, AttributeError, Exception)):\n            result.sources[0].port = 9999\n\n    def test_goodhart_nested_rule_immutable(self):\n        \"\"\"Nested config objects (rules) should also be frozen/immutable.\"\"\"\n        data = _minimal_config()\n        result = validate_config_dict(data, \"test\")\n        with pytest.raises((TypeError, AttributeError, Exception)):\n            result.rules[0].name = \"changed\"\n\n    def test_goodhart_nested_sink_immutable(self):\n        \"\"\"Nested config objects (sinks) should also be frozen/immutable.\"\"\"\n        data = _minimal_config()\n        result = validate_config_dict(data, \"test\")\n        with pytest.raises((TypeError, AttributeError, Exception)):\n            result.sinks[0].url = \"http://changed.local\"\n\n\nclass TestGoodhartYAMLNonDictRoot:\n    def test_goodhart_yaml_scalar_raises_config_error(self):\n        \"\"\"YAML that parses to a scalar should raise ConfigError, not crash.\"\"\"\n        path = _write_yaml_tempfile(\"hello\\n\")\n        try:\n            with pytest.raises(ConfigError):\n                load_config(path)\n        finally:\n            os.unlink(path)\n\n    def test_goodhart_yaml_list_raises_config_error(self):\n        \"\"\"YAML that parses to a list should raise ConfigError, not crash.\"\"\"\n        path = _write_yaml_tempfile(\"- item1\\n- item2\\n\")\n        try:\n            with pytest.raises(ConfigError):\n                load_config(path)\n        finally:\n            os.unlink(path)\n\n    def test_goodhart_yaml_integer_raises_config_error(self):\n        \"\"\"YAML that parses to an integer should raise ConfigError.\"\"\"\n        path = _write_yaml_tempfile(\"42\\n\")\n        try:\n            with pytest.raises(ConfigError):\n                load_config(path)\n        finally:\n            os.unlink(path)\n\n\nclass TestGoodhartNonDictInput:\n    def test_goodhart_list_input_to_validate(self):\n        \"\"\"Passing a list instead of dict to validate_config_dict should raise an error.\"\"\"\n        with pytest.raises((ConfigError, TypeError, ValueError, Exception)):\n            validate_config_dict([{\"sources\": []}], \"test\")\n\n\nclass TestGoodhartMultipleInvalidRegexes:\n    def test_goodhart_multiple_rules_with_invalid_regex(self):\n        \"\"\"Multiple invalid regex patterns across different rules should all be caught.\"\"\"\n        data = _minimal_config(rules=[\n            {\n                \"name\": \"rule-a\",\n                \"match_conditions\": [{\"field\": \"f\", \"pattern\": \"[unclosed\", \"is_regex\": True}],\n                \"group_by\": [\"g\"],\n                \"window_seconds\": 60,\n            },\n            {\n                \"name\": \"rule-b\",\n                \"match_conditions\": [{\"field\": \"f\", \"pattern\": \"(?P<bad\", \"is_regex\": True}],\n                \"group_by\": [\"g\"],\n                \"window_seconds\": 60,\n            },\n        ])\n        with pytest.raises(ConfigError):\n            validate_config_dict(data, \"test\")\n\n\nclass TestGoodhartLoadConfigViaFile:\n    def test_goodhart_valid_config_via_yaml_file(self):\n        \"\"\"load_config should produce the same result as validate_config_dict for the same data.\"\"\"\n        data = _minimal_config(max_open_stories=777, story_timeout_seconds=123)\n        yaml_content = yaml.dump(data)\n        path = _write_yaml_tempfile(yaml_content)\n        try:\n            result = load_config(path)\n            assert result.max_open_stories == 777\n            assert result.story_timeout_seconds == 123\n            assert len(result.sources) == 1\n            assert len(result.sinks) == 1\n            assert len(result.rules) == 1\n        finally:\n            os.unlink(path)\n\n    def test_goodhart_load_config_validation_error_in_file(self):\n        \"\"\"load_config should raise ConfigError for a YAML file with invalid schema.\"\"\"\n        yaml_content = yaml.dump({\"sources\": [], \"sinks\": [], \"rules\": []})\n        path = _write_yaml_tempfile(yaml_content)\n        try:\n            with pytest.raises(ConfigError):\n                load_config(path)\n        finally:\n            os.unlink(path)\n\n    def test_goodhart_load_config_kindex_cross_field_in_file(self):\n        \"\"\"load_config should enforce kindex cross-field check from YAML file.\"\"\"\n        data = _minimal_config(sinks=[{\"type\": \"kindex\", \"url\": \"http://kindex.local\"}])\n        # No kindex config section\n        yaml_content = yaml.dump(data)\n        path = _write_yaml_tempfile(yaml_content)\n        try:\n            with pytest.raises(ConfigError):\n                load_config(path)\n        finally:\n            os.unlink(path)\n\n    def test_goodhart_load_config_duplicate_rules_in_file(self):\n        \"\"\"load_config should enforce unique rule names from YAML file.\"\"\"\n        data = _minimal_config(rules=[\n            {\"name\": \"dup\", \"match_conditions\": [{\"field\": \"f\", \"pattern\": \"p\", \"is_regex\": False}], \"group_by\": [\"g\"], \"window_seconds\": 60},\n            {\"name\": \"dup\", \"match_conditions\": [{\"field\": \"f\", \"pattern\": \"p\", \"is_regex\": False}], \"group_by\": [\"g\"], \"window_seconds\": 30},\n        ])\n        yaml_content = yaml.dump(data)\n        path = _write_yaml_tempfile(yaml_content)\n        try:\n            with pytest.raises(ConfigError):\n                load_config(path)\n        finally:\n            os.unlink(path)\n"
+}

@@ -1,0 +1,901 @@
+{
+  "component_id": "sinks",
+  "name": "Story Sinks",
+  "description": "Four SinkProtocol implementations for emitting closed stories: (1) disk.py — writes closed stories as append-only JSONL with async file I/O and read-back deserialization, (2) stigmergy.py — placeholder that emits stories as Signals to Stigmergy, (3) apprentice.py — placeholder that emits stories as training sequences, (4) kindex.py — filtered emission of noteworthy stories as knowledge nodes based on configurable thresholds (story_type, min event count, duration). All sinks are fire-and-forget with error propagation to the orchestrator's safe_emit wrapper; a failing sink never blocks others or crashes the engine. Covers AC7 (disk persistence), AC8 (sink fan-out), AC17 (kindex filtering).",
+  "version": 1,
+  "types": [
+    {
+      "name": "SinkName",
+      "kind": "enum",
+      "fields": [],
+      "item_type": "",
+      "variants": [
+        "disk",
+        "stigmergy",
+        "apprentice",
+        "kindex"
+      ],
+      "inner_types": [],
+      "description": "Canonical names for the four built-in sink implementations."
+    },
+    {
+      "name": "DiskSinkConfig",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "path",
+          "type_ref": "FilePath",
+          "required": true,
+          "default": "",
+          "description": "Filesystem path to the JSONL output file for closed stories.",
+          "validators": []
+        },
+        {
+          "name": "flush_on_write",
+          "type_ref": "bool",
+          "required": false,
+          "default": "true",
+          "description": "Whether to flush the file handle after each write. Defaults to true for durability.",
+          "validators": []
+        }
+      ],
+      "item_type": "",
+      "variants": [],
+      "inner_types": [],
+      "description": "Frozen Pydantic configuration model for the disk JSONL sink."
+    },
+    {
+      "name": "FilePath",
+      "kind": "primitive",
+      "fields": [
+        {
+          "name": "value",
+          "type_ref": "str",
+          "required": true,
+          "default": "",
+          "description": "",
+          "validators": [
+            {
+              "kind": "length",
+              "expression": "min=1, max=4096",
+              "error_message": "File path must be between 1 and 4096 characters."
+            },
+            {
+              "kind": "custom",
+              "expression": "not value.isspace()",
+              "error_message": "File path must not be blank/whitespace-only."
+            }
+          ]
+        }
+      ],
+      "item_type": "",
+      "variants": [],
+      "inner_types": [],
+      "description": "A non-empty filesystem path string."
+    },
+    {
+      "name": "KindexSinkConfig",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "story_types",
+          "type_ref": "OptionalStringSet",
+          "required": false,
+          "default": "None",
+          "description": "If set, only stories whose story_type is in this set are considered noteworthy. None means all story types qualify.",
+          "validators": []
+        },
+        {
+          "name": "min_event_count",
+          "type_ref": "PositiveInt",
+          "required": false,
+          "default": "1",
+          "description": "Minimum number of events a story must contain to be noteworthy.",
+          "validators": []
+        },
+        {
+          "name": "min_duration_seconds",
+          "type_ref": "NonNegativeFloat",
+          "required": false,
+          "default": "0.0",
+          "description": "Minimum duration in seconds between opened_at and closed_at for a story to be noteworthy.",
+          "validators": []
+        }
+      ],
+      "item_type": "",
+      "variants": [],
+      "inner_types": [],
+      "description": "Frozen Pydantic configuration model for the kindex knowledge-capture sink. Defines thresholds that determine whether a story is 'noteworthy' enough to emit as a knowledge node (per AS12)."
+    },
+    {
+      "name": "OptionalStringSet",
+      "kind": "optional",
+      "fields": [],
+      "item_type": "list[str]",
+      "variants": [],
+      "inner_types": [],
+      "description": "An optional set of strings. None means 'no filter applied'."
+    },
+    {
+      "name": "PositiveInt",
+      "kind": "primitive",
+      "fields": [
+        {
+          "name": "value",
+          "type_ref": "int",
+          "required": true,
+          "default": "",
+          "description": "",
+          "validators": [
+            {
+              "kind": "range",
+              "expression": "min=1",
+              "error_message": "Value must be at least 1."
+            }
+          ]
+        }
+      ],
+      "item_type": "",
+      "variants": [],
+      "inner_types": [],
+      "description": "An integer >= 1."
+    },
+    {
+      "name": "NonNegativeFloat",
+      "kind": "primitive",
+      "fields": [
+        {
+          "name": "value",
+          "type_ref": "float",
+          "required": true,
+          "default": "",
+          "description": "",
+          "validators": [
+            {
+              "kind": "range",
+              "expression": "min=0.0",
+              "error_message": "Value must be non-negative."
+            }
+          ]
+        }
+      ],
+      "item_type": "",
+      "variants": [],
+      "inner_types": [],
+      "description": "A float >= 0.0."
+    },
+    {
+      "name": "SinkEmitResult",
+      "kind": "enum",
+      "fields": [],
+      "item_type": "",
+      "variants": [
+        "emitted",
+        "filtered",
+        "error"
+      ],
+      "inner_types": [],
+      "description": "Outcome of a single sink emit attempt within the safe_emit orchestrator wrapper."
+    },
+    {
+      "name": "SafeEmitOutcome",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "sink_name",
+          "type_ref": "str",
+          "required": true,
+          "default": "",
+          "description": "Canonical name of the sink that was invoked.",
+          "validators": []
+        },
+        {
+          "name": "story_id",
+          "type_ref": "str",
+          "required": true,
+          "default": "",
+          "description": "ID of the story that was emitted (or attempted).",
+          "validators": []
+        },
+        {
+          "name": "result",
+          "type_ref": "SinkEmitResult",
+          "required": true,
+          "default": "",
+          "description": "Whether the emit succeeded, was filtered, or errored.",
+          "validators": []
+        },
+        {
+          "name": "error_message",
+          "type_ref": "str",
+          "required": false,
+          "default": "",
+          "description": "Error detail if result is 'error', empty string otherwise.",
+          "validators": []
+        }
+      ],
+      "item_type": "",
+      "variants": [],
+      "inner_types": [],
+      "description": "Result record from the safe_emit orchestrator wrapper for one sink invocation."
+    },
+    {
+      "name": "Story",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "story_id",
+          "type_ref": "str",
+          "required": true,
+          "default": "",
+          "description": "Unique identifier for the story.",
+          "validators": []
+        },
+        {
+          "name": "story_type",
+          "type_ref": "str",
+          "required": true,
+          "default": "",
+          "description": "Classification/type label for the story.",
+          "validators": []
+        },
+        {
+          "name": "events",
+          "type_ref": "list[any]",
+          "required": true,
+          "default": "",
+          "description": "Ordered list of correlated Event objects.",
+          "validators": []
+        },
+        {
+          "name": "opened_at",
+          "type_ref": "str",
+          "required": true,
+          "default": "",
+          "description": "ISO-8601 timestamp when the story was opened.",
+          "validators": []
+        },
+        {
+          "name": "closed_at",
+          "type_ref": "str",
+          "required": true,
+          "default": "",
+          "description": "ISO-8601 timestamp when the story was closed.",
+          "validators": []
+        },
+        {
+          "name": "metadata",
+          "type_ref": "dict",
+          "required": false,
+          "default": "{}",
+          "description": "Arbitrary metadata attached to the story.",
+          "validators": []
+        }
+      ],
+      "item_type": "",
+      "variants": [],
+      "inner_types": [],
+      "description": "Reference to schemas.Story — the closed story object that sinks receive. Defined in the schemas component; referenced here for type completeness."
+    }
+  ],
+  "functions": [
+    {
+      "name": "DiskSink.start",
+      "description": "Opens the JSONL output file handle via aiofiles for the lifetime of the sink. Must be called before any emit() calls. Acquires the internal asyncio.Lock.",
+      "inputs": [],
+      "output_type": "None",
+      "error_cases": [
+        {
+          "name": "file_open_error",
+          "condition": "The configured path cannot be opened for writing (permissions, missing directory, disk full).",
+          "error_type": "OSError",
+          "error_data": {}
+        },
+        {
+          "name": "already_started",
+          "condition": "start() is called when the file handle is already open.",
+          "error_type": "RuntimeError",
+          "error_data": {}
+        }
+      ],
+      "preconditions": [
+        "DiskSink was constructed with a valid DiskSinkConfig.",
+        "start() has not already been called (no double-start)."
+      ],
+      "postconditions": [
+        "An aiofiles file handle is open in append mode at the configured path.",
+        "The internal asyncio.Lock is initialized.",
+        "The sink is ready to accept emit() calls."
+      ],
+      "idempotent": false,
+      "side_effects": [],
+      "structured_side_effects": [
+        {
+          "kind": "writes_file",
+          "target": "DiskSinkConfig.path",
+          "description": "Opens (or creates) the JSONL file in append mode."
+        },
+        {
+          "kind": "logging",
+          "target": "chronicler.sinks.disk",
+          "description": "Logs file open at INFO level."
+        }
+      ],
+      "performance_budget": null
+    },
+    {
+      "name": "DiskSink.emit",
+      "description": "Serializes a closed Story to JSON and appends it as a single line to the JSONL file. Write is protected by an asyncio.Lock to ensure atomicity of the line write. Errors propagate to the caller (the orchestrator's safe_emit wrapper).",
+      "inputs": [
+        {
+          "name": "story",
+          "type_ref": "Story",
+          "required": true,
+          "default": "",
+          "description": "The closed story to persist.",
+          "validators": []
+        }
+      ],
+      "output_type": "None",
+      "error_cases": [
+        {
+          "name": "not_started",
+          "condition": "emit() is called before start().",
+          "error_type": "RuntimeError",
+          "error_data": {}
+        },
+        {
+          "name": "serialization_error",
+          "condition": "The story cannot be serialized to JSON (should not happen with valid Pydantic models).",
+          "error_type": "ValueError",
+          "error_data": {}
+        },
+        {
+          "name": "write_error",
+          "condition": "The filesystem write fails (disk full, handle closed unexpectedly, I/O error).",
+          "error_type": "OSError",
+          "error_data": {}
+        }
+      ],
+      "preconditions": [
+        "start() has been called and the file handle is open.",
+        "story is a valid, closed Story object."
+      ],
+      "postconditions": [
+        "The story's JSON representation followed by a newline has been appended to the file.",
+        "If flush_on_write is true, the file buffer has been flushed to disk."
+      ],
+      "idempotent": false,
+      "side_effects": [],
+      "structured_side_effects": [
+        {
+          "kind": "writes_file",
+          "target": "DiskSinkConfig.path",
+          "description": "Appends one JSON line (story) to the JSONL file."
+        }
+      ],
+      "performance_budget": {
+        "p95_latency_ms": 50,
+        "max_memory_mb": null,
+        "complexity": "O(n) where n is the number of events in the story"
+      }
+    },
+    {
+      "name": "DiskSink.close",
+      "description": "Flushes and closes the JSONL file handle. After close(), no further emit() calls are valid.",
+      "inputs": [],
+      "output_type": "None",
+      "error_cases": [
+        {
+          "name": "not_started",
+          "condition": "close() is called before start().",
+          "error_type": "RuntimeError",
+          "error_data": {}
+        },
+        {
+          "name": "close_error",
+          "condition": "The file handle close operation fails.",
+          "error_type": "OSError",
+          "error_data": {}
+        }
+      ],
+      "preconditions": [
+        "start() has been called."
+      ],
+      "postconditions": [
+        "The file handle is flushed and closed.",
+        "Any subsequent emit() call will raise RuntimeError."
+      ],
+      "idempotent": true,
+      "side_effects": [],
+      "structured_side_effects": [
+        {
+          "kind": "writes_file",
+          "target": "DiskSinkConfig.path",
+          "description": "Flushes remaining buffer and closes the file handle."
+        },
+        {
+          "kind": "logging",
+          "target": "chronicler.sinks.disk",
+          "description": "Logs file close at INFO level."
+        }
+      ],
+      "performance_budget": null
+    },
+    {
+      "name": "read_stories",
+      "description": "Standalone async generator that reads a JSONL file and yields deserialized Story objects. Corrupted lines are logged at WARNING and skipped — never raises for bad data. This is not part of SinkProtocol; it is a utility function in disk.py for read-back.",
+      "inputs": [
+        {
+          "name": "path",
+          "type_ref": "FilePath",
+          "required": true,
+          "default": "",
+          "description": "Path to the JSONL file to read.",
+          "validators": []
+        }
+      ],
+      "output_type": "AsyncIterator[Story]",
+      "error_cases": [
+        {
+          "name": "file_not_found",
+          "condition": "The specified path does not exist.",
+          "error_type": "FileNotFoundError",
+          "error_data": {}
+        },
+        {
+          "name": "permission_denied",
+          "condition": "The process lacks read permissions for the file.",
+          "error_type": "PermissionError",
+          "error_data": {}
+        }
+      ],
+      "preconditions": [
+        "The file at path exists and is readable."
+      ],
+      "postconditions": [
+        "Every valid JSON line in the file is yielded as a Story object.",
+        "Corrupted or unparseable lines are skipped with a warning log.",
+        "The file handle is closed after iteration completes or on error."
+      ],
+      "idempotent": true,
+      "side_effects": [],
+      "structured_side_effects": [
+        {
+          "kind": "reads_file",
+          "target": "path",
+          "description": "Opens and reads the JSONL file line by line."
+        },
+        {
+          "kind": "logging",
+          "target": "chronicler.sinks.disk",
+          "description": "Logs corrupted lines at WARNING level with line number and error detail."
+        }
+      ],
+      "performance_budget": null
+    },
+    {
+      "name": "StigmergySink.start",
+      "description": "No-op initialization for the Stigmergy placeholder sink. Logs at DEBUG that the sink is starting.",
+      "inputs": [],
+      "output_type": "None",
+      "error_cases": [],
+      "preconditions": [],
+      "postconditions": [
+        "The sink is marked as started."
+      ],
+      "idempotent": true,
+      "side_effects": [],
+      "structured_side_effects": [
+        {
+          "kind": "logging",
+          "target": "chronicler.sinks.stigmergy",
+          "description": "Logs start at DEBUG level."
+        }
+      ],
+      "performance_budget": null
+    },
+    {
+      "name": "StigmergySink.emit",
+      "description": "Placeholder: logs at DEBUG level the story_id and story_type that would be emitted as a Signal to Stigmergy. In a real implementation, this would make an HTTP POST to the Stigmergy service.",
+      "inputs": [
+        {
+          "name": "story",
+          "type_ref": "Story",
+          "required": true,
+          "default": "",
+          "description": "The closed story to emit as a Signal.",
+          "validators": []
+        }
+      ],
+      "output_type": "None",
+      "error_cases": [],
+      "preconditions": [
+        "start() has been called."
+      ],
+      "postconditions": [
+        "A DEBUG log line has been emitted describing the story that would be sent."
+      ],
+      "idempotent": true,
+      "side_effects": [],
+      "structured_side_effects": [
+        {
+          "kind": "logging",
+          "target": "chronicler.sinks.stigmergy",
+          "description": "Logs placeholder emit at DEBUG: story_id, story_type."
+        }
+      ],
+      "performance_budget": null
+    },
+    {
+      "name": "StigmergySink.close",
+      "description": "No-op teardown for the Stigmergy placeholder sink. Logs at DEBUG that the sink is closing.",
+      "inputs": [],
+      "output_type": "None",
+      "error_cases": [],
+      "preconditions": [],
+      "postconditions": [],
+      "idempotent": true,
+      "side_effects": [],
+      "structured_side_effects": [
+        {
+          "kind": "logging",
+          "target": "chronicler.sinks.stigmergy",
+          "description": "Logs close at DEBUG level."
+        }
+      ],
+      "performance_budget": null
+    },
+    {
+      "name": "ApprenticeSink.start",
+      "description": "No-op initialization for the Apprentice placeholder sink. Logs at DEBUG that the sink is starting.",
+      "inputs": [],
+      "output_type": "None",
+      "error_cases": [],
+      "preconditions": [],
+      "postconditions": [
+        "The sink is marked as started."
+      ],
+      "idempotent": true,
+      "side_effects": [],
+      "structured_side_effects": [
+        {
+          "kind": "logging",
+          "target": "chronicler.sinks.apprentice",
+          "description": "Logs start at DEBUG level."
+        }
+      ],
+      "performance_budget": null
+    },
+    {
+      "name": "ApprenticeSink.emit",
+      "description": "Placeholder: logs at DEBUG level the story_id and event count that would be emitted as a training sequence to Apprentice. In a real implementation, this would make an HTTP POST to the Apprentice service.",
+      "inputs": [
+        {
+          "name": "story",
+          "type_ref": "Story",
+          "required": true,
+          "default": "",
+          "description": "The closed story to emit as a training sequence.",
+          "validators": []
+        }
+      ],
+      "output_type": "None",
+      "error_cases": [],
+      "preconditions": [
+        "start() has been called."
+      ],
+      "postconditions": [
+        "A DEBUG log line has been emitted describing the story that would be sent."
+      ],
+      "idempotent": true,
+      "side_effects": [],
+      "structured_side_effects": [
+        {
+          "kind": "logging",
+          "target": "chronicler.sinks.apprentice",
+          "description": "Logs placeholder emit at DEBUG: story_id, event count."
+        }
+      ],
+      "performance_budget": null
+    },
+    {
+      "name": "ApprenticeSink.close",
+      "description": "No-op teardown for the Apprentice placeholder sink. Logs at DEBUG that the sink is closing.",
+      "inputs": [],
+      "output_type": "None",
+      "error_cases": [],
+      "preconditions": [],
+      "postconditions": [],
+      "idempotent": true,
+      "side_effects": [],
+      "structured_side_effects": [
+        {
+          "kind": "logging",
+          "target": "chronicler.sinks.apprentice",
+          "description": "Logs close at DEBUG level."
+        }
+      ],
+      "performance_budget": null
+    },
+    {
+      "name": "KindexSink.start",
+      "description": "No-op initialization for the Kindex placeholder sink. Logs at DEBUG that the sink is starting with the active filter configuration.",
+      "inputs": [],
+      "output_type": "None",
+      "error_cases": [],
+      "preconditions": [
+        "KindexSink was constructed with a valid KindexSinkConfig."
+      ],
+      "postconditions": [
+        "The sink is marked as started.",
+        "The active KindexSinkConfig has been logged at DEBUG level."
+      ],
+      "idempotent": true,
+      "side_effects": [],
+      "structured_side_effects": [
+        {
+          "kind": "logging",
+          "target": "chronicler.sinks.kindex",
+          "description": "Logs start at DEBUG level including filter config summary."
+        }
+      ],
+      "performance_budget": null
+    },
+    {
+      "name": "KindexSink.emit",
+      "description": "Evaluates whether the story is noteworthy using is_noteworthy(), and if so, logs at DEBUG what would be emitted as a knowledge node. Stories that do not pass the filter are silently skipped (no error). In a real implementation, noteworthy stories would be posted to the Kindex service.",
+      "inputs": [
+        {
+          "name": "story",
+          "type_ref": "Story",
+          "required": true,
+          "default": "",
+          "description": "The closed story to evaluate and potentially emit.",
+          "validators": []
+        }
+      ],
+      "output_type": "None",
+      "error_cases": [],
+      "preconditions": [
+        "start() has been called."
+      ],
+      "postconditions": [
+        "If is_noteworthy(story, config) returned true, a DEBUG log line describes the knowledge node that would be emitted.",
+        "If not noteworthy, the story is silently dropped with no side effects beyond an optional TRACE/DEBUG log."
+      ],
+      "idempotent": true,
+      "side_effects": [],
+      "structured_side_effects": [
+        {
+          "kind": "logging",
+          "target": "chronicler.sinks.kindex",
+          "description": "Logs filtered emit decision at DEBUG: story_id, noteworthy flag, filter criteria matched."
+        }
+      ],
+      "performance_budget": null
+    },
+    {
+      "name": "KindexSink.close",
+      "description": "No-op teardown for the Kindex placeholder sink. Logs at DEBUG that the sink is closing.",
+      "inputs": [],
+      "output_type": "None",
+      "error_cases": [],
+      "preconditions": [],
+      "postconditions": [],
+      "idempotent": true,
+      "side_effects": [],
+      "structured_side_effects": [
+        {
+          "kind": "logging",
+          "target": "chronicler.sinks.kindex",
+          "description": "Logs close at DEBUG level."
+        }
+      ],
+      "performance_budget": null
+    },
+    {
+      "name": "is_noteworthy",
+      "description": "Pure predicate function that evaluates whether a story meets the KindexSinkConfig thresholds for emission as a knowledge node. Extracted as a standalone function for direct unit testability without needing the full KindexSink.",
+      "inputs": [
+        {
+          "name": "story",
+          "type_ref": "Story",
+          "required": true,
+          "default": "",
+          "description": "The closed story to evaluate.",
+          "validators": []
+        },
+        {
+          "name": "config",
+          "type_ref": "KindexSinkConfig",
+          "required": true,
+          "default": "",
+          "description": "The filter configuration specifying noteworthy thresholds.",
+          "validators": []
+        }
+      ],
+      "output_type": "bool",
+      "error_cases": [
+        {
+          "name": "invalid_timestamps",
+          "condition": "story.opened_at or story.closed_at cannot be parsed as ISO-8601 timestamps.",
+          "error_type": "ValueError",
+          "error_data": {}
+        }
+      ],
+      "preconditions": [
+        "story has a valid closed_at timestamp (it is a closed story).",
+        "config is a valid KindexSinkConfig."
+      ],
+      "postconditions": [
+        "Returns true if and only if all of the following hold: (1) config.story_types is None OR story.story_type is in config.story_types, (2) len(story.events) >= config.min_event_count, (3) (story.closed_at - story.opened_at) in seconds >= config.min_duration_seconds."
+      ],
+      "idempotent": true,
+      "side_effects": [],
+      "structured_side_effects": [
+        {
+          "kind": "none",
+          "target": "",
+          "description": "Pure function with no side effects."
+        }
+      ],
+      "performance_budget": null
+    },
+    {
+      "name": "safe_emit",
+      "description": "Orchestrator wrapper (defined in engine.py, contracted here as part of the sink fan-out protocol) that calls sink.emit(story) inside a try/except Exception block. On exception, logs a structured error with sink name and story ID and returns an error outcome. Used by asyncio.gather for concurrent fan-out to all registered sinks.",
+      "inputs": [
+        {
+          "name": "sink_name",
+          "type_ref": "str",
+          "required": true,
+          "default": "",
+          "description": "Canonical name of the sink for logging and outcome tracking.",
+          "validators": []
+        },
+        {
+          "name": "sink_emit",
+          "type_ref": "any",
+          "required": true,
+          "default": "",
+          "description": "The bound async callable sink.emit to invoke (typed as Callable[[Story], Awaitable[None]] at runtime).",
+          "validators": []
+        },
+        {
+          "name": "story",
+          "type_ref": "Story",
+          "required": true,
+          "default": "",
+          "description": "The closed story to emit.",
+          "validators": []
+        }
+      ],
+      "output_type": "SafeEmitOutcome",
+      "error_cases": [],
+      "preconditions": [
+        "The sink has been started via start().",
+        "story is a valid closed Story."
+      ],
+      "postconditions": [
+        "Returns SafeEmitOutcome with result='emitted' if emit succeeded.",
+        "Returns SafeEmitOutcome with result='error' and error_message populated if emit raised an exception.",
+        "Never raises an exception itself — all errors are captured in the outcome."
+      ],
+      "idempotent": false,
+      "side_effects": [],
+      "structured_side_effects": [
+        {
+          "kind": "logging",
+          "target": "chronicler.engine",
+          "description": "On error: logs structured warning with sink_name, story_id, exception type, and message."
+        }
+      ],
+      "performance_budget": null
+    }
+  ],
+  "dependencies": [
+    "schemas",
+    "config"
+  ],
+  "dependency_contracts": {
+    "schemas": [
+      "Story",
+      "Event"
+    ],
+    "config": [
+      "DiskSinkConfig",
+      "KindexSinkConfig"
+    ]
+  },
+  "invariants": [
+    "All sink implementations satisfy the @runtime_checkable SinkProtocol with async methods: emit(story: Story) -> None, start() -> None, close() -> None.",
+    "A failing sink's emit() call never blocks, delays, or prevents other sinks from receiving the same story.",
+    "Sinks propagate exceptions from emit() to the caller; they do NOT internally swallow errors. Error handling is centralized in the orchestrator's safe_emit wrapper.",
+    "DiskSink writes are serialized via asyncio.Lock — concurrent emit() calls produce well-formed, non-interleaved JSONL lines.",
+    "DiskSink file is opened in append mode; existing data is never overwritten or truncated.",
+    "read_stories never raises for corrupted/unparseable lines; it logs and skips them, yielding only valid Story objects.",
+    "KindexSink only emits stories for which is_noteworthy(story, config) returns true.",
+    "is_noteworthy is a pure function with no side effects — all filtering logic is testable without I/O.",
+    "Placeholder sinks (stigmergy, apprentice, kindex emit action) log at DEBUG level only and perform no network I/O.",
+    "All config models (DiskSinkConfig, KindexSinkConfig) are frozen Pydantic v2 models (immutable after construction).",
+    "start() must be called before emit(); emit() after close() raises RuntimeError for stateful sinks (DiskSink).",
+    "safe_emit never raises — it captures all exceptions into SafeEmitOutcome.error_message."
+  ],
+  "requires": [
+    "schemas.Story",
+    "schemas.Event"
+  ],
+  "processing_register": "rigorous-analytical",
+  "data_access": {
+    "reads": [
+      "INTERNAL"
+    ],
+    "writes": [
+      "INTERNAL"
+    ],
+    "rationale": "Disk sink writes closed Story objects (containing correlated events with their payloads) to JSONL files on local disk for persistence and audit. Read-back deserializes those same JSONL files. Stigmergy, apprentice, and kindex sinks emit story summaries to external systems. Event payloads may contain INTERNAL-tier operational data (trace IDs, alert metadata, incident fields). No PII is expected in the event model but payloads are opaque so INTERNAL classification applies.",
+    "side_effects": [
+      {
+        "type": "filesystem_write",
+        "classification": "INTERNAL",
+        "fields": [
+          "Story.story_id",
+          "Story.story_type",
+          "Story.events",
+          "Story.opened_at",
+          "Story.closed_at",
+          "Story.metadata"
+        ],
+        "rationale": "DiskSink appends serialized Story JSON lines to a JSONL file on local disk for durable persistence (AC7)."
+      },
+      {
+        "type": "filesystem_read",
+        "classification": "INTERNAL",
+        "fields": [
+          "Story.story_id",
+          "Story.story_type",
+          "Story.events",
+          "Story.opened_at",
+          "Story.closed_at",
+          "Story.metadata"
+        ],
+        "rationale": "read_stories reads back previously persisted JSONL story files for deserialization and replay."
+      },
+      {
+        "type": "network_call",
+        "classification": "INTERNAL",
+        "fields": [
+          "Story.story_id",
+          "Story.story_type",
+          "Story.metadata"
+        ],
+        "rationale": "StigmergySink emits story summaries as Signals to the Stigmergy service over HTTP (placeholder, logs at DEBUG)."
+      },
+      {
+        "type": "network_call",
+        "classification": "INTERNAL",
+        "fields": [
+          "Story.story_id",
+          "Story.events"
+        ],
+        "rationale": "ApprenticeSink emits story event sequences as training data to the Apprentice service (placeholder, logs at DEBUG)."
+      },
+      {
+        "type": "network_call",
+        "classification": "INTERNAL",
+        "fields": [
+          "Story.story_id",
+          "Story.story_type",
+          "Story.metadata",
+          "Story.events"
+        ],
+        "rationale": "KindexSink emits noteworthy stories filtered by config thresholds as knowledge nodes (placeholder, logs at DEBUG, per AC17)."
+      }
+    ]
+  },
+  "authority": {
+    "domains": [],
+    "rationale": null
+  }
+}

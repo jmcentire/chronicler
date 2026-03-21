@@ -1,0 +1,1181 @@
+{
+  "component_id": "schemas",
+  "contract_version": 1,
+  "test_cases": [
+    {
+      "id": "goodhart_compute_event_id_canonical_json_format",
+      "description": "The event ID must be computed from canonical JSON with sort_keys=True, compact separators, ensure_ascii=True, and timestamp serialized with 'Z' suffix — verifiable by independently hashing the same canonical form",
+      "function": "compute_event_id",
+      "category": "invariant",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "Known identity fields with a specific UTC timestamp, independently compute the expected SHA-256",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "The returned hash matches an independently computed SHA-256 of the canonical JSON representation"
+      ]
+    },
+    {
+      "id": "goodhart_compute_event_id_non_utc_timezone",
+      "description": "Timestamps in non-UTC timezones must be converted to UTC 'Z' suffix form for canonical JSON hashing, ensuring timezone-equivalent timestamps produce the same event ID",
+      "function": "compute_event_id",
+      "category": "invariant",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "Same absolute moment expressed in UTC and in +05:30 offset",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Both timezone representations produce identical event IDs"
+      ]
+    },
+    {
+      "id": "goodhart_compute_event_id_context_with_none_value",
+      "description": "Context values of None must be properly serialized in canonical JSON (as JSON null) and included in the hash computation",
+      "function": "compute_event_id",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "Context dict containing a None value vs context without that key",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Context with {'key': None} produces a different ID than context with empty dict {}"
+      ]
+    },
+    {
+      "id": "goodhart_compute_event_id_context_bool_vs_int",
+      "description": "Boolean context values must be distinguished from integer equivalents in canonical JSON (true vs 1), producing different event IDs",
+      "function": "compute_event_id",
+      "category": "invariant",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "Context with {'flag': True} vs {'flag': 1}",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "The two contexts produce different event IDs"
+      ]
+    },
+    {
+      "id": "goodhart_compute_event_id_context_ordering_irrelevant",
+      "description": "Context dict key ordering must not affect the computed event ID since canonical JSON uses sort_keys=True",
+      "function": "compute_event_id",
+      "category": "invariant",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "Two context dicts with same key-value pairs but inserted in different order",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Both produce the same event ID"
+      ]
+    },
+    {
+      "id": "goodhart_compute_event_id_correlation_keys_ordering_irrelevant",
+      "description": "Correlation keys dict ordering must not affect the computed event ID since canonical JSON uses sort_keys=True",
+      "function": "compute_event_id",
+      "category": "invariant",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "Two correlation_keys dicts with same pairs in different insertion order",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Both produce the same event ID"
+      ]
+    },
+    {
+      "id": "goodhart_compute_event_id_unicode_in_context",
+      "description": "Unicode characters in context values must be handled via ensure_ascii=True in canonical JSON, producing escaped sequences for deterministic hashing",
+      "function": "compute_event_id",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "Context containing unicode characters like emoji or CJK",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Returns a valid 64-char hex hash",
+        "Same unicode input always produces same ID"
+      ]
+    },
+    {
+      "id": "goodhart_compute_event_id_empty_context_empty_corr_keys",
+      "description": "Empty context and empty correlation_keys must be valid inputs producing a deterministic hash",
+      "function": "compute_event_id",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "Empty dict for both context and correlation_keys",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Returns a valid 64-char lowercase hex string"
+      ]
+    },
+    {
+      "id": "goodhart_compute_event_id_float_context_value",
+      "description": "Float values in context must be properly serialized in canonical JSON for deterministic hashing",
+      "function": "compute_event_id",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "Context with float value like {'score': 3.14}",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Returns a valid hash",
+        "Context {'score': 3.14} differs from {'score': '3.14'}"
+      ]
+    },
+    {
+      "id": "goodhart_event_kind_rejects_hyphen",
+      "description": "EventKind pattern only allows lowercase alphanumeric, dots, and underscores — hyphens must be rejected",
+      "function": "EventKind",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "String 'ci-build' containing a hyphen",
+      "expected_output_description": "",
+      "expected_error": "ValidationError",
+      "assertions": [
+        "Validation raises an error for hyphen character in EventKind"
+      ]
+    },
+    {
+      "id": "goodhart_event_kind_rejects_space",
+      "description": "EventKind must reject strings containing whitespace characters",
+      "function": "EventKind",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "String 'ci build' containing a space",
+      "expected_output_description": "",
+      "expected_error": "ValidationError",
+      "assertions": [
+        "Validation raises an error"
+      ]
+    },
+    {
+      "id": "goodhart_event_kind_single_char",
+      "description": "EventKind must accept a single lowercase letter as the minimum valid identifier",
+      "function": "EventKind",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "Single character 'a'",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Accepted as valid EventKind"
+      ]
+    },
+    {
+      "id": "goodhart_event_kind_rejects_dot_start",
+      "description": "EventKind must start with a lowercase letter — dot as first character is invalid",
+      "function": "EventKind",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "String '.build.completed'",
+      "expected_output_description": "",
+      "expected_error": "ValidationError",
+      "assertions": [
+        "Validation rejects identifier starting with dot"
+      ]
+    },
+    {
+      "id": "goodhart_event_kind_rejects_underscore_start",
+      "description": "EventKind must start with a lowercase letter — underscore as first character is invalid",
+      "function": "EventKind",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "String '_build'",
+      "expected_output_description": "",
+      "expected_error": "ValidationError",
+      "assertions": [
+        "Validation rejects identifier starting with underscore"
+      ]
+    },
+    {
+      "id": "goodhart_entity_kind_rejects_hyphen",
+      "description": "EntityKind follows the same pattern as EventKind — hyphens must be rejected",
+      "function": "EntityKind",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "String 'my-repo' containing a hyphen",
+      "expected_output_description": "",
+      "expected_error": "ValidationError",
+      "assertions": []
+    },
+    {
+      "id": "goodhart_actor_id_max_length",
+      "description": "ActorId must accept strings at the maximum length boundary of 512 characters",
+      "function": "ActorId",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "String of exactly 512 characters",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Accepted as valid ActorId"
+      ]
+    },
+    {
+      "id": "goodhart_actor_id_over_max",
+      "description": "ActorId must reject strings exceeding the 512 character maximum",
+      "function": "ActorId",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "String of 513 characters",
+      "expected_output_description": "",
+      "expected_error": "ValidationError",
+      "assertions": []
+    },
+    {
+      "id": "goodhart_sha256_hex_non_hex_chars",
+      "description": "Sha256Hex must reject strings of correct length containing non-hex characters like 'g' or 'z'",
+      "function": "Sha256Hex",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "64-character string with 'g' characters",
+      "expected_output_description": "",
+      "expected_error": "ValidationError",
+      "assertions": []
+    },
+    {
+      "id": "goodhart_story_id_uuid_version_check",
+      "description": "StoryId must only accept UUID version 4 — other UUID versions like v1 must be rejected",
+      "function": "StoryId",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "A UUID v1 string (version digit is '1' not '4')",
+      "expected_output_description": "",
+      "expected_error": "ValidationError",
+      "assertions": []
+    },
+    {
+      "id": "goodhart_context_dict_rejects_nested_dict",
+      "description": "ContextDict must reject dict values (nested dicts) since only primitive types are allowed",
+      "function": "ContextDict",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "Dict with a nested dict value: {'inner': {'nested': 'val'}}",
+      "expected_output_description": "",
+      "expected_error": "ValidationError",
+      "assertions": []
+    },
+    {
+      "id": "goodhart_context_dict_accepts_all_primitive_types",
+      "description": "ContextDict must simultaneously accept str, int, float, bool, and None values in the same dict",
+      "function": "ContextDict",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "Dict with one of each type: {'s': 'val', 'i': 42, 'f': 3.14, 'b': True, 'n': None}",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "All five value types are accepted in a single ContextDict"
+      ]
+    },
+    {
+      "id": "goodhart_correlation_keys_rejects_non_string_value",
+      "description": "CorrelationKeys must reject integer values — only non-empty string values are allowed",
+      "function": "CorrelationKeys",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "Dict with integer value: {'repo': 123}",
+      "expected_output_description": "",
+      "expected_error": "ValidationError",
+      "assertions": []
+    },
+    {
+      "id": "goodhart_create_event_id_matches_compute",
+      "description": "Event created via create_event must have an id field that exactly matches the output of compute_event_id with the same identity fields",
+      "function": "create_event",
+      "category": "invariant",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "Arbitrary valid event parameters, then call both create_event and compute_event_id",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "event.id == compute_event_id(same fields)"
+      ]
+    },
+    {
+      "id": "goodhart_create_event_with_rich_context",
+      "description": "create_event must properly handle context with multiple value types and compute a correct content-addressable ID",
+      "function": "create_event",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "Event with context containing str, int, float, bool, and None values",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Event is created successfully",
+        "ID is deterministic across two calls with same inputs"
+      ]
+    },
+    {
+      "id": "goodhart_create_event_empty_context_and_corr_keys",
+      "description": "create_event must accept empty context dict and empty correlation_keys dict",
+      "function": "create_event",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "Event with context={} and correlation_keys={}",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Event is created successfully",
+        "Event has a valid 64-char hex ID"
+      ]
+    },
+    {
+      "id": "goodhart_create_story_unique_ids",
+      "description": "Each call to create_story must produce a Story with a unique UUID4 story_id, even with identical inputs",
+      "function": "create_story",
+      "category": "invariant",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "Call create_story twice with identical parameters",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "The two stories have different story_id values"
+      ]
+    },
+    {
+      "id": "goodhart_create_story_with_parent",
+      "description": "create_story must correctly store a non-None parent_story_id linking to a parent story",
+      "function": "create_story",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "Valid parent_story_id UUID4 string",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "story.parent_story_id matches the provided parent ID"
+      ]
+    },
+    {
+      "id": "goodhart_create_story_preserves_group_key",
+      "description": "create_story must store the provided group_key unchanged in the returned Story",
+      "function": "create_story",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "Multi-entry group_key dict",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "story.group_key matches the input group_key exactly"
+      ]
+    },
+    {
+      "id": "goodhart_create_story_start_ts_preserved",
+      "description": "create_story must store the provided start_ts unchanged as the story's start timestamp",
+      "function": "create_story",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "A specific timezone-aware timestamp",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "story.start_ts matches the provided timestamp"
+      ]
+    },
+    {
+      "id": "goodhart_append_event_multiple_times",
+      "description": "Appending multiple distinct events to a story must produce a correctly ordered tuple with accurate event_count",
+      "function": "append_event_to_story",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "Create story, append 3 distinct events sequentially",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Final story.events has 4 entries (1 initial + 3 appended)",
+        "story.event_count == 4",
+        "Events are in append order"
+      ]
+    },
+    {
+      "id": "goodhart_append_event_preserves_all_fields",
+      "description": "Appending an event must not alter any Story fields other than events and event_count",
+      "function": "append_event_to_story",
+      "category": "invariant",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "Open story, append one event",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "story_id unchanged",
+        "story_type unchanged",
+        "correlation_rule unchanged",
+        "group_key unchanged",
+        "status unchanged",
+        "start_ts unchanged",
+        "end_ts unchanged",
+        "close_reason unchanged",
+        "parent_story_id unchanged"
+      ]
+    },
+    {
+      "id": "goodhart_close_story_with_timeout_reason",
+      "description": "close_story must accept 'timeout' as a valid close_reason and store it correctly",
+      "function": "close_story",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "Open story closed with reason='timeout'",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Returned story.close_reason == 'timeout'",
+        "story.status == 'closed'"
+      ]
+    },
+    {
+      "id": "goodhart_close_story_with_evicted_reason",
+      "description": "close_story must accept 'evicted' as a valid close_reason and store it correctly",
+      "function": "close_story",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "Open story closed with reason='evicted'",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Returned story.close_reason == 'evicted'",
+        "story.status == 'closed'"
+      ]
+    },
+    {
+      "id": "goodhart_close_story_duration_precision",
+      "description": "close_story duration must accurately reflect sub-second differences between start_ts and end_ts",
+      "function": "close_story",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "Start and end timestamps 0.5 seconds apart",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "story.duration == 0.5"
+      ]
+    },
+    {
+      "id": "goodhart_close_story_large_duration",
+      "description": "close_story must correctly compute duration for long-running stories spanning hours or days",
+      "function": "close_story",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "Start and end timestamps 24 hours apart",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "story.duration == 86400.0"
+      ]
+    },
+    {
+      "id": "goodhart_close_story_preserves_events",
+      "description": "Closing a story must not modify the events tuple or event_count",
+      "function": "close_story",
+      "category": "invariant",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "Story with 3 events, then closed",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Closed story.events matches original events",
+        "Closed story.event_count matches original event_count"
+      ]
+    },
+    {
+      "id": "goodhart_matches_terminal_entity_id_field",
+      "description": "matches_terminal_pattern must support matching on entity_id as a direct field path",
+      "function": "matches_terminal_pattern",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "Pattern {'entity_id': 'repo-123'} against event with entity_id='repo-123'",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Returns True for matching entity_id"
+      ]
+    },
+    {
+      "id": "goodhart_matches_terminal_actor_field",
+      "description": "matches_terminal_pattern must support matching on actor as a direct field path",
+      "function": "matches_terminal_pattern",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "Pattern {'actor': 'user-x'} against event with actor='user-x'",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Returns True for matching actor"
+      ]
+    },
+    {
+      "id": "goodhart_matches_terminal_entity_kind_field",
+      "description": "matches_terminal_pattern must support matching on entity_kind as a direct field path",
+      "function": "matches_terminal_pattern",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "Pattern {'entity_kind': 'repository'} against event with entity_kind='repository'",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Returns True for matching entity_kind"
+      ]
+    },
+    {
+      "id": "goodhart_matches_terminal_multi_partial_mismatch",
+      "description": "When a pattern has multiple fields and only some match, matches_terminal_pattern must return False (all fields must match)",
+      "function": "matches_terminal_pattern",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "Pattern {'event_kind': 'ci.build.completed', 'context.status': 'failed'} where event_kind matches but context.status doesn't",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Returns False because not all fields match"
+      ]
+    },
+    {
+      "id": "goodhart_matches_terminal_missing_correlation_key",
+      "description": "Pattern referencing a missing correlation_keys subkey must return False",
+      "function": "matches_terminal_pattern",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "Pattern {'correlation_keys.nonexistent': 'val'} against event without that correlation key",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Returns False"
+      ]
+    },
+    {
+      "id": "goodhart_matches_terminal_invalid_field_path",
+      "description": "matches_terminal_pattern must raise an error for unrecognized field paths like 'source' or 'id' or arbitrary paths",
+      "function": "matches_terminal_pattern",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "Pattern with key 'unknown_field' that is not a recognized field path",
+      "expected_output_description": "",
+      "expected_error": "Error raised for invalid field path",
+      "assertions": []
+    },
+    {
+      "id": "goodhart_extract_group_key_context_field",
+      "description": "extract_group_key must support extracting values from context.<key> field paths",
+      "function": "extract_group_key",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "Event with context={'env': 'prod'}, group_by=['context.env']",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Returned dict is {'context.env': 'prod'}"
+      ]
+    },
+    {
+      "id": "goodhart_extract_group_key_multiple_fields",
+      "description": "extract_group_key must return exactly len(group_by) entries when given multiple field paths",
+      "function": "extract_group_key",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "Event with correlation_keys and context, group_by with 3 field paths",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Returned dict has exactly 3 entries",
+        "Each entry maps field path to correct value"
+      ]
+    },
+    {
+      "id": "goodhart_extract_group_key_entity_kind_field",
+      "description": "extract_group_key must support extracting entity_kind as a top-level field",
+      "function": "extract_group_key",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "group_by=['entity_kind'] against event with entity_kind='pipeline'",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Returned dict is {'entity_kind': 'pipeline'}"
+      ]
+    },
+    {
+      "id": "goodhart_event_to_dict_contains_all_fields",
+      "description": "event_to_dict must include all Event fields (id, event_kind, entity_kind, entity_id, actor, timestamp, context, correlation_keys, source) in the output dict",
+      "function": "event_to_dict",
+      "category": "invariant",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "Any valid Event instance",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Output dict contains keys: id, event_kind, entity_kind, entity_id, actor, timestamp, context, correlation_keys, source"
+      ]
+    },
+    {
+      "id": "goodhart_event_to_dict_json_serializable",
+      "description": "event_to_dict output must be JSON-serializable via json.dumps without errors",
+      "function": "event_to_dict",
+      "category": "invariant",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "Event with various context value types",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "json.dumps(event_to_dict(event)) succeeds without error"
+      ]
+    },
+    {
+      "id": "goodhart_event_from_dict_with_correct_id_accepted",
+      "description": "event_from_dict must accept a dict where the provided 'id' matches the computed hash",
+      "function": "event_from_dict",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "Dict with correct pre-computed 'id' field included",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Event is created successfully",
+        "Event.id matches the provided id"
+      ]
+    },
+    {
+      "id": "goodhart_event_from_dict_source_field",
+      "description": "event_from_dict must preserve the 'source' field from the input dict without affecting the computed ID",
+      "function": "event_from_dict",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "Dict with source='webhook-1'",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Returned event.source == 'webhook-1'"
+      ]
+    },
+    {
+      "id": "goodhart_story_to_dict_open_story_null_fields",
+      "description": "story_to_dict for an open story must serialize end_ts, duration, and close_reason as null/None",
+      "function": "story_to_dict",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "Valid open Story",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Dict has end_ts as None/null",
+        "Dict has duration as None/null",
+        "Dict has close_reason as None/null"
+      ]
+    },
+    {
+      "id": "goodhart_story_to_dict_events_is_list",
+      "description": "story_to_dict must serialize the events tuple as a JSON list (array) of hex strings",
+      "function": "story_to_dict",
+      "category": "invariant",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "Story with multiple events",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Dict['events'] is a list",
+        "Each element is a valid SHA-256 hex string"
+      ]
+    },
+    {
+      "id": "goodhart_story_round_trip_closed",
+      "description": "A closed Story must survive a round-trip through story_to_dict and story_from_dict with all fields preserved",
+      "function": "story_to_dict",
+      "category": "invariant",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "Closed story with end_ts, duration, and close_reason set",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Round-tripped story has matching status, end_ts, duration, close_reason, events, event_count"
+      ]
+    },
+    {
+      "id": "goodhart_story_from_dict_closed_with_duration_set",
+      "description": "story_from_dict must accept a valid closed story dict with all lifecycle fields correctly set",
+      "function": "story_from_dict",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "Dict representing a properly closed story",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Story is created successfully",
+        "status == 'closed'",
+        "All lifecycle fields present"
+      ]
+    },
+    {
+      "id": "goodhart_story_from_dict_closed_missing_duration",
+      "description": "story_from_dict must reject a closed story dict that is missing the duration field",
+      "function": "story_from_dict",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "Closed story dict with duration=None",
+      "expected_output_description": "",
+      "expected_error": "ValidationError or lifecycle inconsistency error",
+      "assertions": []
+    },
+    {
+      "id": "goodhart_webhook_source_port_max",
+      "description": "WebhookSourceConfig must accept port at the maximum boundary of 65535",
+      "function": "WebhookSourceConfig",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "Port value 65535",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Config is created successfully with port=65535"
+      ]
+    },
+    {
+      "id": "goodhart_webhook_source_port_over_max",
+      "description": "WebhookSourceConfig must reject port values exceeding 65535",
+      "function": "WebhookSourceConfig",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "Port value 65536",
+      "expected_output_description": "",
+      "expected_error": "ValidationError",
+      "assertions": []
+    },
+    {
+      "id": "goodhart_file_source_poll_max",
+      "description": "FileSourceConfig must accept poll_interval_seconds at the maximum boundary of 3600",
+      "function": "FileSourceConfig",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "poll_interval_seconds=3600",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Config is created successfully"
+      ]
+    },
+    {
+      "id": "goodhart_file_source_poll_over_max",
+      "description": "FileSourceConfig must reject poll_interval_seconds exceeding 3600",
+      "function": "FileSourceConfig",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "poll_interval_seconds=3601",
+      "expected_output_description": "",
+      "expected_error": "ValidationError",
+      "assertions": []
+    },
+    {
+      "id": "goodhart_stigmergy_sink_timeout_boundaries",
+      "description": "StigmergySinkConfig must accept timeout at lower boundary (0.5) and reject below it (0.4)",
+      "function": "StigmergySinkConfig",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "timeout_seconds=0.5 (valid) and timeout_seconds=0.4 (invalid)",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "0.5 is accepted",
+        "0.4 is rejected"
+      ]
+    },
+    {
+      "id": "goodhart_stigmergy_sink_timeout_over_max",
+      "description": "StigmergySinkConfig must reject timeout_seconds exceeding 300",
+      "function": "StigmergySinkConfig",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "timeout_seconds=301",
+      "expected_output_description": "",
+      "expected_error": "ValidationError",
+      "assertions": []
+    },
+    {
+      "id": "goodhart_memory_limits_max_boundary",
+      "description": "MemoryLimitsConfig must accept max_open_stories at the upper boundary of 1000000 and max_events_per_story at 100000",
+      "function": "MemoryLimitsConfig",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "max_open_stories=1000000, max_events_per_story=100000",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Config is created successfully"
+      ]
+    },
+    {
+      "id": "goodhart_memory_limits_over_max",
+      "description": "MemoryLimitsConfig must reject max_open_stories exceeding 1000000",
+      "function": "MemoryLimitsConfig",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "max_open_stories=1000001",
+      "expected_output_description": "",
+      "expected_error": "ValidationError",
+      "assertions": []
+    },
+    {
+      "id": "goodhart_memory_limits_events_over_max",
+      "description": "MemoryLimitsConfig must reject max_events_per_story exceeding 100000",
+      "function": "MemoryLimitsConfig",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "max_events_per_story=100001",
+      "expected_output_description": "",
+      "expected_error": "ValidationError",
+      "assertions": []
+    },
+    {
+      "id": "goodhart_correlation_rule_name_special_chars",
+      "description": "CorrelationRule name must accept dots and hyphens per its regex pattern",
+      "function": "CorrelationRule",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "Rule name 'my-rule.v2'",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Rule is created successfully"
+      ]
+    },
+    {
+      "id": "goodhart_correlation_rule_name_max_length",
+      "description": "CorrelationRule name must accept names up to 255 characters",
+      "function": "CorrelationRule",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "Name of 255 characters starting with a letter",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Rule is created successfully"
+      ]
+    },
+    {
+      "id": "goodhart_correlation_rule_name_over_max_length",
+      "description": "CorrelationRule name must reject names exceeding 255 characters",
+      "function": "CorrelationRule",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "Name of 256 characters",
+      "expected_output_description": "",
+      "expected_error": "ValidationError",
+      "assertions": []
+    },
+    {
+      "id": "goodhart_disk_sink_empty_stories_path",
+      "description": "DiskSinkConfig must reject empty stories_path",
+      "function": "DiskSinkConfig",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "Valid events_path but empty stories_path",
+      "expected_output_description": "",
+      "expected_error": "ValidationError",
+      "assertions": []
+    },
+    {
+      "id": "goodhart_apprentice_sink_valid",
+      "description": "ApprenticeSinkConfig must accept valid URL and timeout configuration",
+      "function": "ApprenticeSinkConfig",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "url='https://apprentice.example.com', timeout_seconds=30.0",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Config is created successfully"
+      ]
+    },
+    {
+      "id": "goodhart_apprentice_sink_invalid_url",
+      "description": "ApprenticeSinkConfig must reject URLs not starting with http:// or https://",
+      "function": "ApprenticeSinkConfig",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "url='ftp://invalid'",
+      "expected_output_description": "",
+      "expected_error": "ValidationError",
+      "assertions": []
+    },
+    {
+      "id": "goodhart_otlp_source_valid",
+      "description": "OtlpSourceConfig must accept valid host, port, and source_label",
+      "function": "OtlpSourceConfig",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "type='otlp', host='0.0.0.0', port=4317, source_label='otel'",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Config is created successfully"
+      ]
+    },
+    {
+      "id": "goodhart_sentinel_source_valid",
+      "description": "SentinelSourceConfig must accept valid configuration",
+      "function": "SentinelSourceConfig",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "type='sentinel', host='0.0.0.0', port=8443, source_label='sentinel-1'",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Config is created successfully"
+      ]
+    },
+    {
+      "id": "goodhart_noteworthiness_negative_duration",
+      "description": "NoteworthinessFilter must reject negative min_duration_seconds",
+      "function": "NoteworthinessFilter",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "min_duration_seconds=-1.0",
+      "expected_output_description": "",
+      "expected_error": "ValidationError",
+      "assertions": []
+    },
+    {
+      "id": "goodhart_config_duplicate_rule_names",
+      "description": "ChroniclerConfig must reject configurations where two or more CorrelationRules share the same name",
+      "function": "load_chronicler_config",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "YAML config with two rules both named 'myRule'",
+      "expected_output_description": "",
+      "expected_error": "Error about duplicate rule names",
+      "assertions": []
+    },
+    {
+      "id": "goodhart_create_event_context_with_special_json_chars",
+      "description": "Events with context values containing JSON-special characters (quotes, backslashes) must produce deterministic IDs",
+      "function": "create_event",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "Context with values containing double quotes and backslashes",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Event created successfully",
+        "Same inputs produce same ID"
+      ]
+    },
+    {
+      "id": "goodhart_webhook_path_with_underscore_and_hyphen",
+      "description": "WebhookSourceConfig path must accept underscores and hyphens per its regex pattern",
+      "function": "WebhookSourceConfig",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "path='/my_webhook-endpoint/v2'",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Config is created successfully"
+      ]
+    },
+    {
+      "id": "goodhart_webhook_path_rejects_query_params",
+      "description": "WebhookSourceConfig path regex must reject paths with query parameters (? character)",
+      "function": "WebhookSourceConfig",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "path='/webhooks?key=val'",
+      "expected_output_description": "",
+      "expected_error": "ValidationError",
+      "assertions": []
+    },
+    {
+      "id": "goodhart_correlation_rule_frozen",
+      "description": "CorrelationRule config models are frozen — all source/sink/rule configs reject attribute mutation",
+      "function": "CorrelationRule",
+      "category": "invariant",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "Attempt to reassign the 'timeout' attribute on a CorrelationRule",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Raises an error on attribute assignment"
+      ]
+    },
+    {
+      "id": "goodhart_event_kind_allows_trailing_dots",
+      "description": "EventKind regex allows dots in non-first positions — trailing dots should be accepted per ^[a-z][a-z0-9_.]{0,254}$",
+      "function": "EventKind",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "String 'ci.build.' with trailing dot",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Accepted as valid EventKind since regex allows dots after first char"
+      ]
+    },
+    {
+      "id": "goodhart_close_story_cross_timezone",
+      "description": "close_story must correctly compute duration when start_ts and end_ts are in different timezones representing different absolute times",
+      "function": "close_story",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "start_ts in UTC, end_ts in UTC+5 representing a later absolute time",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Duration correctly reflects the absolute time difference"
+      ]
+    }
+  ],
+  "test_language": "python",
+  "generated_code": "\"\"\"\nAdversarial hidden acceptance tests for Core Data Models (schemas).\nThese tests catch implementations that pass visible tests through shortcuts\nrather than truly satisfying the contract.\n\"\"\"\nimport json\nimport hashlib\nimport uuid\nimport re\nfrom datetime import datetime, timezone, timedelta\n\nimport pytest\n\nfrom src.schemas import (\n    EventKind, EntityKind, EntityId, ActorId, Sha256Hex, StoryId,\n    AwareDatetime, ContextDict, CorrelationKeys, StoryStatus, CloseReason,\n    TerminalEventPattern, EventKindSet, GroupByKeys, ChainByKeys,\n    CorrelationRule, WebhookSourceConfig, OtlpSourceConfig, FileSourceConfig,\n    SentinelSourceConfig, StigmergySinkConfig, ApprenticeSinkConfig,\n    DiskSinkConfig, KindexSinkConfig, NoteworthinessFilter, MemoryLimitsConfig,\n    compute_event_id, create_event, create_story, append_event_to_story,\n    close_story, validate_story_consistency, matches_terminal_pattern,\n    extract_group_key, event_to_dict, event_from_dict, story_to_dict,\n    story_from_dict,\n)\n\n\n# ============================================================\n# Helpers\n# ============================================================\ndef _utc_now():\n    return datetime.now(timezone.utc)\n\ndef _make_ts(year=2024, month=6, day=15, hour=12, minute=0, second=0, micro=0, tz=timezone.utc):\n    return datetime(year, month, day, hour, minute, second, micro, tzinfo=tz)\n\ndef _valid_sha256():\n    return hashlib.sha256(b\"test\").hexdigest()\n\ndef _another_sha256(seed=b\"other\"):\n    return hashlib.sha256(seed).hexdigest()\n\ndef _make_open_story(**overrides):\n    defaults = dict(\n        story_type=\"ci_pipeline\",\n        correlation_rule=\"rule1\",\n        group_key={\"repo\": \"myrepo\"},\n        first_event_id=_valid_sha256(),\n        start_ts=_make_ts(),\n        parent_story_id=None,\n    )\n    defaults.update(overrides)\n    return create_story(**defaults)\n\ndef _make_event(**overrides):\n    defaults = dict(\n        event_kind=\"ci.build.completed\",\n        entity_kind=\"repository\",\n        entity_id=\"repo-1\",\n        actor=\"user-1\",\n        timestamp=_make_ts(),\n        context={\"status\": \"success\"},\n        correlation_keys={\"repo\": \"myrepo\"},\n        source=\"webhook-1\",\n    )\n    defaults.update(overrides)\n    return create_event(**defaults)\n\n\n# ============================================================\n# compute_event_id\n# ============================================================\n\nclass TestGoodhartComputeEventId:\n\n    def test_goodhart_canonical_json_format(self):\n        \"\"\"The event ID must be computed from canonical JSON with sort_keys=True, compact separators,\n        ensure_ascii=True, and timestamp serialized with 'Z' suffix — verifiable by independently hashing.\"\"\"\n        ts = _make_ts(2024, 1, 15, 10, 30, 0)\n        event_kind = \"ci.build.completed\"\n        entity_kind = \"repository\"\n        entity_id = \"repo-1\"\n        actor = \"user-1\"\n        context = {\"status\": \"success\", \"count\": 42}\n        correlation_keys = {\"repo\": \"myrepo\"}\n\n        result = compute_event_id(\n            event_kind=event_kind, entity_kind=entity_kind, entity_id=entity_id,\n            actor=actor, timestamp=ts, context=context, correlation_keys=correlation_keys,\n        )\n\n        # Independently compute the expected hash\n        ts_str = ts.astimezone(timezone.utc).isoformat().replace(\"+00:00\", \"Z\")\n        if ts_str.endswith(\"+00:00\"):\n            ts_str = ts_str[:-6] + \"Z\"\n        canonical_dict = {\n            \"actor\": actor,\n            \"context\": context,\n            \"correlation_keys\": correlation_keys,\n            \"entity_id\": entity_id,\n            \"entity_kind\": entity_kind,\n            \"event_kind\": event_kind,\n            \"timestamp\": ts_str,\n        }\n        canonical_json = json.dumps(canonical_dict, sort_keys=True, separators=(\",\", \":\"), ensure_ascii=True, default=str)\n        expected = hashlib.sha256(canonical_json.encode(\"utf-8\")).hexdigest()\n\n        assert result == expected, f\"Expected {expected}, got {result}\"\n        assert len(result) == 64\n        assert re.match(r'^[0-9a-f]{64}$', result)\n\n    def test_goodhart_non_utc_timezone_same_moment(self):\n        \"\"\"Timestamps in non-UTC timezones must produce the same event ID as the equivalent UTC timestamp.\"\"\"\n        ts_utc = datetime(2024, 6, 15, 12, 0, 0, tzinfo=timezone.utc)\n        ts_offset = datetime(2024, 6, 15, 17, 30, 0, tzinfo=timezone(timedelta(hours=5, minutes=30)))\n\n        id_utc = compute_event_id(\n            event_kind=\"ci.build\", entity_kind=\"repo\", entity_id=\"r1\",\n            actor=\"a1\", timestamp=ts_utc, context={}, correlation_keys={},\n        )\n        id_offset = compute_event_id(\n            event_kind=\"ci.build\", entity_kind=\"repo\", entity_id=\"r1\",\n            actor=\"a1\", timestamp=ts_offset, context={}, correlation_keys={},\n        )\n        assert id_utc == id_offset\n\n    def test_goodhart_context_none_vs_missing(self):\n        \"\"\"Context with {'key': None} must produce a different ID than empty context {}.\"\"\"\n        ts = _make_ts()\n        base = dict(event_kind=\"test.event\", entity_kind=\"entity\", entity_id=\"id1\", actor=\"actor1\", timestamp=ts, correlation_keys={})\n\n        id_with_none = compute_event_id(**base, context={\"key\": None})\n        id_empty = compute_event_id(**base, context={})\n        assert id_with_none != id_empty\n\n    def test_goodhart_context_bool_vs_int(self):\n        \"\"\"Boolean True in context must produce different ID than integer 1.\"\"\"\n        ts = _make_ts()\n        base = dict(event_kind=\"test.event\", entity_kind=\"entity\", entity_id=\"id1\", actor=\"actor1\", timestamp=ts, correlation_keys={})\n\n        id_bool = compute_event_id(**base, context={\"flag\": True})\n        id_int = compute_event_id(**base, context={\"flag\": 1})\n        assert id_bool != id_int\n\n    def test_goodhart_context_ordering_irrelevant(self):\n        \"\"\"Context dict key ordering must not affect the computed event ID.\"\"\"\n        ts = _make_ts()\n        base = dict(event_kind=\"test.event\", entity_kind=\"entity\", entity_id=\"id1\", actor=\"actor1\", timestamp=ts, correlation_keys={})\n\n        ctx_a = {\"alpha\": \"1\", \"beta\": \"2\", \"gamma\": \"3\"}\n        ctx_b = {\"gamma\": \"3\", \"alpha\": \"1\", \"beta\": \"2\"}\n\n        id_a = compute_event_id(**base, context=ctx_a)\n        id_b = compute_event_id(**base, context=ctx_b)\n        assert id_a == id_b\n\n    def test_goodhart_correlation_keys_ordering_irrelevant(self):\n        \"\"\"Correlation keys dict ordering must not affect the computed event ID.\"\"\"\n        ts = _make_ts()\n        base = dict(event_kind=\"test.event\", entity_kind=\"entity\", entity_id=\"id1\", actor=\"actor1\", timestamp=ts, context={})\n\n        ck_a = {\"repo\": \"myrepo\", \"branch\": \"main\"}\n        ck_b = {\"branch\": \"main\", \"repo\": \"myrepo\"}\n\n        id_a = compute_event_id(**base, correlation_keys=ck_a)\n        id_b = compute_event_id(**base, correlation_keys=ck_b)\n        assert id_a == id_b\n\n    def test_goodhart_unicode_in_context(self):\n        \"\"\"Unicode characters in context must be handled deterministically via ensure_ascii=True.\"\"\"\n        ts = _make_ts()\n        base = dict(event_kind=\"test.event\", entity_kind=\"entity\", entity_id=\"id1\", actor=\"actor1\", timestamp=ts, correlation_keys={})\n\n        ctx = {\"message\": \"Hello 🌍 世界\"}\n        id1 = compute_event_id(**base, context=ctx)\n        id2 = compute_event_id(**base, context=ctx)\n        assert id1 == id2\n        assert len(id1) == 64\n        assert re.match(r'^[0-9a-f]{64}$', id1)\n\n    def test_goodhart_empty_context_and_corr_keys(self):\n        \"\"\"Empty context and empty correlation_keys must produce a deterministic hash.\"\"\"\n        ts = _make_ts()\n        result = compute_event_id(\n            event_kind=\"test.event\", entity_kind=\"entity\", entity_id=\"id1\",\n            actor=\"actor1\", timestamp=ts, context={}, correlation_keys={},\n        )\n        assert len(result) == 64\n        assert re.match(r'^[0-9a-f]{64}$', result)\n\n    def test_goodhart_float_context_value(self):\n        \"\"\"Float values in context must be serialized distinctly from their string representation.\"\"\"\n        ts = _make_ts()\n        base = dict(event_kind=\"test.event\", entity_kind=\"entity\", entity_id=\"id1\", actor=\"actor1\", timestamp=ts, correlation_keys={})\n\n        id_float = compute_event_id(**base, context={\"score\": 3.14})\n        id_str = compute_event_id(**base, context={\"score\": \"3.14\"})\n        assert id_float != id_str\n\n\n# ============================================================\n# EventKind / EntityKind boundary cases\n# ============================================================\n\nclass TestGoodhartEventKindBoundary:\n\n    def test_goodhart_rejects_hyphen(self):\n        \"\"\"EventKind pattern only allows lowercase alphanumeric, dots, and underscores — hyphens must be rejected.\"\"\"\n        with pytest.raises(Exception):\n            # Depending on implementation, this could be a Pydantic ValidationError\n            create_event(\n                event_kind=\"ci-build\", entity_kind=\"repo\", entity_id=\"r1\",\n                actor=\"a1\", timestamp=_make_ts(), context={}, correlation_keys={}, source=\"test\"\n            )\n\n    def test_goodhart_rejects_space(self):\n        \"\"\"EventKind must reject strings containing whitespace characters.\"\"\"\n        with pytest.raises(Exception):\n            create_event(\n                event_kind=\"ci build\", entity_kind=\"repo\", entity_id=\"r1\",\n                actor=\"a1\", timestamp=_make_ts(), context={}, correlation_keys={}, source=\"test\"\n            )\n\n    def test_goodhart_single_char(self):\n        \"\"\"EventKind must accept a single lowercase letter as the minimum valid identifier.\"\"\"\n        event = create_event(\n            event_kind=\"a\", entity_kind=\"b\", entity_id=\"r1\",\n            actor=\"a1\", timestamp=_make_ts(), context={}, correlation_keys={}, source=\"test\"\n        )\n        assert event.event_kind == \"a\"\n\n    def test_goodhart_rejects_dot_start(self):\n        \"\"\"EventKind must start with a lowercase letter — dot as first character is invalid.\"\"\"\n        with pytest.raises(Exception):\n            create_event(\n                event_kind=\".build.completed\", entity_kind=\"repo\", entity_id=\"r1\",\n                actor=\"a1\", timestamp=_make_ts(), context={}, correlation_keys={}, source=\"test\"\n            )\n\n    def test_goodhart_rejects_underscore_start(self):\n        \"\"\"EventKind must start with a lowercase letter — underscore as first character is invalid.\"\"\"\n        with pytest.raises(Exception):\n            create_event(\n                event_kind=\"_build\", entity_kind=\"repo\", entity_id=\"r1\",\n                actor=\"a1\", timestamp=_make_ts(), context={}, correlation_keys={}, source=\"test\"\n            )\n\n    def test_goodhart_allows_trailing_dots(self):\n        \"\"\"EventKind regex allows dots in non-first positions.\"\"\"\n        event = create_event(\n            event_kind=\"ci.build.\", entity_kind=\"repo\", entity_id=\"r1\",\n            actor=\"a1\", timestamp=_make_ts(), context={}, correlation_keys={}, source=\"test\"\n        )\n        assert event.event_kind == \"ci.build.\"\n\n    def test_goodhart_entity_kind_rejects_hyphen(self):\n        \"\"\"EntityKind follows the same pattern as EventKind — hyphens must be rejected.\"\"\"\n        with pytest.raises(Exception):\n            create_event(\n                event_kind=\"ci.build\", entity_kind=\"my-repo\", entity_id=\"r1\",\n                actor=\"a1\", timestamp=_make_ts(), context={}, correlation_keys={}, source=\"test\"\n            )\n\n\n# ============================================================\n# ActorId boundary\n# ============================================================\n\nclass TestGoodhartActorIdBoundary:\n\n    def test_goodhart_max_length(self):\n        \"\"\"ActorId must accept strings at the maximum length boundary of 512 characters.\"\"\"\n        long_actor = \"a\" * 512\n        event = create_event(\n            event_kind=\"ci.build\", entity_kind=\"repo\", entity_id=\"r1\",\n            actor=long_actor, timestamp=_make_ts(), context={}, correlation_keys={}, source=\"test\"\n        )\n        assert event.actor == long_actor\n\n    def test_goodhart_over_max(self):\n        \"\"\"ActorId must reject strings exceeding 512 characters.\"\"\"\n        with pytest.raises(Exception):\n            create_event(\n                event_kind=\"ci.build\", entity_kind=\"repo\", entity_id=\"r1\",\n                actor=\"a\" * 513, timestamp=_make_ts(), context={}, correlation_keys={}, source=\"test\"\n            )\n\n\n# ============================================================\n# Sha256Hex boundary\n# ============================================================\n\nclass TestGoodhartSha256Boundary:\n\n    def test_goodhart_non_hex_chars(self):\n        \"\"\"Sha256Hex must reject strings of correct length containing non-hex characters.\"\"\"\n        with pytest.raises(Exception):\n            # 'g' is not a valid hex character\n            create_story(\n                story_type=\"test\", correlation_rule=\"rule1\",\n                group_key={\"k\": \"v\"},\n                first_event_id=\"g\" * 64,\n                start_ts=_make_ts(), parent_story_id=None,\n            )\n\n\n# ============================================================\n# StoryId UUID version\n# ============================================================\n\nclass TestGoodhartStoryIdVersion:\n\n    def test_goodhart_uuid_v1_rejected(self):\n        \"\"\"StoryId must only accept UUID version 4 — UUID v1 must be rejected.\"\"\"\n        uuid_v1_str = str(uuid.uuid1())\n        # UUID v1 has version digit '1' in 13th char of the UUID\n        with pytest.raises(Exception):\n            story_from_dict({\n                \"story_id\": uuid_v1_str,\n                \"story_type\": \"test\",\n                \"correlation_rule\": \"rule1\",\n                \"group_key\": {\"k\": \"v\"},\n                \"events\": [_valid_sha256()],\n                \"status\": \"open\",\n                \"start_ts\": _make_ts().isoformat(),\n                \"end_ts\": None,\n                \"duration\": None,\n                \"event_count\": 1,\n                \"close_reason\": None,\n                \"parent_story_id\": None,\n            })\n\n\n# ============================================================\n# ContextDict boundary\n# ============================================================\n\nclass TestGoodhartContextDictBoundary:\n\n    def test_goodhart_rejects_nested_dict(self):\n        \"\"\"ContextDict must reject dict values (nested dicts).\"\"\"\n        with pytest.raises(Exception):\n            create_event(\n                event_kind=\"ci.build\", entity_kind=\"repo\", entity_id=\"r1\",\n                actor=\"a1\", timestamp=_make_ts(), context={\"inner\": {\"nested\": \"val\"}},\n                correlation_keys={}, source=\"test\"\n            )\n\n    def test_goodhart_accepts_all_primitive_types(self):\n        \"\"\"ContextDict must accept str, int, float, bool, and None simultaneously.\"\"\"\n        ctx = {\"s\": \"val\", \"i\": 42, \"f\": 3.14, \"b\": True, \"n\": None}\n        event = create_event(\n            event_kind=\"ci.build\", entity_kind=\"repo\", entity_id=\"r1\",\n            actor=\"a1\", timestamp=_make_ts(), context=ctx,\n            correlation_keys={}, source=\"test\"\n        )\n        assert event.context[\"s\"] == \"val\"\n        assert event.context[\"i\"] == 42\n        assert event.context[\"f\"] == 3.14\n        assert event.context[\"b\"] is True\n        assert event.context[\"n\"] is None\n\n\n# ============================================================\n# CorrelationKeys boundary\n# ============================================================\n\nclass TestGoodhartCorrelationKeysBoundary:\n\n    def test_goodhart_rejects_non_string_value(self):\n        \"\"\"CorrelationKeys must reject integer values — only non-empty string values allowed.\"\"\"\n        with pytest.raises(Exception):\n            create_event(\n                event_kind=\"ci.build\", entity_kind=\"repo\", entity_id=\"r1\",\n                actor=\"a1\", timestamp=_make_ts(), context={},\n                correlation_keys={\"repo\": 123}, source=\"test\"\n            )\n\n\n# ============================================================\n# create_event\n# ============================================================\n\nclass TestGoodhartCreateEvent:\n\n    def test_goodhart_id_matches_compute(self):\n        \"\"\"Event.id must exactly match compute_event_id with the same identity fields.\"\"\"\n        ts = _make_ts()\n        ctx = {\"env\": \"prod\", \"count\": 5}\n        ck = {\"repo\": \"myrepo\", \"branch\": \"main\"}\n\n        event = create_event(\n            event_kind=\"ci.deploy.started\", entity_kind=\"pipeline\",\n            entity_id=\"pipe-42\", actor=\"deploy-bot\", timestamp=ts,\n            context=ctx, correlation_keys=ck, source=\"webhook\",\n        )\n\n        computed = compute_event_id(\n            event_kind=\"ci.deploy.started\", entity_kind=\"pipeline\",\n            entity_id=\"pipe-42\", actor=\"deploy-bot\", timestamp=ts,\n            context=ctx, correlation_keys=ck,\n        )\n\n        assert event.id == computed\n\n    def test_goodhart_with_rich_context(self):\n        \"\"\"Event with context containing multiple value types must compute a deterministic ID.\"\"\"\n        ts = _make_ts()\n        ctx = {\"msg\": \"ok\", \"count\": 10, \"ratio\": 0.95, \"active\": False, \"extra\": None}\n\n        e1 = create_event(\n            event_kind=\"ci.test\", entity_kind=\"repo\", entity_id=\"r1\",\n            actor=\"bot\", timestamp=ts, context=ctx, correlation_keys={}, source=\"s1\",\n        )\n        e2 = create_event(\n            event_kind=\"ci.test\", entity_kind=\"repo\", entity_id=\"r1\",\n            actor=\"bot\", timestamp=ts, context=ctx, correlation_keys={}, source=\"s2\",\n        )\n        assert e1.id == e2.id\n\n    def test_goodhart_empty_context_and_corr_keys(self):\n        \"\"\"create_event must accept empty context dict and empty correlation_keys dict.\"\"\"\n        event = create_event(\n            event_kind=\"ci.build\", entity_kind=\"repo\", entity_id=\"r1\",\n            actor=\"a1\", timestamp=_make_ts(), context={}, correlation_keys={}, source=\"test\",\n        )\n        assert len(event.id) == 64\n        assert re.match(r'^[0-9a-f]{64}$', event.id)\n\n    def test_goodhart_context_special_json_chars(self):\n        \"\"\"Events with context values containing JSON-special characters must produce deterministic IDs.\"\"\"\n        ts = _make_ts()\n        ctx = {\"msg\": 'He said \"hello\"', \"path\": \"C:\\\\Users\\\\test\"}\n        e1 = create_event(\n            event_kind=\"ci.build\", entity_kind=\"repo\", entity_id=\"r1\",\n            actor=\"a1\", timestamp=ts, context=ctx, correlation_keys={}, source=\"s1\",\n        )\n        e2 = create_event(\n            event_kind=\"ci.build\", entity_kind=\"repo\", entity_id=\"r1\",\n            actor=\"a1\", timestamp=ts, context=ctx, correlation_keys={}, source=\"s2\",\n        )\n        assert e1.id == e2.id\n\n\n# ============================================================\n# create_story\n# ============================================================\n\nclass TestGoodhartCreateStory:\n\n    def test_goodhart_unique_ids(self):\n        \"\"\"Each call to create_story must produce a unique UUID4 story_id.\"\"\"\n        eid = _valid_sha256()\n        ts = _make_ts()\n        s1 = create_story(story_type=\"test\", correlation_rule=\"r1\", group_key={\"k\": \"v\"}, first_event_id=eid, start_ts=ts, parent_story_id=None)\n        s2 = create_story(story_type=\"test\", correlation_rule=\"r1\", group_key={\"k\": \"v\"}, first_event_id=eid, start_ts=ts, parent_story_id=None)\n        assert s1.story_id != s2.story_id\n\n    def test_goodhart_with_parent(self):\n        \"\"\"create_story must correctly store a non-None parent_story_id.\"\"\"\n        parent_id = str(uuid.uuid4())\n        story = create_story(\n            story_type=\"test\", correlation_rule=\"r1\",\n            group_key={\"k\": \"v\"}, first_event_id=_valid_sha256(),\n            start_ts=_make_ts(), parent_story_id=parent_id,\n        )\n        assert story.parent_story_id == parent_id\n\n    def test_goodhart_preserves_group_key(self):\n        \"\"\"create_story must store the provided group_key unchanged.\"\"\"\n        gk = {\"repo\": \"myrepo\", \"branch\": \"main\", \"env\": \"prod\"}\n        story = create_story(\n            story_type=\"test\", correlation_rule=\"r1\",\n            group_key=gk, first_event_id=_valid_sha256(),\n            start_ts=_make_ts(), parent_story_id=None,\n        )\n        assert dict(story.group_key) == gk\n\n    def test_goodhart_start_ts_preserved(self):\n        \"\"\"create_story must store the provided start_ts unchanged.\"\"\"\n        ts = _make_ts(2023, 3, 14, 9, 26, 53)\n        story = create_story(\n            story_type=\"test\", correlation_rule=\"r1\",\n            group_key={\"k\": \"v\"}, first_event_id=_valid_sha256(),\n            start_ts=ts, parent_story_id=None,\n        )\n        assert story.start_ts == ts\n\n\n# ============================================================\n# append_event_to_story\n# ============================================================\n\nclass TestGoodhartAppendEvent:\n\n    def test_goodhart_multiple_appends(self):\n        \"\"\"Appending multiple distinct events produces correct ordered tuple and count.\"\"\"\n        story = _make_open_story()\n        ids = [hashlib.sha256(f\"event-{i}\".encode()).hexdigest() for i in range(3)]\n        for eid in ids:\n            story = append_event_to_story(story, eid)\n\n        assert story.event_count == 4  # 1 initial + 3 appended\n        assert len(story.events) == 4\n        # Check ordering: initial + appended in order\n        for i, eid in enumerate(ids):\n            assert story.events[i + 1] == eid\n\n    def test_goodhart_preserves_all_fields(self):\n        \"\"\"Appending an event must not alter any Story fields other than events and event_count.\"\"\"\n        story = _make_open_story()\n        new_id = _another_sha256(b\"new-event\")\n        updated = append_event_to_story(story, new_id)\n\n        assert updated.story_id == story.story_id\n        assert updated.story_type == story.story_type\n        assert updated.correlation_rule == story.correlation_rule\n        assert updated.group_key == story.group_key\n        assert updated.status == story.status\n        assert updated.start_ts == story.start_ts\n        assert updated.end_ts == story.end_ts\n        assert updated.close_reason == story.close_reason\n        assert updated.parent_story_id == story.parent_story_id\n        assert updated.duration == story.duration\n\n\n# ============================================================\n# close_story\n# ============================================================\n\nclass TestGoodhartCloseStory:\n\n    def test_goodhart_timeout_reason(self):\n        \"\"\"close_story must accept 'timeout' as a valid close_reason.\"\"\"\n        story = _make_open_story()\n        end = story.start_ts + timedelta(hours=1)\n        closed = close_story(story, \"timeout\", end)\n        assert closed.close_reason == \"timeout\"\n        assert closed.status == \"closed\"\n\n    def test_goodhart_evicted_reason(self):\n        \"\"\"close_story must accept 'evicted' as a valid close_reason.\"\"\"\n        story = _make_open_story()\n        end = story.start_ts + timedelta(minutes=5)\n        closed = close_story(story, \"evicted\", end)\n        assert closed.close_reason == \"evicted\"\n        assert closed.status == \"closed\"\n\n    def test_goodhart_duration_precision(self):\n        \"\"\"close_story must accurately compute sub-second duration.\"\"\"\n        ts_start = _make_ts(2024, 6, 15, 12, 0, 0, 0)\n        story = _make_open_story(start_ts=ts_start)\n        end = ts_start + timedelta(milliseconds=500)\n        closed = close_story(story, \"terminal\", end)\n        assert closed.duration == pytest.approx(0.5)\n\n    def test_goodhart_large_duration(self):\n        \"\"\"close_story must correctly compute duration for 24-hour spans.\"\"\"\n        ts_start = _make_ts(2024, 6, 15, 0, 0, 0)\n        story = _make_open_story(start_ts=ts_start)\n        end = ts_start + timedelta(hours=24)\n        closed = close_story(story, \"terminal\", end)\n        assert closed.duration == pytest.approx(86400.0)\n\n    def test_goodhart_preserves_events(self):\n        \"\"\"Closing a story must not modify events or event_count.\"\"\"\n        story = _make_open_story()\n        eid2 = _another_sha256(b\"evt2\")\n        eid3 = _another_sha256(b\"evt3\")\n        story = append_event_to_story(story, eid2)\n        story = append_event_to_story(story, eid3)\n\n        original_events = story.events\n        original_count = story.event_count\n\n        end = story.start_ts + timedelta(hours=1)\n        closed = close_story(story, \"terminal\", end)\n\n        assert closed.events == original_events\n        assert closed.event_count == original_count\n\n    def test_goodhart_cross_timezone_duration(self):\n        \"\"\"Duration must be correctly computed when start and end are in different timezones.\"\"\"\n        ts_start = datetime(2024, 6, 15, 12, 0, 0, tzinfo=timezone.utc)\n        # End at UTC+5, 18:00 which is 13:00 UTC — 1 hour after start\n        ts_end = datetime(2024, 6, 15, 18, 0, 0, tzinfo=timezone(timedelta(hours=5)))\n        story = _make_open_story(start_ts=ts_start)\n        closed = close_story(story, \"terminal\", ts_end)\n        assert closed.duration == pytest.approx(3600.0)\n\n\n# ============================================================\n# matches_terminal_pattern\n# ============================================================\n\nclass TestGoodhartMatchesTerminal:\n\n    def test_goodhart_entity_id_field(self):\n        \"\"\"matches_terminal_pattern must support matching on entity_id.\"\"\"\n        event = _make_event(entity_id=\"repo-123\")\n        assert matches_terminal_pattern(event, {\"entity_id\": \"repo-123\"}) is True\n        assert matches_terminal_pattern(event, {\"entity_id\": \"repo-999\"}) is False\n\n    def test_goodhart_actor_field(self):\n        \"\"\"matches_terminal_pattern must support matching on actor.\"\"\"\n        event = _make_event(actor=\"user-x\")\n        assert matches_terminal_pattern(event, {\"actor\": \"user-x\"}) is True\n        assert matches_terminal_pattern(event, {\"actor\": \"user-y\"}) is False\n\n    def test_goodhart_entity_kind_field(self):\n        \"\"\"matches_terminal_pattern must support matching on entity_kind.\"\"\"\n        event = _make_event(entity_kind=\"repository\")\n        assert matches_terminal_pattern(event, {\"entity_kind\": \"repository\"}) is True\n        assert matches_terminal_pattern(event, {\"entity_kind\": \"pipeline\"}) is False\n\n    def test_goodhart_multi_partial_mismatch(self):\n        \"\"\"When a pattern has multiple fields and only some match, must return False.\"\"\"\n        event = _make_event(event_kind=\"ci.build.completed\", context={\"status\": \"success\"})\n        pattern = {\"event_kind\": \"ci.build.completed\", \"context.status\": \"failed\"}\n        assert matches_terminal_pattern(event, pattern) is False\n\n    def test_goodhart_missing_correlation_key(self):\n        \"\"\"Pattern referencing a missing correlation_keys subkey must return False.\"\"\"\n        event = _make_event(correlation_keys={\"repo\": \"myrepo\"})\n        assert matches_terminal_pattern(event, {\"correlation_keys.nonexistent\": \"val\"}) is False\n\n    def test_goodhart_invalid_field_path(self):\n        \"\"\"matches_terminal_pattern must raise error for unrecognized field paths.\"\"\"\n        event = _make_event()\n        with pytest.raises(Exception):\n            matches_terminal_pattern(event, {\"unknown_field\": \"val\"})\n\n\n# ============================================================\n# extract_group_key\n# ============================================================\n\nclass TestGoodhartExtractGroupKey:\n\n    def test_goodhart_context_field(self):\n        \"\"\"extract_group_key must support extracting values from context.<key>.\"\"\"\n        event = _make_event(context={\"env\": \"prod\"})\n        result = extract_group_key(event, (\"context.env\",))\n        assert result == {\"context.env\": \"prod\"}\n\n    def test_goodhart_multiple_fields(self):\n        \"\"\"extract_group_key must return exactly len(group_by) entries for multiple field paths.\"\"\"\n        event = _make_event(\n            event_kind=\"ci.build\",\n            correlation_keys={\"repo\": \"myrepo\", \"branch\": \"main\"},\n            context={\"env\": \"prod\"},\n        )\n        result = extract_group_key(event, (\"correlation_keys.repo\", \"correlation_keys.branch\", \"context.env\"))\n        assert len(result) == 3\n        assert result[\"correlation_keys.repo\"] == \"myrepo\"\n        assert result[\"correlation_keys.branch\"] == \"main\"\n        assert result[\"context.env\"] == \"prod\"\n\n    def test_goodhart_entity_kind_field(self):\n        \"\"\"extract_group_key must support extracting entity_kind as a top-level field.\"\"\"\n        event = _make_event(entity_kind=\"pipeline\")\n        result = extract_group_key(event, (\"entity_kind\",))\n        assert result == {\"entity_kind\": \"pipeline\"}\n\n\n# ============================================================\n# event_to_dict / event_from_dict\n# ============================================================\n\nclass TestGoodhartEventSerialization:\n\n    def test_goodhart_contains_all_fields(self):\n        \"\"\"event_to_dict must include all Event fields.\"\"\"\n        event = _make_event()\n        d = event_to_dict(event)\n        for key in [\"id\", \"event_kind\", \"entity_kind\", \"entity_id\", \"actor\", \"timestamp\", \"context\", \"correlation_keys\", \"source\"]:\n            assert key in d, f\"Missing key: {key}\"\n\n    def test_goodhart_json_serializable(self):\n        \"\"\"event_to_dict output must be JSON-serializable.\"\"\"\n        event = _make_event(context={\"s\": \"val\", \"i\": 42, \"f\": 3.14, \"b\": True, \"n\": None})\n        d = event_to_dict(event)\n        # This should not raise\n        json_str = json.dumps(d)\n        assert isinstance(json_str, str)\n\n    def test_goodhart_from_dict_with_correct_id(self):\n        \"\"\"event_from_dict must accept a dict where the 'id' matches the computed hash.\"\"\"\n        event = _make_event()\n        d = event_to_dict(event)\n        # d already has the correct 'id'\n        restored = event_from_dict(d)\n        assert restored.id == event.id\n\n    def test_goodhart_from_dict_preserves_source(self):\n        \"\"\"event_from_dict must preserve the 'source' field.\"\"\"\n        event = _make_event(source=\"my-webhook-source\")\n        d = event_to_dict(event)\n        restored = event_from_dict(d)\n        assert restored.source == \"my-webhook-source\"\n\n\n# ============================================================\n# story_to_dict / story_from_dict\n# ============================================================\n\nclass TestGoodhartStorySerialization:\n\n    def test_goodhart_open_story_null_fields(self):\n        \"\"\"story_to_dict for an open story must serialize end_ts, duration, close_reason as None.\"\"\"\n        story = _make_open_story()\n        d = story_to_dict(story)\n        assert d[\"end_ts\"] is None\n        assert d[\"duration\"] is None\n        assert d[\"close_reason\"] is None\n\n    def test_goodhart_events_is_list(self):\n        \"\"\"story_to_dict must serialize events as a list.\"\"\"\n        story = _make_open_story()\n        eid2 = _another_sha256(b\"extra\")\n        story = append_event_to_story(story, eid2)\n        d = story_to_dict(story)\n        assert isinstance(d[\"events\"], list)\n        assert len(d[\"events\"]) == 2\n        for eid in d[\"events\"]:\n            assert re.match(r'^[0-9a-f]{64}$', eid)\n\n    def test_goodhart_closed_story_round_trip(self):\n        \"\"\"A closed Story must survive round-trip serialization.\"\"\"\n        story = _make_open_story()\n        end = story.start_ts + timedelta(hours=2)\n        closed = close_story(story, \"terminal\", end)\n\n        d = story_to_dict(closed)\n        restored = story_from_dict(d)\n\n        assert restored.status == \"closed\"\n        assert restored.close_reason == \"terminal\"\n        assert restored.event_count == closed.event_count\n        assert restored.duration == pytest.approx(closed.duration)\n        assert len(restored.events) == len(closed.events)\n        assert restored.story_id == closed.story_id\n\n    def test_goodhart_from_dict_valid_closed(self):\n        \"\"\"story_from_dict must accept a valid closed story dict.\"\"\"\n        story = _make_open_story()\n        end = story.start_ts + timedelta(minutes=30)\n        closed = close_story(story, \"timeout\", end)\n        d = story_to_dict(closed)\n        restored = story_from_dict(d)\n        assert restored.status == \"closed\"\n        assert restored.close_reason == \"timeout\"\n\n    def test_goodhart_from_dict_closed_missing_duration(self):\n        \"\"\"story_from_dict must reject a closed story dict with duration=None.\"\"\"\n        story = _make_open_story()\n        end = story.start_ts + timedelta(hours=1)\n        closed = close_story(story, \"terminal\", end)\n        d = story_to_dict(closed)\n        d[\"duration\"] = None  # violate lifecycle invariant\n        with pytest.raises(Exception):\n            story_from_dict(d)\n\n\n# ============================================================\n# Config boundary tests\n# ============================================================\n\nclass TestGoodhartConfigBoundary:\n\n    def test_goodhart_webhook_port_max(self):\n        \"\"\"WebhookSourceConfig must accept port 65535.\"\"\"\n        cfg = WebhookSourceConfig(type=\"webhook\", host=\"0.0.0.0\", port=65535, path=\"/hook\", source_label=\"wh\")\n        assert cfg.port == 65535\n\n    def test_goodhart_webhook_port_over_max(self):\n        \"\"\"WebhookSourceConfig must reject port 65536.\"\"\"\n        with pytest.raises(Exception):\n            WebhookSourceConfig(type=\"webhook\", host=\"0.0.0.0\", port=65536, path=\"/hook\", source_label=\"wh\")\n\n    def test_goodhart_file_poll_max(self):\n        \"\"\"FileSourceConfig must accept poll_interval_seconds at 3600.\"\"\"\n        cfg = FileSourceConfig(type=\"file\", path=\"/var/log/events.jsonl\", poll_interval_seconds=3600.0, source_label=\"f1\")\n        assert cfg.poll_interval_seconds == 3600.0\n\n    def test_goodhart_file_poll_over_max(self):\n        \"\"\"FileSourceConfig must reject poll_interval_seconds exceeding 3600.\"\"\"\n        with pytest.raises(Exception):\n            FileSourceConfig(type=\"file\", path=\"/var/log/events.jsonl\", poll_interval_seconds=3601.0, source_label=\"f1\")\n\n    def test_goodhart_stigmergy_timeout_lower_boundary(self):\n        \"\"\"StigmergySinkConfig must accept timeout_seconds=0.5 and reject 0.4.\"\"\"\n        cfg = StigmergySinkConfig(type=\"stigmergy\", url=\"https://stig.example.com\", timeout_seconds=0.5)\n        assert cfg.timeout_seconds == 0.5\n\n        with pytest.raises(Exception):\n            StigmergySinkConfig(type=\"stigmergy\", url=\"https://stig.example.com\", timeout_seconds=0.4)\n\n    def test_goodhart_stigmergy_timeout_over_max(self):\n        \"\"\"StigmergySinkConfig must reject timeout_seconds exceeding 300.\"\"\"\n        with pytest.raises(Exception):\n            StigmergySinkConfig(type=\"stigmergy\", url=\"https://stig.example.com\", timeout_seconds=301.0)\n\n    def test_goodhart_memory_limits_max_boundary(self):\n        \"\"\"MemoryLimitsConfig must accept max_open_stories=1000000, max_events_per_story=100000.\"\"\"\n        cfg = MemoryLimitsConfig(max_open_stories=1000000, max_events_per_story=100000)\n        assert cfg.max_open_stories == 1000000\n        assert cfg.max_events_per_story == 100000\n\n    def test_goodhart_memory_limits_stories_over_max(self):\n        \"\"\"MemoryLimitsConfig must reject max_open_stories=1000001.\"\"\"\n        with pytest.raises(Exception):\n            MemoryLimitsConfig(max_open_stories=1000001, max_events_per_story=100)\n\n    def test_goodhart_memory_limits_events_over_max(self):\n        \"\"\"MemoryLimitsConfig must reject max_events_per_story=100001.\"\"\"\n        with pytest.raises(Exception):\n            MemoryLimitsConfig(max_open_stories=100, max_events_per_story=100001)\n\n    def test_goodhart_disk_sink_empty_stories_path(self):\n        \"\"\"DiskSinkConfig must reject empty stories_path.\"\"\"\n        with pytest.raises(Exception):\n            DiskSinkConfig(type=\"disk\", events_path=\"/data/events.jsonl\", stories_path=\"\")\n\n    def test_goodhart_apprentice_sink_valid(self):\n        \"\"\"ApprenticeSinkConfig must accept valid URL and timeout.\"\"\"\n        cfg = ApprenticeSinkConfig(type=\"apprentice\", url=\"https://apprentice.example.com\", timeout_seconds=30.0)\n        assert cfg.url == \"https://apprentice.example.com\"\n\n    def test_goodhart_apprentice_sink_invalid_url(self):\n        \"\"\"ApprenticeSinkConfig must reject URLs not starting with http(s)://.\"\"\"\n        with pytest.raises(Exception):\n            ApprenticeSinkConfig(type=\"apprentice\", url=\"ftp://invalid\", timeout_seconds=30.0)\n\n    def test_goodhart_otlp_source_valid(self):\n        \"\"\"OtlpSourceConfig must accept valid configuration.\"\"\"\n        cfg = OtlpSourceConfig(type=\"otlp\", host=\"0.0.0.0\", port=4317, source_label=\"otel\")\n        assert cfg.port == 4317\n\n    def test_goodhart_sentinel_source_valid(self):\n        \"\"\"SentinelSourceConfig must accept valid configuration.\"\"\"\n        cfg = SentinelSourceConfig(type=\"sentinel\", host=\"0.0.0.0\", port=8443, source_label=\"sentinel-1\")\n        assert cfg.port == 8443\n\n    def test_goodhart_noteworthiness_negative_duration(self):\n        \"\"\"NoteworthinessFilter must reject negative min_duration_seconds.\"\"\"\n        with pytest.raises(Exception):\n            NoteworthinessFilter(min_event_count=1, min_duration_seconds=-1.0, story_types=[], exclude_close_reasons=[])\n\n    def test_goodhart_webhook_path_underscore_hyphen(self):\n        \"\"\"WebhookSourceConfig path must accept underscores and hyphens.\"\"\"\n        cfg = WebhookSourceConfig(type=\"webhook\", host=\"0.0.0.0\", port=8080, path=\"/my_webhook-endpoint/v2\", source_label=\"wh\")\n        assert cfg.path == \"/my_webhook-endpoint/v2\"\n\n    def test_goodhart_webhook_path_rejects_query_params(self):\n        \"\"\"WebhookSourceConfig path must reject paths with query parameters.\"\"\"\n        with pytest.raises(Exception):\n            WebhookSourceConfig(type=\"webhook\", host=\"0.0.0.0\", port=8080, path=\"/webhooks?key=val\", source_label=\"wh\")\n\n\n# ============================================================\n# CorrelationRule boundary\n# ============================================================\n\nclass TestGoodhartCorrelationRule:\n\n    def test_goodhart_name_special_chars(self):\n        \"\"\"CorrelationRule name must accept dots and hyphens.\"\"\"\n        rule = CorrelationRule(\n            name=\"my-rule.v2\",\n            event_kinds=[\"ci.build\"],\n            group_by=(\"correlation_keys.repo\",),\n            chain_by=(),\n            terminal_event={\"event_kind\": \"ci.build.completed\"},\n            timeout=60.0,\n            story_type=\"ci_pipeline\",\n        )\n        assert rule.name == \"my-rule.v2\"\n\n    def test_goodhart_name_max_length(self):\n        \"\"\"CorrelationRule name must accept names up to 255 characters.\"\"\"\n        name = \"a\" + \"b\" * 254  # 255 chars starting with letter\n        rule = CorrelationRule(\n            name=name,\n            event_kinds=[\"ci.build\"],\n            group_by=(\"correlation_keys.repo\",),\n            chain_by=(),\n            terminal_event={\"event_kind\": \"ci.build.completed\"},\n            timeout=60.0,\n            story_type=\"ci_pipeline\",\n        )\n        assert rule.name == name\n\n    def test_goodhart_name_over_max_length(self):\n        \"\"\"CorrelationRule name must reject names exceeding 255 characters.\"\"\"\n        name = \"a\" + \"b\" * 255  # 256 chars\n        with pytest.raises(Exception):\n            CorrelationRule(\n                name=name,\n                event_kinds=[\"ci.build\"],\n                group_by=(\"correlation_keys.repo\",),\n                chain_by=(),\n                terminal_event={\"event_kind\": \"ci.build.completed\"},\n                timeout=60.0,\n                story_type=\"ci_pipeline\",\n            )\n\n    def test_goodhart_frozen(self):\n        \"\"\"CorrelationRule must be frozen — attribute assignment must raise error.\"\"\"\n        rule = CorrelationRule(\n            name=\"myRule\",\n            event_kinds=[\"ci.build\"],\n            group_by=(\"correlation_keys.repo\",),\n            chain_by=(),\n            terminal_event={},\n            timeout=60.0,\n            story_type=\"ci_pipeline\",\n        )\n        with pytest.raises(Exception):\n            rule.timeout = 120.0\n\n\n# ============================================================\n# Config: duplicate rule names\n# ============================================================\n\nclass TestGoodhartConfigDuplicateRules:\n\n    def test_goodhart_duplicate_rule_names(self, tmp_path):\n        \"\"\"ChroniclerConfig must reject configurations with duplicate CorrelationRule names.\"\"\"\n        import yaml\n        config = {\n            \"sources\": [\n                {\"type\": \"webhook\", \"host\": \"0.0.0.0\", \"port\": 8080, \"path\": \"/hook\", \"source_label\": \"wh1\"}\n            ],\n            \"sinks\": [\n                {\"type\": \"disk\", \"events_path\": \"/data/events.jsonl\", \"stories_path\": \"/data/stories.jsonl\"}\n            ],\n            \"correlation_rules\": [\n                {\n                    \"name\": \"myRule\",\n                    \"event_kinds\": [\"ci.build\"],\n                    \"group_by\": [\"correlation_keys.repo\"],\n                    \"chain_by\": [],\n                    \"terminal_event\": {\"event_kind\": \"ci.build.completed\"},\n                    \"timeout\": 60.0,\n                    \"story_type\": \"ci_pipeline\",\n                },\n                {\n                    \"name\": \"myRule\",  # duplicate!\n                    \"event_kinds\": [\"ci.deploy\"],\n                    \"group_by\": [\"correlation_keys.repo\"],\n                    \"chain_by\": [],\n                    \"terminal_event\": {\"event_kind\": \"ci.deploy.completed\"},\n                    \"timeout\": 120.0,\n                    \"story_type\": \"deploy_pipeline\",\n                },\n            ],\n            \"memory_limits\": {\"max_open_stories\": 1000, \"max_events_per_story\": 100},\n            \"state_path\": \"/data/state\",\n        }\n\n        config_file = tmp_path / \"config.yaml\"\n        config_file.write_text(yaml.dump(config))\n\n        from src.schemas import load_chronicler_config\n        with pytest.raises(Exception):\n            load_chronicler_config(str(config_file))\n"
+}

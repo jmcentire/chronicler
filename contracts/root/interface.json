@@ -1,0 +1,1540 @@
+{
+  "component_id": "root",
+  "name": "Root",
+  "description": "Root orchestration contract for Chronicler — a general-purpose event collector and story assembler. This contract defines the canonical type ownership map (schemas.py is the single source of truth for all domain types), the lifecycle orchestration sequence (startup, run, shutdown), the three integration seams (Source→Engine via bounded asyncio.Queue, Engine→Correlation via synchronous in-loop processing, StoryManager→Sinks via fire-and-forget SinkCallback), the four error boundary zones (Sources: catch-all/log/continue, Sinks: fire-and-forget with error logging, Correlation: invalid events logged and dropped, Config: fail fast at startup), canonical serialization conventions (Pydantic model_dump/model_validate, JSONL with discriminated 'type' field, ISO 8601 datetimes, UUID hex strings), and the minimal public API surface exported from chronicler/__init__.py.",
+  "version": 1,
+  "types": [
+    {
+      "name": "LifecyclePhase",
+      "kind": "enum",
+      "fields": [],
+      "item_type": "",
+      "variants": [
+        "CREATED",
+        "STARTING",
+        "RUNNING",
+        "STOPPING",
+        "STOPPED",
+        "ERROR"
+      ],
+      "inner_types": [],
+      "description": "Canonical lifecycle phases for the Chronicler engine. Defines the strictly ordered state machine governing startup, operation, and shutdown."
+    },
+    {
+      "name": "ErrorBoundaryZone",
+      "kind": "enum",
+      "fields": [],
+      "item_type": "",
+      "variants": [
+        "SOURCE",
+        "SINK",
+        "CORRELATION",
+        "CONFIG"
+      ],
+      "inner_types": [],
+      "description": "Classification of the four error boundary zones defined by the Chronicler SOP. Each zone has distinct exception handling semantics."
+    },
+    {
+      "name": "ErrorBoundaryPolicy",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "zone",
+          "type_ref": "ErrorBoundaryZone",
+          "required": true,
+          "default": "",
+          "description": "Which error boundary zone this policy applies to.",
+          "validators": []
+        },
+        {
+          "name": "strategy",
+          "type_ref": "ErrorHandlingStrategy",
+          "required": true,
+          "default": "",
+          "description": "The exception handling strategy to apply.",
+          "validators": []
+        },
+        {
+          "name": "log_level",
+          "type_ref": "str",
+          "required": true,
+          "default": "",
+          "description": "Minimum log level for captured exceptions in this zone.",
+          "validators": [
+            {
+              "kind": "regex",
+              "expression": "^(DEBUG|INFO|WARNING|ERROR|CRITICAL)$",
+              "error_message": "Log level must be one of DEBUG, INFO, WARNING, ERROR, CRITICAL"
+            }
+          ]
+        },
+        {
+          "name": "restartable",
+          "type_ref": "bool",
+          "required": true,
+          "default": "",
+          "description": "Whether failed components in this zone can be automatically restarted.",
+          "validators": []
+        },
+        {
+          "name": "fatal",
+          "type_ref": "bool",
+          "required": true,
+          "default": "",
+          "description": "Whether an error in this zone is fatal and prevents engine operation.",
+          "validators": []
+        }
+      ],
+      "item_type": "",
+      "variants": [],
+      "inner_types": [],
+      "description": "Defines the exception handling policy for a specific error boundary zone. Used by the root orchestrator to enforce consistent error handling across all components."
+    },
+    {
+      "name": "ErrorHandlingStrategy",
+      "kind": "enum",
+      "fields": [],
+      "item_type": "",
+      "variants": [
+        "CATCH_LOG_CONTINUE",
+        "CATCH_LOG_RESTART",
+        "FIRE_AND_FORGET",
+        "FAIL_FAST"
+      ],
+      "inner_types": [],
+      "description": "Exception handling strategies applied at error boundary zones."
+    },
+    {
+      "name": "IntegrationSeam",
+      "kind": "enum",
+      "fields": [],
+      "item_type": "",
+      "variants": [
+        "SOURCE_TO_ENGINE",
+        "ENGINE_TO_CORRELATION",
+        "STORY_MANAGER_TO_SINKS"
+      ],
+      "inner_types": [],
+      "description": "The three canonical integration boundaries between Chronicler components."
+    },
+    {
+      "name": "IntegrationSeamSpec",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "seam",
+          "type_ref": "IntegrationSeam",
+          "required": true,
+          "default": "",
+          "description": "Which integration seam this spec defines.",
+          "validators": []
+        },
+        {
+          "name": "producer",
+          "type_ref": "str",
+          "required": true,
+          "default": "",
+          "description": "Component ID of the producing side.",
+          "validators": []
+        },
+        {
+          "name": "consumer",
+          "type_ref": "str",
+          "required": true,
+          "default": "",
+          "description": "Component ID of the consuming side.",
+          "validators": []
+        },
+        {
+          "name": "transport",
+          "type_ref": "str",
+          "required": true,
+          "default": "",
+          "description": "Transport mechanism (e.g. 'asyncio.Queue', 'direct_call', 'asyncio.gather').",
+          "validators": []
+        },
+        {
+          "name": "data_type",
+          "type_ref": "str",
+          "required": true,
+          "default": "",
+          "description": "Canonical type flowing across this seam.",
+          "validators": []
+        },
+        {
+          "name": "back_pressure",
+          "type_ref": "str",
+          "required": true,
+          "default": "",
+          "description": "Back-pressure strategy applied at this seam.",
+          "validators": []
+        },
+        {
+          "name": "error_boundary",
+          "type_ref": "ErrorBoundaryZone",
+          "required": true,
+          "default": "",
+          "description": "Which error boundary zone governs exceptions at this seam.",
+          "validators": []
+        }
+      ],
+      "item_type": "",
+      "variants": [],
+      "inner_types": [],
+      "description": "Specification of an integration seam defining how two components communicate, the transport mechanism, back-pressure strategy, and error handling."
+    },
+    {
+      "name": "TypeOwnershipEntry",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "type_name",
+          "type_ref": "str",
+          "required": true,
+          "default": "",
+          "description": "Fully qualified name of the domain type.",
+          "validators": [
+            {
+              "kind": "length",
+              "expression": "1,256",
+              "error_message": "Type name must be between 1 and 256 characters"
+            }
+          ]
+        },
+        {
+          "name": "owner_module",
+          "type_ref": "str",
+          "required": true,
+          "default": "",
+          "description": "Python module path of the authoritative owner (e.g. 'chronicler.schemas').",
+          "validators": [
+            {
+              "kind": "regex",
+              "expression": "^chronicler\\.",
+              "error_message": "Owner module must be within the chronicler package"
+            }
+          ]
+        },
+        {
+          "name": "category",
+          "type_ref": "TypeCategory",
+          "required": true,
+          "default": "",
+          "description": "Classification of the type for documentation and import organization.",
+          "validators": []
+        }
+      ],
+      "item_type": "",
+      "variants": [],
+      "inner_types": [],
+      "description": "Declares which component is the authoritative owner of a domain type. All other components must import from the owner, never redefine."
+    },
+    {
+      "name": "TypeCategory",
+      "kind": "enum",
+      "fields": [],
+      "item_type": "",
+      "variants": [
+        "DOMAIN_MODEL",
+        "CONFIG_MODEL",
+        "PROTOCOL",
+        "ENUM",
+        "ID_TYPE",
+        "SERIALIZATION_HELPER"
+      ],
+      "inner_types": [],
+      "description": "Classification categories for domain types owned by schemas.py."
+    },
+    {
+      "name": "SerializationConvention",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "format",
+          "type_ref": "str",
+          "required": true,
+          "default": "",
+          "description": "Wire format (always 'json' for Chronicler).",
+          "validators": [
+            {
+              "kind": "regex",
+              "expression": "^json$",
+              "error_message": "Chronicler exclusively uses JSON serialization"
+            }
+          ]
+        },
+        {
+          "name": "datetime_format",
+          "type_ref": "str",
+          "required": true,
+          "default": "",
+          "description": "Datetime serialization format.",
+          "validators": [
+            {
+              "kind": "regex",
+              "expression": "^iso8601_utc$",
+              "error_message": "All datetimes must use ISO 8601 with UTC timezone"
+            }
+          ]
+        },
+        {
+          "name": "id_format",
+          "type_ref": "str",
+          "required": true,
+          "default": "",
+          "description": "ID serialization format (e.g. 'sha256_hex', 'uuid4_hex').",
+          "validators": []
+        },
+        {
+          "name": "null_handling",
+          "type_ref": "str",
+          "required": true,
+          "default": "",
+          "description": "How None/null values are serialized ('omit' or 'explicit_null').",
+          "validators": [
+            {
+              "kind": "regex",
+              "expression": "^(omit|explicit_null)$",
+              "error_message": "Null handling must be 'omit' or 'explicit_null'"
+            }
+          ]
+        },
+        {
+          "name": "discriminator_field",
+          "type_ref": "str",
+          "required": false,
+          "default": "",
+          "description": "Field name used for polymorphic deserialization in JSONL records.",
+          "validators": []
+        }
+      ],
+      "item_type": "",
+      "variants": [],
+      "inner_types": [],
+      "description": "Defines the canonical serialization convention for a type category. Ensures all components serialize/deserialize consistently."
+    },
+    {
+      "name": "StartupStep",
+      "kind": "enum",
+      "fields": [],
+      "item_type": "",
+      "variants": [
+        "LOAD_CONFIG",
+        "VALIDATE_CONFIG",
+        "RECOVER_STATE",
+        "INIT_CORRELATION_ENGINE",
+        "INIT_STORY_MANAGER",
+        "INIT_SINKS",
+        "START_SINKS",
+        "INIT_SOURCES",
+        "START_SOURCES",
+        "START_SWEEP_TASK",
+        "START_MCP_SERVER",
+        "ENTER_RUNNING"
+      ],
+      "inner_types": [],
+      "description": "Ordered steps in the Chronicler startup sequence. Each step must complete successfully before the next begins."
+    },
+    {
+      "name": "ShutdownStep",
+      "kind": "enum",
+      "fields": [],
+      "item_type": "",
+      "variants": [
+        "STOP_SOURCES",
+        "DRAIN_QUEUE",
+        "STOP_SWEEP_TASK",
+        "FLUSH_STORY_MANAGER",
+        "STOP_SINKS",
+        "PERSIST_FINAL_STATE",
+        "ENTER_STOPPED"
+      ],
+      "inner_types": [],
+      "description": "Ordered steps in the Chronicler shutdown sequence. Steps execute in listed order."
+    },
+    {
+      "name": "StartupResult",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "success",
+          "type_ref": "bool",
+          "required": true,
+          "default": "",
+          "description": "Whether startup completed successfully.",
+          "validators": []
+        },
+        {
+          "name": "completed_steps",
+          "type_ref": "list",
+          "required": true,
+          "default": "",
+          "description": "List of StartupStep values that completed successfully.",
+          "validators": []
+        },
+        {
+          "name": "failed_step",
+          "type_ref": "str",
+          "required": false,
+          "default": "",
+          "description": "The step that failed, or empty string if all succeeded.",
+          "validators": []
+        },
+        {
+          "name": "error_message",
+          "type_ref": "str",
+          "required": false,
+          "default": "",
+          "description": "Error detail if startup failed, empty string otherwise.",
+          "validators": []
+        },
+        {
+          "name": "duration_seconds",
+          "type_ref": "float",
+          "required": true,
+          "default": "",
+          "description": "Wall-clock time for the startup sequence.",
+          "validators": [
+            {
+              "kind": "range",
+              "expression": "0.0,3600.0",
+              "error_message": "Startup duration must be between 0 and 3600 seconds"
+            }
+          ]
+        }
+      ],
+      "item_type": "",
+      "variants": [],
+      "inner_types": [],
+      "description": "Result of the startup sequence, indicating success or the step at which failure occurred."
+    },
+    {
+      "name": "ShutdownResult",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "success",
+          "type_ref": "bool",
+          "required": true,
+          "default": "",
+          "description": "Whether shutdown completed without fatal errors.",
+          "validators": []
+        },
+        {
+          "name": "completed_steps",
+          "type_ref": "list",
+          "required": true,
+          "default": "",
+          "description": "List of ShutdownStep values that completed.",
+          "validators": []
+        },
+        {
+          "name": "errors",
+          "type_ref": "list",
+          "required": true,
+          "default": "",
+          "description": "List of error messages from non-fatal failures during shutdown.",
+          "validators": []
+        },
+        {
+          "name": "events_drained",
+          "type_ref": "int",
+          "required": true,
+          "default": "",
+          "description": "Number of events drained from the queue during shutdown.",
+          "validators": [
+            {
+              "kind": "range",
+              "expression": "0,1000000000",
+              "error_message": "Events drained must be non-negative"
+            }
+          ]
+        },
+        {
+          "name": "stories_flushed",
+          "type_ref": "int",
+          "required": true,
+          "default": "",
+          "description": "Number of open stories flushed (closed with appropriate status) during shutdown.",
+          "validators": [
+            {
+              "kind": "range",
+              "expression": "0,1000000",
+              "error_message": "Stories flushed must be non-negative"
+            }
+          ]
+        },
+        {
+          "name": "duration_seconds",
+          "type_ref": "float",
+          "required": true,
+          "default": "",
+          "description": "Wall-clock time for the shutdown sequence.",
+          "validators": [
+            {
+              "kind": "range",
+              "expression": "0.0,300.0",
+              "error_message": "Shutdown duration must be between 0 and 300 seconds"
+            }
+          ]
+        }
+      ],
+      "item_type": "",
+      "variants": [],
+      "inner_types": [],
+      "description": "Result of the shutdown sequence, indicating which steps succeeded and any errors encountered."
+    },
+    {
+      "name": "PublicApiExport",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "name",
+          "type_ref": "str",
+          "required": true,
+          "default": "",
+          "description": "Symbol name as it appears in __all__.",
+          "validators": [
+            {
+              "kind": "length",
+              "expression": "1,128",
+              "error_message": "Export name must be between 1 and 128 characters"
+            }
+          ]
+        },
+        {
+          "name": "source_module",
+          "type_ref": "str",
+          "required": true,
+          "default": "",
+          "description": "Module path from which the symbol is imported (e.g. 'chronicler.schemas').",
+          "validators": []
+        },
+        {
+          "name": "kind",
+          "type_ref": "str",
+          "required": true,
+          "default": "",
+          "description": "Symbol kind: 'class', 'function', 'enum', or 'type_alias'.",
+          "validators": [
+            {
+              "kind": "regex",
+              "expression": "^(class|function|enum|type_alias)$",
+              "error_message": "Export kind must be class, function, enum, or type_alias"
+            }
+          ]
+        }
+      ],
+      "item_type": "",
+      "variants": [],
+      "inner_types": [],
+      "description": "Declares a symbol exported from chronicler/__init__.py as part of the public API surface."
+    },
+    {
+      "name": "HealthStatus",
+      "kind": "enum",
+      "fields": [],
+      "item_type": "",
+      "variants": [
+        "HEALTHY",
+        "DEGRADED",
+        "UNHEALTHY",
+        "UNKNOWN"
+      ],
+      "inner_types": [],
+      "description": "Aggregate health status of the Chronicler system as reported by the root module."
+    },
+    {
+      "name": "SystemHealth",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "status",
+          "type_ref": "HealthStatus",
+          "required": true,
+          "default": "",
+          "description": "Overall system health status.",
+          "validators": []
+        },
+        {
+          "name": "phase",
+          "type_ref": "LifecyclePhase",
+          "required": true,
+          "default": "",
+          "description": "Current engine lifecycle phase.",
+          "validators": []
+        },
+        {
+          "name": "sources_healthy",
+          "type_ref": "int",
+          "required": true,
+          "default": "",
+          "description": "Number of sources in HEALTHY state.",
+          "validators": [
+            {
+              "kind": "range",
+              "expression": "0,100",
+              "error_message": "Source count must be between 0 and 100"
+            }
+          ]
+        },
+        {
+          "name": "sources_total",
+          "type_ref": "int",
+          "required": true,
+          "default": "",
+          "description": "Total number of configured sources.",
+          "validators": [
+            {
+              "kind": "range",
+              "expression": "0,100",
+              "error_message": "Source count must be between 0 and 100"
+            }
+          ]
+        },
+        {
+          "name": "sinks_healthy",
+          "type_ref": "int",
+          "required": true,
+          "default": "",
+          "description": "Number of sinks in HEALTHY state.",
+          "validators": [
+            {
+              "kind": "range",
+              "expression": "0,100",
+              "error_message": "Sink count must be between 0 and 100"
+            }
+          ]
+        },
+        {
+          "name": "sinks_total",
+          "type_ref": "int",
+          "required": true,
+          "default": "",
+          "description": "Total number of configured sinks.",
+          "validators": [
+            {
+              "kind": "range",
+              "expression": "0,100",
+              "error_message": "Sink count must be between 0 and 100"
+            }
+          ]
+        },
+        {
+          "name": "open_stories",
+          "type_ref": "int",
+          "required": true,
+          "default": "",
+          "description": "Current number of open stories.",
+          "validators": [
+            {
+              "kind": "range",
+              "expression": "0,1000000",
+              "error_message": "Open stories must be non-negative"
+            }
+          ]
+        },
+        {
+          "name": "queue_depth",
+          "type_ref": "int",
+          "required": true,
+          "default": "",
+          "description": "Current number of events buffered in the internal queue.",
+          "validators": [
+            {
+              "kind": "range",
+              "expression": "0,100000",
+              "error_message": "Queue depth must be non-negative"
+            }
+          ]
+        },
+        {
+          "name": "uptime_seconds",
+          "type_ref": "float",
+          "required": true,
+          "default": "",
+          "description": "Seconds since the engine entered RUNNING phase.",
+          "validators": [
+            {
+              "kind": "range",
+              "expression": "0.0,31536000.0",
+              "error_message": "Uptime must be non-negative"
+            }
+          ]
+        },
+        {
+          "name": "detail",
+          "type_ref": "str",
+          "required": false,
+          "default": "",
+          "description": "Human-readable summary of the system health.",
+          "validators": []
+        }
+      ],
+      "item_type": "",
+      "variants": [],
+      "inner_types": [],
+      "description": "Aggregate system health snapshot combining engine phase, source health, sink health, and story manager state."
+    },
+    {
+      "name": "PackageVersion",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "version",
+          "type_ref": "str",
+          "required": true,
+          "default": "",
+          "description": "Semantic version string of the Chronicler package.",
+          "validators": [
+            {
+              "kind": "regex",
+              "expression": "^\\d+\\.\\d+\\.\\d+([a-zA-Z0-9.+-]*)?$",
+              "error_message": "Version must follow semantic versioning (e.g. 1.0.0, 1.0.0-alpha.1)"
+            }
+          ]
+        },
+        {
+          "name": "python_requires",
+          "type_ref": "str",
+          "required": true,
+          "default": ">=3.12",
+          "description": "Minimum Python version required.",
+          "validators": []
+        }
+      ],
+      "item_type": "",
+      "variants": [],
+      "inner_types": [],
+      "description": "Version information for the Chronicler package, exported from __init__.py."
+    }
+  ],
+  "functions": [
+    {
+      "name": "initialize",
+      "description": "Top-level initialization function that orchestrates the full Chronicler startup sequence. Loads config from YAML, recovers persisted state from JSONL, constructs and wires all components (correlation engine, story manager, sources, sinks, MCP server), and transitions the engine to RUNNING phase. This is the primary programmatic entry point; cli_main delegates to this after parsing arguments. Executes startup steps in strict order — failure at any step prevents subsequent steps and transitions to ERROR phase.",
+      "inputs": [
+        {
+          "name": "config_path",
+          "type_ref": "str",
+          "required": true,
+          "default": "",
+          "description": "Filesystem path to chronicler.yaml configuration file.",
+          "validators": [
+            {
+              "kind": "length",
+              "expression": "1,4096",
+              "error_message": "Config path must be between 1 and 4096 characters"
+            }
+          ]
+        },
+        {
+          "name": "clock",
+          "type_ref": "any",
+          "required": false,
+          "default": "None",
+          "description": "Optional injectable clock callable for testability and replay mode. Defaults to datetime.now(timezone.utc).",
+          "validators": []
+        },
+        {
+          "name": "id_factory",
+          "type_ref": "any",
+          "required": false,
+          "default": "None",
+          "description": "Optional injectable ID factory callable for deterministic test IDs. Defaults to lambda: str(uuid4()).",
+          "validators": []
+        }
+      ],
+      "output_type": "StartupResult",
+      "error_cases": [
+        {
+          "name": "config_not_found",
+          "condition": "config_path does not exist or is not readable",
+          "error_type": "ConfigError",
+          "error_data": {
+            "message": "Configuration file not found: {config_path}"
+          }
+        },
+        {
+          "name": "config_validation_failed",
+          "condition": "YAML content does not conform to ChroniclerConfig schema",
+          "error_type": "ConfigError",
+          "error_data": {
+            "message": "Configuration validation failed for {config_path}"
+          }
+        },
+        {
+          "name": "state_recovery_failed",
+          "condition": "JSONL state file exists but cannot be read due to I/O error",
+          "error_type": "RuntimeError",
+          "error_data": {
+            "message": "Failed to recover state from {state_file_path}"
+          }
+        },
+        {
+          "name": "no_sources_started",
+          "condition": "All configured sources failed to initialize or start",
+          "error_type": "RuntimeError",
+          "error_data": {
+            "message": "No sources could be started — engine cannot operate without at least one source"
+          }
+        }
+      ],
+      "preconditions": [
+        "config_path points to an existing, readable YAML file",
+        "No Chronicler engine is currently running in this process",
+        "Called within an async context (running event loop)"
+      ],
+      "postconditions": [
+        "On success: engine is in RUNNING phase, all sources are accepting events, all sinks are started, sweep task is running",
+        "On failure: engine is in ERROR phase, all partially-started components are cleaned up, StartupResult.failed_step identifies the failure point",
+        "StartupResult.completed_steps lists exactly the steps that succeeded in order"
+      ],
+      "idempotent": false,
+      "side_effects": [
+        "Reads configuration YAML file from disk",
+        "Reads JSONL state file for recovery",
+        "Starts network listeners for HTTP-based sources",
+        "Opens file handles for file tailer source and disk sink",
+        "Registers OS signal handlers (SIGINT, SIGTERM)"
+      ],
+      "structured_side_effects": [
+        {
+          "kind": "reads_file",
+          "target": "config_path",
+          "description": "Reads and parses chronicler.yaml configuration"
+        },
+        {
+          "kind": "reads_file",
+          "target": "state_file_path",
+          "description": "Reads JSONL state file for open story recovery"
+        },
+        {
+          "kind": "network_call",
+          "target": "source_bind_addresses",
+          "description": "Starts network listeners on configured source bind addresses"
+        },
+        {
+          "kind": "writes_file",
+          "target": "state_file_path",
+          "description": "May write recovery checkpoint to state file"
+        },
+        {
+          "kind": "mutates_state",
+          "target": "engine_phase",
+          "description": "Transitions engine from CREATED through STARTING to RUNNING (or ERROR)"
+        }
+      ],
+      "performance_budget": {
+        "p95_latency_ms": 5000,
+        "max_memory_mb": 256,
+        "complexity": null
+      }
+    },
+    {
+      "name": "shutdown",
+      "description": "Top-level shutdown function that orchestrates the full Chronicler graceful shutdown sequence. Stops all sources (no new events), drains the internal queue with a timeout, stops the sweep task, flushes the story manager (closing all open stories with appropriate status), stops all sinks, and persists final state to JSONL. Transitions the engine to STOPPED phase. Non-fatal errors at individual steps are logged but do not prevent subsequent steps.",
+      "inputs": [
+        {
+          "name": "drain_timeout_seconds",
+          "type_ref": "float",
+          "required": false,
+          "default": "5.0",
+          "description": "Maximum seconds to wait for the internal queue to drain before dropping remaining events.",
+          "validators": [
+            {
+              "kind": "range",
+              "expression": "0.1,60.0",
+              "error_message": "Drain timeout must be between 0.1 and 60.0 seconds"
+            }
+          ]
+        }
+      ],
+      "output_type": "ShutdownResult",
+      "error_cases": [
+        {
+          "name": "not_stoppable",
+          "condition": "Engine phase is STOPPED or CREATED (never started)",
+          "error_type": "RuntimeError",
+          "error_data": {
+            "message": "Engine is not in a stoppable phase: {current_phase}"
+          }
+        },
+        {
+          "name": "drain_timeout",
+          "condition": "Queue did not drain within drain_timeout_seconds",
+          "error_type": "None",
+          "error_data": {
+            "message": "Queue drain timed out with {remaining} events remaining — events dropped"
+          }
+        },
+        {
+          "name": "state_persist_failure",
+          "condition": "Cannot write final state to JSONL file",
+          "error_type": "None",
+          "error_data": {
+            "message": "Failed to persist final state: {detail}"
+          }
+        }
+      ],
+      "preconditions": [
+        "Engine is in RUNNING or STARTING phase",
+        "Called within an async context (running event loop)"
+      ],
+      "postconditions": [
+        "Engine phase is STOPPED",
+        "All source tasks are cancelled and awaited",
+        "Internal queue is drained or timed out (remaining events logged and dropped)",
+        "Story manager sweep task is stopped",
+        "All open stories are closed with status 'evicted' and emitted to sinks",
+        "All sinks are stopped and file handles closed",
+        "Final state is persisted to JSONL state file",
+        "OS signal handlers are deregistered"
+      ],
+      "idempotent": true,
+      "side_effects": [
+        "Cancels source asyncio tasks",
+        "Drains and discards events from internal queue",
+        "Closes all open stories via story manager",
+        "Emits closed stories to all sinks",
+        "Stops all sink instances",
+        "Writes final state to JSONL file",
+        "Deregisters OS signal handlers"
+      ],
+      "structured_side_effects": [
+        {
+          "kind": "mutates_state",
+          "target": "engine_phase",
+          "description": "Transitions engine from RUNNING through STOPPING to STOPPED"
+        },
+        {
+          "kind": "writes_file",
+          "target": "state_file_path",
+          "description": "Persists final state records (story_closed for all flushed stories)"
+        },
+        {
+          "kind": "network_call",
+          "target": "sink_endpoints",
+          "description": "Emits final closed stories to network sinks before stopping them"
+        },
+        {
+          "kind": "logging",
+          "target": "chronicler.root",
+          "description": "Logs shutdown progress, non-fatal errors, and final summary"
+        }
+      ],
+      "performance_budget": {
+        "p95_latency_ms": 15000,
+        "max_memory_mb": 256,
+        "complexity": null
+      }
+    },
+    {
+      "name": "get_system_health",
+      "description": "Returns a comprehensive system health snapshot combining engine phase, source/sink health, story manager state, and queue depth. Pure read operation with no side effects. Can be called from any lifecycle phase. This is the root-level aggregation used by the MCP chronicler_status tool and the CLI status command.",
+      "inputs": [],
+      "output_type": "SystemHealth",
+      "error_cases": [
+        {
+          "name": "engine_not_initialized",
+          "condition": "No engine instance exists (called before initialize)",
+          "error_type": "RuntimeError",
+          "error_data": {
+            "message": "Engine has not been initialized"
+          }
+        }
+      ],
+      "preconditions": [],
+      "postconditions": [
+        "Returned SystemHealth reflects the engine state at the time of the call",
+        "status is HEALTHY if engine is RUNNING and all sources/sinks are healthy",
+        "status is DEGRADED if engine is RUNNING but some sources/sinks are failed",
+        "status is UNHEALTHY if engine is in ERROR phase or no sources are healthy",
+        "status is UNKNOWN if engine has not yet started (CREATED phase)"
+      ],
+      "idempotent": true,
+      "side_effects": [],
+      "structured_side_effects": [
+        {
+          "kind": "none",
+          "target": "",
+          "description": ""
+        }
+      ],
+      "performance_budget": null
+    },
+    {
+      "name": "get_type_ownership_map",
+      "description": "Returns the canonical type ownership map declaring which module owns each domain type. This is a pure function returning static data that serves as the ground truth for import validation. All components must import domain types from their declared owner module, never redefine them locally.",
+      "inputs": [],
+      "output_type": "list",
+      "error_cases": [],
+      "preconditions": [],
+      "postconditions": [
+        "Returned list contains one TypeOwnershipEntry per canonical domain type",
+        "Every type referenced in any dependency contract has exactly one entry",
+        "All entries have owner_module within the 'chronicler' package"
+      ],
+      "idempotent": true,
+      "side_effects": [],
+      "structured_side_effects": [
+        {
+          "kind": "none",
+          "target": "",
+          "description": ""
+        }
+      ],
+      "performance_budget": null
+    },
+    {
+      "name": "get_integration_seams",
+      "description": "Returns the specifications for all three integration seams defining how components communicate. Pure function returning static architectural specifications used for documentation and integration testing.",
+      "inputs": [],
+      "output_type": "list",
+      "error_cases": [],
+      "preconditions": [],
+      "postconditions": [
+        "Returned list contains exactly 3 IntegrationSeamSpec entries: SOURCE_TO_ENGINE, ENGINE_TO_CORRELATION, STORY_MANAGER_TO_SINKS",
+        "Each seam specifies producer, consumer, transport, data type, back-pressure strategy, and governing error boundary"
+      ],
+      "idempotent": true,
+      "side_effects": [],
+      "structured_side_effects": [
+        {
+          "kind": "none",
+          "target": "",
+          "description": ""
+        }
+      ],
+      "performance_budget": null
+    },
+    {
+      "name": "get_error_boundary_policies",
+      "description": "Returns the error handling policies for all four error boundary zones. Pure function returning static policy definitions that govern exception handling across the system. Used by components to determine how to handle exceptions at their boundary.",
+      "inputs": [],
+      "output_type": "list",
+      "error_cases": [],
+      "preconditions": [],
+      "postconditions": [
+        "Returned list contains exactly 4 ErrorBoundaryPolicy entries: SOURCE, SINK, CORRELATION, CONFIG",
+        "SOURCE zone uses CATCH_LOG_CONTINUE strategy with restartable=true, fatal=false",
+        "SINK zone uses FIRE_AND_FORGET strategy with restartable=false, fatal=false",
+        "CORRELATION zone uses CATCH_LOG_CONTINUE strategy with restartable=false, fatal=false",
+        "CONFIG zone uses FAIL_FAST strategy with restartable=false, fatal=true"
+      ],
+      "idempotent": true,
+      "side_effects": [],
+      "structured_side_effects": [
+        {
+          "kind": "none",
+          "target": "",
+          "description": ""
+        }
+      ],
+      "performance_budget": null
+    },
+    {
+      "name": "get_public_api_exports",
+      "description": "Returns the list of symbols exported from chronicler/__init__.py as the public API surface. This is the minimal set of types and functions that downstream consumers should import. Kept intentionally small to avoid circular imports and to provide a stable API.",
+      "inputs": [],
+      "output_type": "list",
+      "error_cases": [],
+      "preconditions": [],
+      "postconditions": [
+        "Returned list contains PublicApiExport entries for all symbols in chronicler.__init__.__all__",
+        "List includes at minimum: Event, Story, CorrelationRule, ChroniclerEngine, ChroniclerConfig, cli_main",
+        "All source_module references are valid modules within the chronicler package"
+      ],
+      "idempotent": true,
+      "side_effects": [],
+      "structured_side_effects": [
+        {
+          "kind": "none",
+          "target": "",
+          "description": ""
+        }
+      ],
+      "performance_budget": null
+    },
+    {
+      "name": "validate_component_wiring",
+      "description": "Validates that all component dependencies are correctly wired by checking: (1) all types referenced in dependency contracts exist in the type ownership map, (2) all integration seams have matching producer/consumer component IDs, (3) error boundary policies cover all zones used by integration seams. This is a build-time/test-time validation function, not called at runtime.",
+      "inputs": [
+        {
+          "name": "type_ownership_map",
+          "type_ref": "list",
+          "required": true,
+          "default": "",
+          "description": "Output of get_type_ownership_map().",
+          "validators": []
+        },
+        {
+          "name": "integration_seams",
+          "type_ref": "list",
+          "required": true,
+          "default": "",
+          "description": "Output of get_integration_seams().",
+          "validators": []
+        },
+        {
+          "name": "error_policies",
+          "type_ref": "list",
+          "required": true,
+          "default": "",
+          "description": "Output of get_error_boundary_policies().",
+          "validators": []
+        }
+      ],
+      "output_type": "bool",
+      "error_cases": [
+        {
+          "name": "missing_type_owner",
+          "condition": "A type referenced in a dependency contract has no entry in the type ownership map",
+          "error_type": "ValueError",
+          "error_data": {
+            "message": "Type '{type_name}' referenced by {component_id} has no owner in the type ownership map"
+          }
+        },
+        {
+          "name": "orphaned_seam_component",
+          "condition": "An integration seam references a component ID that does not exist in the dependency graph",
+          "error_type": "ValueError",
+          "error_data": {
+            "message": "Integration seam {seam} references unknown component '{component_id}'"
+          }
+        },
+        {
+          "name": "uncovered_error_zone",
+          "condition": "An integration seam references an error boundary zone with no corresponding policy",
+          "error_type": "ValueError",
+          "error_data": {
+            "message": "Error boundary zone {zone} used by seam {seam} has no policy defined"
+          }
+        }
+      ],
+      "preconditions": [
+        "All input lists are well-formed (valid TypeOwnershipEntry, IntegrationSeamSpec, ErrorBoundaryPolicy instances)"
+      ],
+      "postconditions": [
+        "Returns true if all cross-component wiring is valid",
+        "Raises ValueError with a detail message if any wiring issue is detected"
+      ],
+      "idempotent": true,
+      "side_effects": [],
+      "structured_side_effects": [
+        {
+          "kind": "none",
+          "target": "",
+          "description": ""
+        }
+      ],
+      "performance_budget": null
+    },
+    {
+      "name": "create_engine_from_config",
+      "description": "Factory function that constructs a fully-wired ChroniclerEngine instance from a validated ChroniclerConfig. Creates correlation engine, story manager, source instances, sink instances, and wires them together. Does not start the engine — call engine.start() or engine.run() after construction. This is the seam between configuration and runtime, enabling testing with custom configs without touching YAML files.",
+      "inputs": [
+        {
+          "name": "config",
+          "type_ref": "any",
+          "required": true,
+          "default": "",
+          "description": "A validated ChroniclerConfig instance (from schemas module).",
+          "validators": []
+        },
+        {
+          "name": "clock",
+          "type_ref": "any",
+          "required": false,
+          "default": "None",
+          "description": "Optional injectable clock callable. Defaults to datetime.now(timezone.utc).",
+          "validators": []
+        },
+        {
+          "name": "id_factory",
+          "type_ref": "any",
+          "required": false,
+          "default": "None",
+          "description": "Optional injectable ID factory. Defaults to lambda: str(uuid4()).",
+          "validators": []
+        },
+        {
+          "name": "override_sources",
+          "type_ref": "list",
+          "required": false,
+          "default": "[]",
+          "description": "Optional list of pre-built source instances for testing. If provided, these replace config-driven source construction.",
+          "validators": []
+        },
+        {
+          "name": "override_sinks",
+          "type_ref": "list",
+          "required": false,
+          "default": "[]",
+          "description": "Optional list of pre-built sink instances for testing. If provided, these replace config-driven sink construction.",
+          "validators": []
+        }
+      ],
+      "output_type": "any",
+      "error_cases": [
+        {
+          "name": "invalid_config",
+          "condition": "config is not a valid ChroniclerConfig instance",
+          "error_type": "TypeError",
+          "error_data": {
+            "message": "Expected ChroniclerConfig, got {type}"
+          }
+        },
+        {
+          "name": "duplicate_rule_names",
+          "condition": "Two or more CorrelationRules in config share the same name",
+          "error_type": "ValueError",
+          "error_data": {
+            "message": "Duplicate correlation rule names: {names}"
+          }
+        },
+        {
+          "name": "unknown_source_type",
+          "condition": "A source config has an unrecognized type discriminator",
+          "error_type": "ValueError",
+          "error_data": {
+            "message": "Unknown source type: {source_type}"
+          }
+        },
+        {
+          "name": "unknown_sink_type",
+          "condition": "A sink config has an unrecognized type discriminator",
+          "error_type": "ValueError",
+          "error_data": {
+            "message": "Unknown sink type: {sink_type}"
+          }
+        }
+      ],
+      "preconditions": [
+        "config is a valid, fully-validated ChroniclerConfig instance",
+        "config has at least one source, one sink, and one correlation rule",
+        "All CorrelationRule names in config are unique"
+      ],
+      "postconditions": [
+        "Returned ChroniclerEngine is in CREATED phase",
+        "Engine has correlation engine initialized with all rules from config",
+        "Engine has story manager initialized with max_open_stories from config.memory_limits",
+        "Engine has all configured sources instantiated (or override_sources if provided)",
+        "Engine has all configured sinks instantiated (or override_sinks if provided)",
+        "Sink callbacks are registered with story manager",
+        "No I/O has been performed, no tasks started"
+      ],
+      "idempotent": true,
+      "side_effects": [],
+      "structured_side_effects": [
+        {
+          "kind": "none",
+          "target": "",
+          "description": ""
+        }
+      ],
+      "performance_budget": null
+    },
+    {
+      "name": "run_cli",
+      "description": "Top-level CLI entry point registered as the 'chronicler' console script in pyproject.toml. Delegates to engine_cli_mcp.cli_main() after ensuring the chronicler package is properly initialized. This is the single entry point for all CLI subcommands (start, status, stories list/show, replay).",
+      "inputs": [
+        {
+          "name": "argv",
+          "type_ref": "list",
+          "required": false,
+          "default": "None",
+          "description": "Command-line arguments. If None, uses sys.argv[1:].",
+          "validators": []
+        }
+      ],
+      "output_type": "int",
+      "error_cases": [
+        {
+          "name": "config_error",
+          "condition": "Configuration file not found or invalid",
+          "error_type": "SystemExit",
+          "error_data": {
+            "exit_code": "1"
+          }
+        },
+        {
+          "name": "runtime_error",
+          "condition": "Engine encounters unrecoverable error during operation",
+          "error_type": "SystemExit",
+          "error_data": {
+            "exit_code": "2"
+          }
+        },
+        {
+          "name": "file_not_found",
+          "condition": "A referenced file (replay JSONL, state file) does not exist",
+          "error_type": "SystemExit",
+          "error_data": {
+            "exit_code": "3"
+          }
+        },
+        {
+          "name": "state_read_error",
+          "condition": "Cannot read JSONL state file for offline commands",
+          "error_type": "SystemExit",
+          "error_data": {
+            "exit_code": "4"
+          }
+        }
+      ],
+      "preconditions": [],
+      "postconditions": [
+        "Returns integer exit code: 0 for success, non-zero for error",
+        "For 'start' subcommand: engine has completed full lifecycle (start → run → stop)",
+        "For 'status' subcommand: JSON status printed to stdout",
+        "For 'stories list' subcommand: JSON story list printed to stdout",
+        "For 'stories show' subcommand: JSON story detail printed to stdout or error to stderr",
+        "For 'replay' subcommand: replay completed and summary printed to stdout"
+      ],
+      "idempotent": false,
+      "side_effects": [
+        "Reads config file",
+        "May start full engine lifecycle",
+        "Reads/writes JSONL state files",
+        "Prints to stdout/stderr"
+      ],
+      "structured_side_effects": [
+        {
+          "kind": "reads_file",
+          "target": "config_path",
+          "description": "Reads chronicler.yaml for all subcommands"
+        },
+        {
+          "kind": "reads_file",
+          "target": "state_file_path",
+          "description": "Reads JSONL state file for status/stories/replay commands"
+        },
+        {
+          "kind": "writes_file",
+          "target": "state_file_path",
+          "description": "Writes JSONL state during start and replay subcommands"
+        },
+        {
+          "kind": "network_call",
+          "target": "source_and_sink_endpoints",
+          "description": "Starts network listeners and emits to sinks during start subcommand"
+        },
+        {
+          "kind": "logging",
+          "target": "stdout/stderr",
+          "description": "Prints command output to stdout and errors to stderr"
+        }
+      ],
+      "performance_budget": null
+    }
+  ],
+  "dependencies": [
+    "config",
+    "correlation_and_stories",
+    "engine_cli_mcp",
+    "schemas",
+    "sinks",
+    "sources"
+  ],
+  "dependency_contracts": {
+    "config": [
+      "load_config",
+      "validate_config_dict",
+      "ChroniclerConfig",
+      "ConfigError",
+      "CorrelationRuleConfig",
+      "MatchCondition",
+      "SourceConfig",
+      "SinkConfig",
+      "KindexConfig"
+    ],
+    "correlation_and_stories": [
+      "CorrelationEngine",
+      "StoryManager",
+      "Event",
+      "Story",
+      "StoryStatus",
+      "CorrelationRule",
+      "CompositeKey",
+      "ChainEntry",
+      "EngineStats",
+      "RecoveryResult",
+      "append_record",
+      "recover_state",
+      "StateRecord",
+      "StoryOpenedRecord",
+      "EventAppendedRecord",
+      "StoryClosedRecord"
+    ],
+    "engine_cli_mcp": [
+      "ChroniclerEngine",
+      "EnginePhase",
+      "EngineStatus",
+      "EngineConfig",
+      "StoryFilter",
+      "StorySummary",
+      "StoryListResult",
+      "ReplayResult",
+      "CliExitCode",
+      "McpToolName",
+      "McpToolResult",
+      "cli_main",
+      "cli_cmd_start",
+      "cli_cmd_status",
+      "cli_cmd_stories_list",
+      "cli_cmd_stories_show",
+      "cli_cmd_replay",
+      "mcp_server_create",
+      "mcp_server_run"
+    ],
+    "schemas": [
+      "Event",
+      "Story",
+      "CorrelationRule",
+      "StoryStatus",
+      "CloseReason",
+      "compute_event_id",
+      "create_event",
+      "create_story",
+      "append_event_to_story",
+      "close_story",
+      "validate_story_consistency",
+      "matches_terminal_pattern",
+      "extract_group_key",
+      "load_chronicler_config",
+      "event_to_dict",
+      "event_from_dict",
+      "story_to_dict",
+      "story_from_dict",
+      "ChroniclerConfig",
+      "MemoryLimitsConfig",
+      "SourceConfig",
+      "SinkConfig",
+      "WebhookSourceConfig",
+      "OtlpSourceConfig",
+      "FileSourceConfig",
+      "SentinelSourceConfig",
+      "StigmergySinkConfig",
+      "ApprenticeSinkConfig",
+      "DiskSinkConfig",
+      "KindexSinkConfig",
+      "NoteworthinessFilter",
+      "SourceType",
+      "SinkType"
+    ],
+    "sinks": [
+      "DiskSink",
+      "StigmergySink",
+      "ApprenticeSink",
+      "KindexSink",
+      "DiskSinkConfig",
+      "KindexSinkConfig",
+      "is_noteworthy",
+      "safe_emit",
+      "read_stories",
+      "SafeEmitOutcome",
+      "SinkEmitResult"
+    ],
+    "sources": [
+      "WebhookSource",
+      "OtlpSource",
+      "FileSource",
+      "SentinelSource",
+      "SourceProtocol",
+      "BindAddress",
+      "emit",
+      "SourceState",
+      "HttpResponse",
+      "FilePosition"
+    ]
+  },
+  "invariants": [
+    "schemas.py is the single source of truth for all domain types (Event, Story, CorrelationRule, all config models, all ID types). No other module may redefine these types — they import from schemas.",
+    "Lifecycle phase transitions are strictly ordered: CREATED → STARTING → RUNNING → STOPPING → STOPPED, with CREATED → STARTING → ERROR as the only alternative path.",
+    "Startup sequence is strictly ordered: (1) load and validate config (fail fast), (2) recover state from JSONL, (3) initialize correlation engine + story manager, (4) initialize and register sinks, (5) initialize and start sources, (6) run engine event loop.",
+    "Shutdown sequence is strictly ordered: (1) stop all sources, (2) drain internal queue with timeout, (3) stop sweep task, (4) close all sinks, (5) flush final state to JSONL.",
+    "Source→Engine integration seam: sources push events via EventCallback into a bounded asyncio.Queue. Back-pressure is applied when the queue is full.",
+    "Engine→Correlation integration seam: the engine event loop consumes from the queue and calls CorrelationEngine.process_event() synchronously within the loop iteration.",
+    "StoryManager→Sinks integration seam: closed stories are emitted to all registered SinkCallbacks via asyncio.gather(return_exceptions=True). Sink errors are captured in SafeEmitOutcome, never propagated.",
+    "Error boundary zone 1 (Sources): all exceptions are caught by source supervisor coroutines, logged, and the source is optionally restarted. Sources never crash the engine.",
+    "Error boundary zone 2 (Sinks): sink emissions are fire-and-forget. Unreachable or failing sinks do not block the processing pipeline or crash the engine.",
+    "Error boundary zone 3 (Correlation): invalid events (missing fields, schema violations) are logged at WARNING and dropped. Correlation errors are logged at ERROR and the event is dropped. Neither case crashes the engine.",
+    "Error boundary zone 4 (Config): invalid configuration is detected at startup and causes a fatal error (ConfigError) that prevents engine creation. Config validation is fail-fast.",
+    "All domain types use Pydantic v2 with frozen=True (immutable after construction). Mutation produces new instances via model_copy(update={...}).",
+    "All serialization uses Pydantic model_dump(mode='json') and model_validate(). JSONL state records use a discriminated 'record_type' field for polymorphic deserialization.",
+    "All timestamps are timezone-aware ISO 8601 strings with UTC timezone. Naive datetimes are rejected at validation time.",
+    "Event.id is content-addressable: SHA-256 hex digest of canonical JSON of identity fields. Two events with identical identity fields always have the same id.",
+    "The internal asyncio.Queue is bounded by config.queue_max_size. This is the only buffering mechanism between sources and the correlation engine.",
+    "All I/O operations use async/await (asyncio). No blocking I/O is performed on the event loop.",
+    "The root __init__.py exports a minimal public API surface to avoid circular imports: Event, Story, CorrelationRule, ChroniclerEngine, ChroniclerConfig, cli_main."
+  ],
+  "requires": [
+    "schemas",
+    "config",
+    "correlation_and_stories",
+    "engine_cli_mcp",
+    "sinks",
+    "sources"
+  ],
+  "processing_register": "rigorous-analytical",
+  "data_access": {
+    "reads": [
+      "INTERNAL",
+      "PII"
+    ],
+    "writes": [
+      "INTERNAL"
+    ],
+    "rationale": "The root module orchestrates the full Chronicler pipeline. It reads INTERNAL configuration data (chronicler.yaml) and INTERNAL persisted state (JSONL state files) during startup for recovery. Event payloads flowing through the pipeline may contain PII data from external sources (webhook bodies, Sentinel incidents, OTLP traces) — the root module reads these as opaque pass-through during queue consumption but does not interpret PII fields. Writes are INTERNAL only: the root module triggers JSONL state persistence (story opened/closed/event appended records) and coordinates sink emissions, but the actual write I/O is delegated to the state and sink modules.",
+    "side_effects": [
+      {
+        "type": "file_read",
+        "classification": "INTERNAL",
+        "fields": [
+          "config_path",
+          "state_file_path"
+        ],
+        "rationale": "Reads chronicler.yaml configuration file at startup for validation, and reads JSONL state file for recovery of open stories and chain entries."
+      },
+      {
+        "type": "file_write",
+        "classification": "INTERNAL",
+        "fields": [
+          "state_file_path"
+        ],
+        "rationale": "Delegates append-only JSONL state record writes (story_opened, event_appended, story_closed) to the state module during event processing."
+      },
+      {
+        "type": "network_listen",
+        "classification": "PII",
+        "fields": [
+          "event_payload",
+          "correlation_keys",
+          "context"
+        ],
+        "rationale": "Sources (webhook, OTLP, Sentinel) listen on network ports and receive event data that may contain PII in payload, context, or correlation_keys fields. The root module coordinates source startup but does not directly handle network I/O."
+      },
+      {
+        "type": "network_emit",
+        "classification": "INTERNAL",
+        "fields": [
+          "story_id",
+          "story_type",
+          "events"
+        ],
+        "rationale": "Sinks (stigmergy, apprentice, kindex) emit closed stories over HTTP. The root module coordinates sink lifecycle but delegates actual network I/O to sink implementations."
+      }
+    ]
+  },
+  "authority": {
+    "domains": [
+      "chronicler.lifecycle",
+      "chronicler.type_ownership",
+      "chronicler.integration_seams",
+      "chronicler.error_boundaries",
+      "chronicler.public_api"
+    ],
+    "rationale": "The root module is the authoritative owner of the Chronicler lifecycle orchestration sequence, the canonical type ownership map (declaring schemas.py as the single source of truth), the integration seam definitions between components, the error boundary zone classifications, and the public API surface exported from the package. It does not own domain types themselves (those belong to schemas) but it owns the rules governing how those types flow between components."
+  }
+}

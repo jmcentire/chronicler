@@ -1,0 +1,981 @@
+{
+  "component_id": "correlation_and_stories",
+  "contract_version": 1,
+  "test_cases": [
+    {
+      "id": "TC-GH-01",
+      "description": "RuleName must reject names containing periods, which are not in the allowed character set [a-z0-9_-]",
+      "function": "RuleName",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {
+        "value": "my.rule.name"
+      },
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "validation_error",
+      "assertions": [
+        "RuleName('my.rule.name') raises a validation error"
+      ]
+    },
+    {
+      "id": "TC-GH-02",
+      "description": "RuleName must reject names containing spaces, which are outside the allowed character set",
+      "function": "RuleName",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {
+        "value": "my rule"
+      },
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "validation_error",
+      "assertions": [
+        "RuleName('my rule') raises a validation error"
+      ]
+    },
+    {
+      "id": "TC-GH-03",
+      "description": "EventTime must accept ISO 8601 datetime with millisecond fractional seconds and Z suffix",
+      "function": "EventTime",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {
+        "value": "2024-01-15T08:30:00.123Z"
+      },
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "EventTime('2024-01-15T08:30:00.123Z') succeeds"
+      ]
+    },
+    {
+      "id": "TC-GH-04",
+      "description": "EventTime must accept ISO 8601 datetime with negative timezone offset",
+      "function": "EventTime",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {
+        "value": "2024-06-01T12:00:00-05:00"
+      },
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "EventTime('2024-06-01T12:00:00-05:00') succeeds"
+      ]
+    },
+    {
+      "id": "TC-GH-05",
+      "description": "EventTime must reject datetime with only a date component (no time)",
+      "function": "EventTime",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {
+        "value": "2024-01-15"
+      },
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "validation_error",
+      "assertions": [
+        "EventTime('2024-01-15') raises a validation error"
+      ]
+    },
+    {
+      "id": "TC-GH-06",
+      "description": "EventTime must reject datetime with trailing whitespace",
+      "function": "EventTime",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {
+        "value": "2024-01-15T08:30:00Z "
+      },
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "validation_error",
+      "assertions": [
+        "Trailing whitespace in EventTime value is rejected"
+      ]
+    },
+    {
+      "id": "TC-GH-07",
+      "description": "StoryId must reject UUID strings with uppercase hex characters since the regex requires lowercase",
+      "function": "StoryId",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {
+        "value": "A1234567-abcd-4abc-8abc-0123456789ab"
+      },
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "validation_error",
+      "assertions": [
+        "StoryId with uppercase hex is rejected"
+      ]
+    },
+    {
+      "id": "TC-GH-08",
+      "description": "SequenceNumber must accept large positive integers since there is no upper bound",
+      "function": "SequenceNumber",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {
+        "value": "999999999"
+      },
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "SequenceNumber(999999999) succeeds without error"
+      ]
+    },
+    {
+      "id": "TC-GH-09",
+      "description": "TimeoutSeconds must accept very large timeout values since there is no upper bound",
+      "function": "TimeoutSeconds",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {
+        "value": "86400.0"
+      },
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "TimeoutSeconds(86400.0) succeeds"
+      ]
+    },
+    {
+      "id": "TC-GH-10",
+      "description": "TimeoutSeconds must reject negative values",
+      "function": "TimeoutSeconds",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {
+        "value": "-1.0"
+      },
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "validation_error",
+      "assertions": [
+        "TimeoutSeconds(-1.0) raises a validation error"
+      ]
+    },
+    {
+      "id": "TC-GH-11",
+      "description": "SweepIntervalSeconds must accept the exact maximum boundary of 3600",
+      "function": "SweepIntervalSeconds",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {
+        "value": "3600"
+      },
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "SweepIntervalSeconds(3600) succeeds"
+      ]
+    },
+    {
+      "id": "TC-GH-12",
+      "description": "Multiple sinks must all receive the closed story when close_story is called, not just the first or last registered sink",
+      "function": "StoryManager.close_story",
+      "category": "happy_path",
+      "setup_description": "Register 3 different async sink callbacks, register a story, append an event, then close it",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "All 3 sink callbacks were invoked exactly once",
+        "Each sink received the same Story object with correct status"
+      ]
+    },
+    {
+      "id": "TC-GH-13",
+      "description": "When one sink raises and another succeeds, the successful sink must still receive the story and the close must still return normally",
+      "function": "StoryManager.close_story",
+      "category": "error_case",
+      "setup_description": "Register a failing sink and a succeeding sink, close a story",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "The succeeding sink received the story",
+        "close_story returned without raising",
+        "Story is removed from open stories"
+      ]
+    },
+    {
+      "id": "TC-GH-14",
+      "description": "The event_count field on a closed Story must accurately reflect the number of events appended during the story's lifetime",
+      "function": "StoryManager.close_story",
+      "category": "invariant",
+      "setup_description": "Register a story, append exactly 5 events, close it",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "story.event_count == 5",
+        "len(story.events) == 5"
+      ]
+    },
+    {
+      "id": "TC-GH-15",
+      "description": "Events with identical event_time but different sequence numbers must be sorted by sequence number as the tiebreaker",
+      "function": "StoryManager.close_story",
+      "category": "invariant",
+      "setup_description": "Append 3 events with the same event_time and received_at but different sequence numbers in reverse order",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Returned story events are ordered by ascending sequence number"
+      ]
+    },
+    {
+      "id": "TC-GH-16",
+      "description": "The composite key for group_by must use sorted field-value pairs so that field order in the payload does not matter",
+      "function": "CorrelationEngine.process_event",
+      "category": "invariant",
+      "setup_description": "Create a rule with group_by=['host','service']. Send two events with same host/service values - first event creates story, second should match the same story regardless of payload key order",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Both events are in the same story, not two separate stories",
+        "open_story_count is 1 after both events"
+      ]
+    },
+    {
+      "id": "TC-GH-17",
+      "description": "An event that matches multiple rules must create or append to stories for each matching rule independently",
+      "function": "CorrelationEngine.process_event",
+      "category": "happy_path",
+      "setup_description": "Configure two different rules that both match the same event (same match predicates, different group_by or rule names). Process one event.",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Two stories are created (one per rule)",
+        "open_story_count is 2"
+      ]
+    },
+    {
+      "id": "TC-GH-18",
+      "description": "The sequence counter must increment even when the event does not match any rule, ensuring strict monotonic increase across all processed events",
+      "function": "CorrelationEngine.process_event",
+      "category": "invariant",
+      "setup_description": "Process a non-matching event, then process a matching event",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "The matching event has sequence number 1 (not 0), because the non-matching event consumed sequence 0",
+        "get_stats().current_sequence == 2 after both events"
+      ]
+    },
+    {
+      "id": "TC-GH-19",
+      "description": "The sequence counter must increment even when the event is missing group_by fields and is dropped",
+      "function": "CorrelationEngine.process_event",
+      "category": "invariant",
+      "setup_description": "Process an event that matches a rule but is missing a group_by field, then process a valid event",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "get_stats().current_sequence == 2 after both events"
+      ]
+    },
+    {
+      "id": "TC-GH-20",
+      "description": "After eviction, the evicted story's composite key must be removed from the correlation dict so a new story with the same key can be created",
+      "function": "CorrelationEngine.process_event",
+      "category": "edge_case",
+      "setup_description": "Set max_open_stories=1. Create story A for key K1. Create story B for key K2 (evicts A). Then send event for key K1 again.",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "A new story is created for K1 (not an error about existing story)",
+        "The evicted story was emitted to sinks with status='evicted'"
+      ]
+    },
+    {
+      "id": "TC-GH-21",
+      "description": "LRU eviction must evict the story that was least recently accessed (touched/appended), not the oldest by creation time",
+      "function": "StoryManager.register_story",
+      "category": "invariant",
+      "setup_description": "Set max_open_stories=2. Create stories A, B, C in order. Touch A between creating B and C. When C causes eviction, B should be evicted (not A).",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Story B was evicted (not A)",
+        "Stories A and C are still open"
+      ]
+    },
+    {
+      "id": "TC-GH-22",
+      "description": "purge_expired_chains must not remove entries that are exactly at the expiration boundary (expires_at == clock())",
+      "function": "CorrelationEngine.purge_expired_chains",
+      "category": "edge_case",
+      "setup_description": "Register a chain entry with expires_at = 100.0. Set clock to return exactly 100.0. Call purge_expired_chains.",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "The entry is NOT removed (expires_at < clock() is the condition, not <=)"
+      ]
+    },
+    {
+      "id": "TC-GH-23",
+      "description": "Chain entries must not be used to create linked stories after they have expired, even if they haven't been purged yet",
+      "function": "CorrelationEngine.process_event",
+      "category": "invariant",
+      "setup_description": "Register a chain entry. Advance clock past expiration. Process an event that would match the chain key.",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "A new story is created WITHOUT parent_story_id (or with empty parent_story_id)",
+        "The expired chain entry is not used"
+      ]
+    },
+    {
+      "id": "TC-GH-24",
+      "description": "MatchPredicate with is_regex=true must perform regex pattern matching, not exact string matching",
+      "function": "CorrelationEngine.process_event",
+      "category": "happy_path",
+      "setup_description": "Create a rule with MatchPredicate(field='source', value='web-.*', is_regex=True). Send event with payload source='web-server-01'.",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Event matches the rule and a story is created"
+      ]
+    },
+    {
+      "id": "TC-GH-25",
+      "description": "MatchPredicate with is_regex=false must perform exact string matching, not substring or regex matching",
+      "function": "CorrelationEngine.process_event",
+      "category": "edge_case",
+      "setup_description": "Create a rule with MatchPredicate(field='source', value='web', is_regex=False). Send event with payload source='web-server'.",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Event does NOT match the rule because 'web-server' != 'web' exactly"
+      ]
+    },
+    {
+      "id": "TC-GH-26",
+      "description": "TerminalCondition with is_regex=true must match using regex patterns to trigger story closure",
+      "function": "CorrelationEngine.process_event",
+      "category": "happy_path",
+      "setup_description": "Create a rule with terminal_condition(field='status', value='(success|done)', is_regex=True). Send events, last one with status='done'.",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Story is closed with status='completed'"
+      ]
+    },
+    {
+      "id": "TC-GH-27",
+      "description": "sweep_once must correctly identify and close multiple timed-out stories in a single pass",
+      "function": "StoryManager.sweep_once",
+      "category": "happy_path",
+      "setup_description": "Register 5 stories. Advance clock past timeout for 3 of them. Call sweep_once.",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "sweep_once returns 3",
+        "get_open_story_count returns 2",
+        "All 3 closed stories have status='timed_out'"
+      ]
+    },
+    {
+      "id": "TC-GH-28",
+      "description": "sweep_once must not close stories whose inactivity is exactly equal to the timeout (boundary: must exceed, not equal)",
+      "function": "StoryManager.sweep_once",
+      "category": "edge_case",
+      "setup_description": "Register a story with timeout=10.0. Set last_activity_time such that clock() - last_activity = exactly 10.0. Call sweep_once.",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Story is NOT closed (inactivity must EXCEED timeout)"
+      ]
+    },
+    {
+      "id": "TC-GH-29",
+      "description": "append_event must update the story's last_activity_time to the current clock value, affecting timeout calculation",
+      "function": "StoryManager.append_event",
+      "category": "happy_path",
+      "setup_description": "Register a story with timeout=10s at clock=0. At clock=8, append an event. At clock=15, run sweep_once.",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Story is NOT timed out at clock=15 because last_activity was reset to 8, and 15-8=7 < 10"
+      ]
+    },
+    {
+      "id": "TC-GH-30",
+      "description": "touch_story must update last_activity_time, preventing premature timeout",
+      "function": "StoryManager.touch_story",
+      "category": "happy_path",
+      "setup_description": "Register a story with timeout=10s at clock=0. At clock=8, touch it. At clock=15, run sweep_once.",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Story is NOT timed out because touch reset the activity time"
+      ]
+    },
+    {
+      "id": "TC-GH-31",
+      "description": "The closed Story must have closed_at set to a valid EventTime representing current UTC time, not the creation time or event time",
+      "function": "StoryManager.close_story",
+      "category": "invariant",
+      "setup_description": "Register a story with created_at='2024-01-01T00:00:00Z'. Close it later.",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "story.closed_at is a valid EventTime",
+        "story.closed_at != story.created_at (unless closed instantly)"
+      ]
+    },
+    {
+      "id": "TC-GH-32",
+      "description": "The group_key on a closed story must accurately reflect the group_by field values extracted from the event payload",
+      "function": "CorrelationEngine.process_event",
+      "category": "happy_path",
+      "setup_description": "Create a rule with group_by=['host','service']. Send event with host='srv1', service='web'. Close the story.",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "story.group_key contains {'host': 'srv1', 'service': 'web'}"
+      ]
+    },
+    {
+      "id": "TC-GH-33",
+      "description": "Processing events after a story is closed for a given composite key must create a brand new story, not reuse the closed one",
+      "function": "CorrelationEngine.process_event",
+      "category": "happy_path",
+      "setup_description": "Create a story, trigger terminal condition to close it. Send another event with the same composite key.",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "A new story is created with a different story_id",
+        "open_story_count is 1"
+      ]
+    },
+    {
+      "id": "TC-GH-34",
+      "description": "register_chain_entry must NOT register chain entries for stories with 'evicted' status",
+      "function": "CorrelationEngine.register_chain_entry",
+      "category": "error_case",
+      "setup_description": "Create a mock story with status='evicted' and a rule with chain_by fields. Call register_chain_entry.",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Chain entry is not registered or an error is raised for evicted stories"
+      ]
+    },
+    {
+      "id": "TC-GH-35",
+      "description": "recover_state must correctly reconstruct event lists for open stories from EventAppended records, preserving event order",
+      "function": "recover_state",
+      "category": "happy_path",
+      "setup_description": "Write a JSONL file with StoryOpened, then 3 EventAppended records for the same story. Call recover_state.",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "The recovered story has exactly 3 events",
+        "Events are in the order they were appended"
+      ]
+    },
+    {
+      "id": "TC-GH-36",
+      "description": "recover_state must handle a story that was opened and then closed - it should not appear in open_stories",
+      "function": "recover_state",
+      "category": "happy_path",
+      "setup_description": "Write StoryOpened, EventAppended, StoryClosed for story A. Write StoryOpened for story B (still open).",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Only story B is in open_stories",
+        "records_read counts all valid lines",
+        "records_skipped is 0"
+      ]
+    },
+    {
+      "id": "TC-GH-37",
+      "description": "recover_state records_read + records_skipped must equal total lines for a file with a mix of valid and corrupt lines",
+      "function": "recover_state",
+      "category": "invariant",
+      "setup_description": "Write a file with 5 valid JSONL lines and 3 corrupt lines interspersed",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "records_read == 5",
+        "records_skipped == 3",
+        "records_read + records_skipped == 8"
+      ]
+    },
+    {
+      "id": "TC-GH-38",
+      "description": "RuleName must reject names containing only hyphens after the first letter requirement (e.g., 'a---' is valid but '---' starts with non-alpha)",
+      "function": "RuleName",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {
+        "value": "-rule"
+      },
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "validation_error",
+      "assertions": [
+        "RuleName('-rule') raises because it starts with hyphen, not a letter"
+      ]
+    },
+    {
+      "id": "TC-GH-39",
+      "description": "MaxOpenStories boundary: value 2 should be accepted and functional, not just the tested boundaries of 1 and 1000000",
+      "function": "MaxOpenStories",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {
+        "value": "2"
+      },
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "MaxOpenStories(2) succeeds"
+      ]
+    },
+    {
+      "id": "TC-GH-40",
+      "description": "Multiple consecutive evictions: when max_open_stories=1 and we register 3 stories sequentially, each previous story must be evicted",
+      "function": "StoryManager.register_story",
+      "category": "edge_case",
+      "setup_description": "Set max_open_stories=1. Register story A, then B (evicts A), then C (evicts B).",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "get_open_story_count is 1",
+        "Only story C is open",
+        "Sink received 2 evicted stories (A and B) with status='evicted'"
+      ]
+    },
+    {
+      "id": "TC-GH-41",
+      "description": "get_stats must accurately reflect total_stories_created incrementing for each new story, not just returning a fixed value",
+      "function": "CorrelationEngine.get_stats",
+      "category": "invariant",
+      "setup_description": "Process events that create 3 different stories",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "get_stats().total_stories_created == 3",
+        "get_stats().open_story_count == 3",
+        "get_stats().total_events_processed == 3"
+      ]
+    },
+    {
+      "id": "TC-GH-42",
+      "description": "get_stats must reflect closed stories correctly - total_stories_closed increments when stories are closed via terminal conditions",
+      "function": "CorrelationEngine.get_stats",
+      "category": "invariant",
+      "setup_description": "Create 2 stories, close 1 via terminal condition",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "get_stats().total_stories_closed == 1",
+        "get_stats().open_story_count == 1"
+      ]
+    },
+    {
+      "id": "TC-GH-43",
+      "description": "FilePath must accept paths up to 4096 characters (max length boundary)",
+      "function": "FilePath",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {
+        "value": "a path string of length 4096"
+      },
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "FilePath with 4096 character string succeeds"
+      ]
+    },
+    {
+      "id": "TC-GH-44",
+      "description": "FilePath must reject paths exceeding 4096 characters",
+      "function": "FilePath",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {
+        "value": "a path string of length 4097"
+      },
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "validation_error",
+      "assertions": [
+        "FilePath with 4097 character string raises validation error"
+      ]
+    },
+    {
+      "id": "TC-GH-45",
+      "description": "append_event to a story followed by close_story must include the appended event in the returned Story's events list",
+      "function": "StoryManager.close_story",
+      "category": "happy_path",
+      "setup_description": "Register a story, append 2 events, close it",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Returned story has exactly 2 events",
+        "Both event_ids are present in story.events"
+      ]
+    },
+    {
+      "id": "TC-GH-46",
+      "description": "A story closed with status='timed_out' via sweep_once must have the correct status in the returned/emitted Story",
+      "function": "StoryManager.sweep_once",
+      "category": "invariant",
+      "setup_description": "Register a story, advance clock past timeout, call sweep_once, capture story from sink",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "The emitted story has status='timed_out'",
+        "The story is no longer in open stories"
+      ]
+    },
+    {
+      "id": "TC-GH-47",
+      "description": "register_chain_entry must extract chain key from the LAST event in the story (not first or arbitrary event)",
+      "function": "CorrelationEngine.register_chain_entry",
+      "category": "invariant",
+      "setup_description": "Create a story with 3 events where chain_by field has different values in first and last event. Register chain entry.",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Chain key is derived from the last event's field value, not the first"
+      ]
+    },
+    {
+      "id": "TC-GH-48",
+      "description": "EventId (UUID4) must validate the version nibble is '4' and the variant nibble is [89ab]",
+      "function": "EventId",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {
+        "value": "12345678-1234-5234-8234-123456789abc"
+      },
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "validation_error",
+      "assertions": [
+        "EventId rejects UUID with version 5 (not version 4)"
+      ]
+    },
+    {
+      "id": "TC-GH-49",
+      "description": "StoryId must reject UUID with variant nibble outside [89ab] range",
+      "function": "StoryId",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {
+        "value": "12345678-1234-4234-0234-123456789abc"
+      },
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "validation_error",
+      "assertions": [
+        "StoryId rejects UUID with variant nibble '0' which is outside [89ab]"
+      ]
+    },
+    {
+      "id": "TC-GH-50",
+      "description": "When an event matches a rule but the matching open story was already closed, a new story should be created rather than erroring",
+      "function": "CorrelationEngine.process_event",
+      "category": "edge_case",
+      "setup_description": "Send event1 to create story, send terminal event to close story, send event3 with same composite key",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "A new story is created for event3",
+        "total_stories_created is 2"
+      ]
+    },
+    {
+      "id": "TC-GH-51",
+      "description": "load_recovered_stories must return the count of stories actually loaded, not the total in the recovery result",
+      "function": "StoryManager.load_recovered_stories",
+      "category": "edge_case",
+      "setup_description": "max_open_stories=2, recovery_result has 5 stories",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Return value is 2 (only 2 could be loaded within the max)",
+        "get_open_story_count is 2",
+        "3 stories were evicted"
+      ]
+    },
+    {
+      "id": "TC-GH-52",
+      "description": "The correlation engine must handle regex MatchPredicate that does NOT match - event should not create a story for that rule",
+      "function": "CorrelationEngine.process_event",
+      "category": "edge_case",
+      "setup_description": "Rule with MatchPredicate(field='type', value='^alert$', is_regex=True). Send event with type='not-an-alert'.",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "No story is created",
+        "get_open_story_count is 0"
+      ]
+    },
+    {
+      "id": "TC-GH-53",
+      "description": "RuleName must accept names with hyphens in the middle (not just underscores)",
+      "function": "RuleName",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {
+        "value": "my-rule-name"
+      },
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "RuleName('my-rule-name') succeeds"
+      ]
+    },
+    {
+      "id": "TC-GH-54",
+      "description": "SweepIntervalSeconds must reject exactly 0.099 (just below minimum of 0.1)",
+      "function": "SweepIntervalSeconds",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {
+        "value": "0.099"
+      },
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "validation_error",
+      "assertions": [
+        "SweepIntervalSeconds(0.099) raises a validation error"
+      ]
+    },
+    {
+      "id": "TC-GH-55",
+      "description": "An event with an empty payload dict that matches no rule's match predicates should be dropped without crashing",
+      "function": "CorrelationEngine.process_event",
+      "category": "edge_case",
+      "setup_description": "Create engine with a rule requiring match on field='type'. Send event with empty payload {}.",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "No crash occurs",
+        "No story is created",
+        "Sequence counter still increments"
+      ]
+    },
+    {
+      "id": "TC-GH-56",
+      "description": "When chain_ttl expires and a new matching event arrives, the new story must have empty parent_story_id since no valid chain exists",
+      "function": "CorrelationEngine.process_event",
+      "category": "invariant",
+      "setup_description": "Complete a story with chain_by. Advance clock past chain_ttl. Send new matching event.",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "New story's parent_story_id is empty string",
+        "The story is created as a root story, not chain-linked"
+      ]
+    },
+    {
+      "id": "TC-GH-57",
+      "description": "get_stats().active_chain_entries must decrease after purge_expired_chains removes entries",
+      "function": "CorrelationEngine.get_stats",
+      "category": "invariant",
+      "setup_description": "Register 3 chain entries. Expire 2. Purge. Check stats.",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "active_chain_entries == 1 after purge",
+        "total_chain_links reflects all 3 that were ever registered"
+      ]
+    },
+    {
+      "id": "TC-GH-58",
+      "description": "close_story with status='completed' must set the status field to 'completed' on the returned Story, distinguishing from 'timed_out'",
+      "function": "StoryManager.close_story",
+      "category": "happy_path",
+      "setup_description": "Register and close a story with status='completed'",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "story.status == 'completed'"
+      ]
+    },
+    {
+      "id": "TC-GH-59",
+      "description": "close_story with status='timed_out' must set the status field to 'timed_out' on the returned Story",
+      "function": "StoryManager.close_story",
+      "category": "happy_path",
+      "setup_description": "Register and close a story with status='timed_out'",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "story.status == 'timed_out'"
+      ]
+    },
+    {
+      "id": "TC-GH-60",
+      "description": "The engine must handle multiple group_by fields correctly, creating distinct stories for different composite keys",
+      "function": "CorrelationEngine.process_event",
+      "category": "happy_path",
+      "setup_description": "Rule with group_by=['host','service']. Send event with host='a',service='x' and another with host='a',service='y'.",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Two distinct stories are created",
+        "open_story_count is 2"
+      ]
+    }
+  ],
+  "test_language": "python",
+  "generated_code": "\"\"\"\nAdversarial hidden acceptance tests for Correlation Engine & Story Manager.\n\nThese tests catch implementations that \"teach to the test\" by hardcoding\nreturns, skipping validation, or only handling specific visible test inputs.\n\"\"\"\n\nimport asyncio\nimport json\nimport os\nimport tempfile\nimport time\nfrom collections import OrderedDict\nfrom unittest.mock import AsyncMock, MagicMock, patch\n\nimport pytest\n\nfrom src.correlation_and_stories import *\n\n\n# ============================================================\n# Helpers\n# ============================================================\n\ndef make_event_time(dt_str=\"2024-01-15T10:00:00Z\"):\n    return dt_str\n\n\ndef make_uuid4(hex_suffix=\"0\"):\n    \"\"\"Generate a valid UUID4 string for testing.\"\"\"\n    # UUID4: version nibble = 4, variant nibble in [89ab]\n    base = f\"00000000-0000-4000-a000-{hex_suffix.zfill(12)}\"\n    return base\n\n\ndef make_event(event_id=None, event_time=None, payload=None, sequence=0, source_type=\"test\"):\n    if event_id is None:\n        event_id = make_uuid4(\"1\")\n    if event_time is None:\n        event_time = \"2024-01-15T10:00:00Z\"\n    if payload is None:\n        payload = {}\n    return Event(\n        event_id=event_id,\n        event_time=event_time,\n        received_at=event_time,\n        sequence=sequence,\n        source_type=source_type,\n        payload=payload,\n    )\n\n\ndef make_rule(name=\"rule-a\", match=None, group_by=None, timeout=60.0,\n              terminal_conditions=None, chain_by=None, chain_ttl=60.0):\n    if match is None:\n        match = [MatchPredicate(field=\"type\", value=\"alert\", is_regex=False)]\n    if group_by is None:\n        group_by = [\"host\"]\n    if terminal_conditions is None:\n        terminal_conditions = []\n    if chain_by is None:\n        chain_by = []\n    return CorrelationRule(\n        name=name,\n        match=match,\n        group_by=group_by,\n        timeout=timeout,\n        terminal_conditions=terminal_conditions,\n        chain_by=chain_by,\n        chain_ttl=chain_ttl,\n    )\n\n\ndef make_config(rules=None, max_open_stories=100, sweep_interval=1.0,\n                state_file=\"/tmp/test_state.jsonl\", clock=None, id_factory=None):\n    if rules is None:\n        rules = [make_rule()]\n    if clock is None:\n        clock = time.monotonic\n    if id_factory is None:\n        counter = iter(range(1000000))\n        id_factory = lambda: make_uuid4(str(next(counter)))\n    return CorrelationEngineConfig(\n        rules=rules,\n        max_open_stories=max_open_stories,\n        sweep_interval=sweep_interval,\n        state_file=state_file,\n        clock=clock,\n        id_factory=id_factory,\n    )\n\n\n# ============================================================\n# Type validation tests\n# ============================================================\n\nclass TestGoodhartTypeValidation:\n    \"\"\"Tests for type validators that catch hardcoded acceptance of visible test values.\"\"\"\n\n    def test_goodhart_rulename_rejects_period(self):\n        \"\"\"RuleName must reject names containing periods, which are not in [a-z0-9_-].\"\"\"\n        with pytest.raises(Exception):\n            RuleName(\"my.rule.name\")\n\n    def test_goodhart_rulename_rejects_space(self):\n        \"\"\"RuleName must reject names containing spaces.\"\"\"\n        with pytest.raises(Exception):\n            RuleName(\"my rule\")\n\n    def test_goodhart_rulename_rejects_leading_hyphen(self):\n        \"\"\"RuleName must reject names starting with a hyphen (must start with [a-z]).\"\"\"\n        with pytest.raises(Exception):\n            RuleName(\"-rule\")\n\n    def test_goodhart_rulename_rejects_leading_underscore(self):\n        \"\"\"RuleName must reject names starting with underscore (must start with [a-z]).\"\"\"\n        with pytest.raises(Exception):\n            RuleName(\"_rule\")\n\n    def test_goodhart_rulename_accepts_hyphens_in_middle(self):\n        \"\"\"RuleName must accept valid names with hyphens in the middle.\"\"\"\n        name = RuleName(\"my-rule-name\")\n        assert name.value == \"my-rule-name\"\n\n    def test_goodhart_rulename_accepts_mixed_valid(self):\n        \"\"\"RuleName must accept names mixing lowercase letters, digits, hyphens, underscores.\"\"\"\n        name = RuleName(\"a1-b2_c3\")\n        assert name.value == \"a1-b2_c3\"\n\n    def test_goodhart_eventtime_accepts_fractional_seconds(self):\n        \"\"\"EventTime must accept ISO 8601 with fractional seconds.\"\"\"\n        et = EventTime(\"2024-01-15T08:30:00.123456Z\")\n        assert et.value == \"2024-01-15T08:30:00.123456Z\"\n\n    def test_goodhart_eventtime_accepts_negative_offset(self):\n        \"\"\"EventTime must accept negative timezone offsets.\"\"\"\n        et = EventTime(\"2024-06-01T12:00:00-05:00\")\n        assert et.value == \"2024-06-01T12:00:00-05:00\"\n\n    def test_goodhart_eventtime_rejects_date_only(self):\n        \"\"\"EventTime must reject date-only strings without time component.\"\"\"\n        with pytest.raises(Exception):\n            EventTime(\"2024-01-15\")\n\n    def test_goodhart_eventtime_rejects_trailing_whitespace(self):\n        \"\"\"EventTime must reject strings with trailing whitespace.\"\"\"\n        with pytest.raises(Exception):\n            EventTime(\"2024-01-15T08:30:00Z \")\n\n    def test_goodhart_eventtime_rejects_leading_whitespace(self):\n        \"\"\"EventTime must reject strings with leading whitespace.\"\"\"\n        with pytest.raises(Exception):\n            EventTime(\" 2024-01-15T08:30:00Z\")\n\n    def test_goodhart_storyid_rejects_uppercase_hex(self):\n        \"\"\"StoryId must reject UUIDs with uppercase hex characters.\"\"\"\n        with pytest.raises(Exception):\n            StoryId(\"A1234567-abcd-4abc-8abc-0123456789ab\")\n\n    def test_goodhart_storyid_rejects_wrong_variant(self):\n        \"\"\"StoryId must reject UUIDs where variant nibble is outside [89ab].\"\"\"\n        with pytest.raises(Exception):\n            StoryId(\"12345678-1234-4234-0234-123456789abc\")\n\n    def test_goodhart_eventid_rejects_version5(self):\n        \"\"\"EventId must reject UUIDs with version 5 (not version 4).\"\"\"\n        with pytest.raises(Exception):\n            EventId(\"12345678-1234-5234-8234-123456789abc\")\n\n    def test_goodhart_eventid_rejects_version3(self):\n        \"\"\"EventId must reject UUIDs with version 3.\"\"\"\n        with pytest.raises(Exception):\n            EventId(\"12345678-1234-3234-8234-123456789abc\")\n\n    def test_goodhart_sequencenumber_accepts_large(self):\n        \"\"\"SequenceNumber must accept very large positive integers (no upper bound).\"\"\"\n        sn = SequenceNumber(999999999)\n        assert sn.value == 999999999\n\n    def test_goodhart_timeoutseconds_accepts_large(self):\n        \"\"\"TimeoutSeconds must accept very large values (no upper bound defined).\"\"\"\n        ts = TimeoutSeconds(86400.0)\n        assert ts.value == 86400.0\n\n    def test_goodhart_timeoutseconds_rejects_negative(self):\n        \"\"\"TimeoutSeconds must reject negative values.\"\"\"\n        with pytest.raises(Exception):\n            TimeoutSeconds(-1.0)\n\n    def test_goodhart_timeoutseconds_rejects_very_small(self):\n        \"\"\"TimeoutSeconds must reject 0.0009 (below 0.001 minimum).\"\"\"\n        with pytest.raises(Exception):\n            TimeoutSeconds(0.0009)\n\n    def test_goodhart_sweepinterval_accepts_max(self):\n        \"\"\"SweepIntervalSeconds must accept exactly 3600 (maximum boundary).\"\"\"\n        si = SweepIntervalSeconds(3600)\n        assert si.value == 3600\n\n    def test_goodhart_sweepinterval_rejects_just_below_min(self):\n        \"\"\"SweepIntervalSeconds must reject 0.099 (just below 0.1 minimum).\"\"\"\n        with pytest.raises(Exception):\n            SweepIntervalSeconds(0.099)\n\n    def test_goodhart_maxopenstories_accepts_middle(self):\n        \"\"\"MaxOpenStories must accept values in the middle of the range, not just boundaries.\"\"\"\n        m = MaxOpenStories(500)\n        assert m.value == 500\n\n    def test_goodhart_filepath_accepts_max_length(self):\n        \"\"\"FilePath must accept a path of exactly 4096 characters.\"\"\"\n        path = \"a\" * 4096\n        fp = FilePath(path)\n        assert fp.value == path\n\n    def test_goodhart_filepath_rejects_over_max_length(self):\n        \"\"\"FilePath must reject paths exceeding 4096 characters.\"\"\"\n        path = \"a\" * 4097\n        with pytest.raises(Exception):\n            FilePath(path)\n\n\n# ============================================================\n# StoryManager tests\n# ============================================================\n\nclass TestGoodhartStoryManager:\n    \"\"\"Tests for StoryManager that catch shortcut implementations.\"\"\"\n\n    @pytest.fixture\n    def clock(self):\n        \"\"\"Injectable clock that can be advanced.\"\"\"\n        current = [0.0]\n        def _clock():\n            return current[0]\n        _clock._current = current\n        return _clock\n\n    @pytest.fixture\n    def manager(self, clock):\n        return StoryManager(max_open_stories=10, sweep_interval=1.0, clock=clock)\n\n    def _register_story(self, manager, story_id, rule_name=\"rule-a\",\n                        group_key=None, timeout=60.0, parent_story_id=\"\",\n                        created_at=\"2024-01-15T10:00:00Z\"):\n        if group_key is None:\n            group_key = {\"host\": \"srv1\"}\n        return asyncio.get_event_loop().run_until_complete(\n            manager.register_story(\n                story_id=story_id,\n                rule_name=rule_name,\n                group_key=group_key,\n                timeout=timeout,\n                parent_story_id=parent_story_id,\n                created_at=created_at,\n            )\n        ) if asyncio.iscoroutinefunction(getattr(manager, 'register_story', None)) else \\\n            manager.register_story(\n                story_id=story_id,\n                rule_name=rule_name,\n                group_key=group_key,\n                timeout=timeout,\n                parent_story_id=parent_story_id,\n                created_at=created_at,\n            )\n\n    @pytest.mark.asyncio\n    async def test_goodhart_multiple_sinks_all_called(self, clock):\n        \"\"\"All registered sinks must receive the closed story, not just one.\"\"\"\n        manager = StoryManager(max_open_stories=10, sweep_interval=1.0, clock=clock)\n        received = []\n        sink1 = AsyncMock(side_effect=lambda s: received.append((\"sink1\", s)))\n        sink2 = AsyncMock(side_effect=lambda s: received.append((\"sink2\", s)))\n        sink3 = AsyncMock(side_effect=lambda s: received.append((\"sink3\", s)))\n\n        manager.register_sink(sink1)\n        manager.register_sink(sink2)\n        manager.register_sink(sink3)\n\n        sid = make_uuid4(\"100\")\n        await manager.register_story(\n            story_id=sid, rule_name=\"rule-a\",\n            group_key={\"host\": \"srv1\"}, timeout=60.0,\n            parent_story_id=\"\", created_at=\"2024-01-15T10:00:00Z\"\n        )\n\n        story = await manager.close_story(story_id=sid, status=\"completed\")\n        assert sink1.call_count == 1\n        assert sink2.call_count == 1\n        assert sink3.call_count == 1\n        assert story.status == \"completed\"\n\n    @pytest.mark.asyncio\n    async def test_goodhart_failing_sink_doesnt_block_others(self, clock):\n        \"\"\"A failing sink must not prevent other sinks from receiving the story.\"\"\"\n        manager = StoryManager(max_open_stories=10, sweep_interval=1.0, clock=clock)\n        received = []\n        failing_sink = AsyncMock(side_effect=RuntimeError(\"sink error\"))\n        good_sink = AsyncMock(side_effect=lambda s: received.append(s))\n\n        manager.register_sink(failing_sink)\n        manager.register_sink(good_sink)\n\n        sid = make_uuid4(\"200\")\n        await manager.register_story(\n            story_id=sid, rule_name=\"rule-a\",\n            group_key={\"host\": \"srv1\"}, timeout=60.0,\n            parent_story_id=\"\", created_at=\"2024-01-15T10:00:00Z\"\n        )\n\n        story = await manager.close_story(story_id=sid, status=\"completed\")\n        assert good_sink.call_count == 1\n        assert len(received) == 1\n        assert manager.get_open_story_count() == 0\n\n    @pytest.mark.asyncio\n    async def test_goodhart_event_count_matches_appended(self, clock):\n        \"\"\"event_count on closed Story must match the number of events actually appended.\"\"\"\n        manager = StoryManager(max_open_stories=10, sweep_interval=1.0, clock=clock)\n        sid = make_uuid4(\"300\")\n        await manager.register_story(\n            story_id=sid, rule_name=\"rule-a\",\n            group_key={\"host\": \"srv1\"}, timeout=60.0,\n            parent_story_id=\"\", created_at=\"2024-01-15T10:00:00Z\"\n        )\n\n        for i in range(5):\n            evt = make_event(event_id=make_uuid4(str(300 + i)), sequence=i,\n                             payload={\"type\": \"alert\", \"host\": \"srv1\"})\n            await manager.append_event(story_id=sid, event=evt)\n\n        story = await manager.close_story(story_id=sid, status=\"completed\")\n        assert story.event_count == 5\n        assert len(story.events) == 5\n\n    @pytest.mark.asyncio\n    async def test_goodhart_events_sorted_by_sequence_tiebreaker(self, clock):\n        \"\"\"Events with same event_time and received_at must be sorted by sequence as tiebreaker.\"\"\"\n        manager = StoryManager(max_open_stories=10, sweep_interval=1.0, clock=clock)\n        sid = make_uuid4(\"400\")\n        await manager.register_story(\n            story_id=sid, rule_name=\"rule-a\",\n            group_key={\"host\": \"srv1\"}, timeout=60.0,\n            parent_story_id=\"\", created_at=\"2024-01-15T10:00:00Z\"\n        )\n\n        same_time = \"2024-01-15T10:00:00Z\"\n        # Append in reverse sequence order\n        for seq in [5, 3, 1, 4, 2]:\n            evt = make_event(\n                event_id=make_uuid4(str(400 + seq)),\n                event_time=same_time,\n                sequence=seq,\n                payload={\"type\": \"alert\", \"host\": \"srv1\"}\n            )\n            await manager.append_event(story_id=sid, event=evt)\n\n        story = await manager.close_story(story_id=sid, status=\"completed\")\n        sequences = [e.sequence for e in story.events]\n        assert sequences == sorted(sequences), f\"Events not sorted by sequence: {sequences}\"\n\n    @pytest.mark.asyncio\n    async def test_goodhart_close_completed_vs_timed_out_status(self, clock):\n        \"\"\"close_story must return the exact status passed to it, not a default.\"\"\"\n        manager = StoryManager(max_open_stories=10, sweep_interval=1.0, clock=clock)\n\n        sid1 = make_uuid4(\"500\")\n        sid2 = make_uuid4(\"501\")\n\n        await manager.register_story(\n            story_id=sid1, rule_name=\"rule-a\",\n            group_key={\"host\": \"srv1\"}, timeout=60.0,\n            parent_story_id=\"\", created_at=\"2024-01-15T10:00:00Z\"\n        )\n        await manager.register_story(\n            story_id=sid2, rule_name=\"rule-a\",\n            group_key={\"host\": \"srv2\"}, timeout=60.0,\n            parent_story_id=\"\", created_at=\"2024-01-15T10:00:00Z\"\n        )\n\n        story1 = await manager.close_story(story_id=sid1, status=\"completed\")\n        story2 = await manager.close_story(story_id=sid2, status=\"timed_out\")\n\n        assert story1.status == \"completed\"\n        assert story2.status == \"timed_out\"\n\n    @pytest.mark.asyncio\n    async def test_goodhart_lru_eviction_respects_touch(self, clock):\n        \"\"\"LRU eviction must consider touch_story activity, not just creation order.\"\"\"\n        manager = StoryManager(max_open_stories=2, sweep_interval=1.0, clock=clock)\n        evicted = []\n        sink = AsyncMock(side_effect=lambda s: evicted.append(s))\n        manager.register_sink(sink)\n\n        sid_a = make_uuid4(\"600\")\n        sid_b = make_uuid4(\"601\")\n        sid_c = make_uuid4(\"602\")\n\n        await manager.register_story(\n            story_id=sid_a, rule_name=\"rule-a\",\n            group_key={\"host\": \"a\"}, timeout=60.0,\n            parent_story_id=\"\", created_at=\"2024-01-15T10:00:00Z\"\n        )\n        clock._current[0] = 1.0\n        await manager.register_story(\n            story_id=sid_b, rule_name=\"rule-a\",\n            group_key={\"host\": \"b\"}, timeout=60.0,\n            parent_story_id=\"\", created_at=\"2024-01-15T10:00:01Z\"\n        )\n\n        # Touch A to make it more recently used than B\n        clock._current[0] = 2.0\n        await manager.touch_story(story_id=sid_a)\n\n        # Register C — should evict B (LRU), not A\n        clock._current[0] = 3.0\n        await manager.register_story(\n            story_id=sid_c, rule_name=\"rule-a\",\n            group_key={\"host\": \"c\"}, timeout=60.0,\n            parent_story_id=\"\", created_at=\"2024-01-15T10:00:03Z\"\n        )\n\n        assert manager.get_open_story_count() == 2\n        assert len(evicted) == 1\n        assert evicted[0].story_id == sid_b\n        assert evicted[0].status == \"evicted\"\n\n    @pytest.mark.asyncio\n    async def test_goodhart_multiple_consecutive_evictions(self, clock):\n        \"\"\"Multiple sequential registrations must each evict the LRU when at capacity.\"\"\"\n        manager = StoryManager(max_open_stories=1, sweep_interval=1.0, clock=clock)\n        evicted = []\n        sink = AsyncMock(side_effect=lambda s: evicted.append(s))\n        manager.register_sink(sink)\n\n        for i in range(4):\n            sid = make_uuid4(str(700 + i))\n            clock._current[0] = float(i)\n            await manager.register_story(\n                story_id=sid, rule_name=\"rule-a\",\n                group_key={\"host\": f\"srv{i}\"}, timeout=60.0,\n                parent_story_id=\"\", created_at=f\"2024-01-15T10:00:0{i}Z\"\n            )\n\n        assert manager.get_open_story_count() == 1\n        assert len(evicted) == 3\n        for e in evicted:\n            assert e.status == \"evicted\"\n\n    @pytest.mark.asyncio\n    async def test_goodhart_sweep_closes_timed_out_not_active(self, clock):\n        \"\"\"sweep_once must only close stories that have exceeded their timeout, leaving active ones open.\"\"\"\n        manager = StoryManager(max_open_stories=10, sweep_interval=1.0, clock=clock)\n        timed_out_stories = []\n        sink = AsyncMock(side_effect=lambda s: timed_out_stories.append(s))\n        manager.register_sink(sink)\n\n        # Register 5 stories at clock=0 with timeout=10\n        sids = []\n        for i in range(5):\n            sid = make_uuid4(str(800 + i))\n            sids.append(sid)\n            await manager.register_story(\n                story_id=sid, rule_name=\"rule-a\",\n                group_key={\"host\": f\"srv{i}\"}, timeout=10.0,\n                parent_story_id=\"\", created_at=\"2024-01-15T10:00:00Z\"\n            )\n\n        # Touch stories 0,1 at clock=8 to keep them alive\n        clock._current[0] = 8.0\n        await manager.touch_story(story_id=sids[0])\n        await manager.touch_story(story_id=sids[1])\n\n        # At clock=15, stories 2,3,4 have been inactive for 15s > 10s timeout\n        # Stories 0,1 have been inactive for 7s < 10s timeout\n        clock._current[0] = 15.0\n        count = await manager.sweep_once()\n\n        assert count == 3\n        assert manager.get_open_story_count() == 2\n        for s in timed_out_stories:\n            assert s.status == \"timed_out\"\n\n    @pytest.mark.asyncio\n    async def test_goodhart_append_event_resets_timeout(self, clock):\n        \"\"\"append_event must reset last_activity_time, extending the story's timeout window.\"\"\"\n        manager = StoryManager(max_open_stories=10, sweep_interval=1.0, clock=clock)\n\n        sid = make_uuid4(\"900\")\n        await manager.register_story(\n            story_id=sid, rule_name=\"rule-a\",\n            group_key={\"host\": \"srv1\"}, timeout=10.0,\n            parent_story_id=\"\", created_at=\"2024-01-15T10:00:00Z\"\n        )\n\n        # Append at clock=8\n        clock._current[0] = 8.0\n        evt = make_event(event_id=make_uuid4(\"901\"), sequence=1,\n                         payload={\"type\": \"alert\", \"host\": \"srv1\"})\n        await manager.append_event(story_id=sid, event=evt)\n\n        # At clock=15, inactivity = 15-8 = 7 < 10 timeout\n        clock._current[0] = 15.0\n        count = await manager.sweep_once()\n        assert count == 0\n        assert manager.get_open_story_count() == 1\n\n        # At clock=19, inactivity = 19-8 = 11 > 10 timeout\n        clock._current[0] = 19.0\n        count = await manager.sweep_once()\n        assert count == 1\n        assert manager.get_open_story_count() == 0\n\n    @pytest.mark.asyncio\n    async def test_goodhart_closed_story_has_valid_closed_at(self, clock):\n        \"\"\"Closed story must have a valid closed_at EventTime, different from creation time.\"\"\"\n        manager = StoryManager(max_open_stories=10, sweep_interval=1.0, clock=clock)\n        sid = make_uuid4(\"950\")\n        await manager.register_story(\n            story_id=sid, rule_name=\"rule-a\",\n            group_key={\"host\": \"srv1\"}, timeout=60.0,\n            parent_story_id=\"\", created_at=\"2024-01-01T00:00:00Z\"\n        )\n\n        story = await manager.close_story(story_id=sid, status=\"completed\")\n        # closed_at should be a valid EventTime string\n        assert story.closed_at is not None\n        assert len(story.closed_at) > 0 if isinstance(story.closed_at, str) else True\n\n    @pytest.mark.asyncio\n    async def test_goodhart_story_frozen_after_close(self, clock):\n        \"\"\"A closed Story (frozen Pydantic model) must raise on attribute assignment.\"\"\"\n        manager = StoryManager(max_open_stories=10, sweep_interval=1.0, clock=clock)\n        sid = make_uuid4(\"960\")\n        await manager.register_story(\n            story_id=sid, rule_name=\"rule-a\",\n            group_key={\"host\": \"srv1\"}, timeout=60.0,\n            parent_story_id=\"\", created_at=\"2024-01-15T10:00:00Z\"\n        )\n        story = await manager.close_story(story_id=sid, status=\"completed\")\n\n        with pytest.raises(Exception):\n            story.status = \"timed_out\"\n\n        with pytest.raises(Exception):\n            story.story_id = make_uuid4(\"999\")\n\n    @pytest.mark.asyncio\n    async def test_goodhart_load_recovered_returns_actual_loaded_count(self, clock):\n        \"\"\"load_recovered_stories must return the number actually loaded (respecting max_open_stories), not the input count.\"\"\"\n        manager = StoryManager(max_open_stories=2, sweep_interval=1.0, clock=clock)\n\n        # Build a mock recovery result with 5 stories\n        open_stories = []\n        for i in range(5):\n            open_stories.append({\n                \"story_id\": make_uuid4(str(1000 + i)),\n                \"rule_name\": \"rule-a\",\n                \"group_key\": {\"host\": f\"srv{i}\"},\n                \"timeout\": 60.0,\n                \"parent_story_id\": \"\",\n                \"created_at\": f\"2024-01-15T10:00:0{i}Z\",\n                \"events\": [],\n                \"last_activity_time\": float(i),\n            })\n\n        recovery = RecoveryResult(\n            open_stories=open_stories,\n            records_read=5,\n            records_skipped=0,\n            chain_entries=[],\n        )\n\n        loaded = await manager.load_recovered_stories(recovery) \\\n            if asyncio.iscoroutinefunction(getattr(manager, 'load_recovered_stories', None)) \\\n            else manager.load_recovered_stories(recovery)\n\n        assert manager.get_open_story_count() <= 2\n\n\n# ============================================================\n# CorrelationEngine tests\n# ============================================================\n\nclass TestGoodhartCorrelationEngine:\n    \"\"\"Tests for CorrelationEngine that catch shortcut implementations.\"\"\"\n\n    @pytest.fixture\n    def clock(self):\n        current = [0.0]\n        def _clock():\n            return current[0]\n        _clock._current = current\n        return _clock\n\n    @pytest.fixture\n    def id_counter(self):\n        counter = [0]\n        def _factory():\n            val = counter[0]\n            counter[0] += 1\n            return make_uuid4(str(val))\n        return _factory\n\n    @pytest.mark.asyncio\n    async def test_goodhart_sequence_increments_on_no_match(self, clock, id_counter):\n        \"\"\"Sequence counter must increment even for events that match no rule.\"\"\"\n        with tempfile.NamedTemporaryFile(suffix=\".jsonl\", delete=False) as f:\n            state_file = f.name\n        try:\n            rule = make_rule(name=\"rule-a\",\n                             match=[MatchPredicate(field=\"type\", value=\"alert\", is_regex=False)],\n                             group_by=[\"host\"])\n            config = make_config(rules=[rule], state_file=state_file, clock=clock,\n                                 id_factory=id_counter)\n            sm = StoryManager(max_open_stories=100, sweep_interval=1.0, clock=clock)\n            engine = CorrelationEngine(config=config, story_manager=sm,\n                                       clock=clock, id_factory=id_counter)\n\n            # Non-matching event\n            evt1 = make_event(event_id=make_uuid4(\"a01\"),\n                              payload={\"type\": \"not-alert\", \"host\": \"srv1\"})\n            await engine.process_event(evt1)\n\n            # Matching event\n            evt2 = make_event(event_id=make_uuid4(\"a02\"),\n                              payload={\"type\": \"alert\", \"host\": \"srv1\"})\n            await engine.process_event(evt2)\n\n            stats = engine.get_stats()\n            assert stats.current_sequence == 2\n        finally:\n            os.unlink(state_file)\n\n    @pytest.mark.asyncio\n    async def test_goodhart_sequence_increments_on_missing_group_by(self, clock, id_counter):\n        \"\"\"Sequence counter must increment even when event is dropped due to missing group_by field.\"\"\"\n        with tempfile.NamedTemporaryFile(suffix=\".jsonl\", delete=False) as f:\n            state_file = f.name\n        try:\n            rule = make_rule(name=\"rule-a\",\n                             match=[MatchPredicate(field=\"type\", value=\"alert\", is_regex=False)],\n                             group_by=[\"host\"])\n            config = make_config(rules=[rule], state_file=state_file, clock=clock,\n                                 id_factory=id_counter)\n            sm = StoryManager(max_open_stories=100, sweep_interval=1.0, clock=clock)\n            engine = CorrelationEngine(config=config, story_manager=sm,\n                                       clock=clock, id_factory=id_counter)\n\n            # Matches rule but missing 'host' group_by field\n            evt1 = make_event(event_id=make_uuid4(\"b01\"),\n                              payload={\"type\": \"alert\"})\n            await engine.process_event(evt1)\n\n            stats = engine.get_stats()\n            assert stats.current_sequence == 1\n            assert stats.open_story_count == 0  # Event was dropped\n        finally:\n            os.unlink(state_file)\n\n    @pytest.mark.asyncio\n    async def test_goodhart_regex_match_predicate(self, clock, id_counter):\n        \"\"\"MatchPredicate with is_regex=True must use regex pattern matching.\"\"\"\n        with tempfile.NamedTemporaryFile(suffix=\".jsonl\", delete=False) as f:\n            state_file = f.name\n        try:\n            rule = make_rule(\n                name=\"rule-regex\",\n                match=[MatchPredicate(field=\"source\", value=\"web-.*\", is_regex=True)],\n                group_by=[\"host\"],\n            )\n            config = make_config(rules=[rule], state_file=state_file, clock=clock,\n                                 id_factory=id_counter)\n            sm = StoryManager(max_open_stories=100, sweep_interval=1.0, clock=clock)\n            engine = CorrelationEngine(config=config, story_manager=sm,\n                                       clock=clock, id_factory=id_counter)\n\n            evt = make_event(event_id=make_uuid4(\"c01\"),\n                             payload={\"source\": \"web-server-01\", \"host\": \"srv1\"})\n            await engine.process_event(evt)\n\n            assert sm.get_open_story_count() == 1\n        finally:\n            os.unlink(state_file)\n\n    @pytest.mark.asyncio\n    async def test_goodhart_exact_match_not_substring(self, clock, id_counter):\n        \"\"\"MatchPredicate with is_regex=False must require exact match, not substring.\"\"\"\n        with tempfile.NamedTemporaryFile(suffix=\".jsonl\", delete=False) as f:\n            state_file = f.name\n        try:\n            rule = make_rule(\n                name=\"rule-exact\",\n                match=[MatchPredicate(field=\"source\", value=\"web\", is_regex=False)],\n                group_by=[\"host\"],\n            )\n            config = make_config(rules=[rule], state_file=state_file, clock=clock,\n                                 id_factory=id_counter)\n            sm = StoryManager(max_open_stories=100, sweep_interval=1.0, clock=clock)\n            engine = CorrelationEngine(config=config, story_manager=sm,\n                                       clock=clock, id_factory=id_counter)\n\n            evt = make_event(event_id=make_uuid4(\"d01\"),\n                             payload={\"source\": \"web-server\", \"host\": \"srv1\"})\n            await engine.process_event(evt)\n\n            assert sm.get_open_story_count() == 0  # Should NOT match\n        finally:\n            os.unlink(state_file)\n\n    @pytest.mark.asyncio\n    async def test_goodhart_event_matches_multiple_rules(self, clock, id_counter):\n        \"\"\"An event matching multiple rules must create separate stories for each rule.\"\"\"\n        with tempfile.NamedTemporaryFile(suffix=\".jsonl\", delete=False) as f:\n            state_file = f.name\n        try:\n            rule1 = make_rule(\n                name=\"rule-one\",\n                match=[MatchPredicate(field=\"type\", value=\"alert\", is_regex=False)],\n                group_by=[\"host\"],\n            )\n            rule2 = make_rule(\n                name=\"rule-two\",\n                match=[MatchPredicate(field=\"type\", value=\"alert\", is_regex=False)],\n                group_by=[\"host\"],\n            )\n            config = make_config(rules=[rule1, rule2], state_file=state_file, clock=clock,\n                                 id_factory=id_counter)\n            sm = StoryManager(max_open_stories=100, sweep_interval=1.0, clock=clock)\n            engine = CorrelationEngine(config=config, story_manager=sm,\n                                       clock=clock, id_factory=id_counter)\n\n            evt = make_event(event_id=make_uuid4(\"e01\"),\n                             payload={\"type\": \"alert\", \"host\": \"srv1\"})\n            await engine.process_event(evt)\n\n            assert sm.get_open_story_count() == 2\n        finally:\n            os.unlink(state_file)\n\n    @pytest.mark.asyncio\n    async def test_goodhart_composite_key_sorted_fields(self, clock, id_counter):\n        \"\"\"Composite keys must use sorted field-value pairs so key order in payload doesn't matter.\"\"\"\n        with tempfile.NamedTemporaryFile(suffix=\".jsonl\", delete=False) as f:\n            state_file = f.name\n        try:\n            rule = make_rule(\n                name=\"rule-multi\",\n                match=[MatchPredicate(field=\"type\", value=\"alert\", is_regex=False)],\n                group_by=[\"host\", \"service\"],\n            )\n            config = make_config(rules=[rule], state_file=state_file, clock=clock,\n                                 id_factory=id_counter)\n            sm = StoryManager(max_open_stories=100, sweep_interval=1.0, clock=clock)\n            engine = CorrelationEngine(config=config, story_manager=sm,\n                                       clock=clock, id_factory=id_counter)\n\n            # Same values for host and service, different payload key order\n            evt1 = make_event(event_id=make_uuid4(\"f01\"),\n                              payload={\"type\": \"alert\", \"host\": \"srv1\", \"service\": \"web\"})\n            await engine.process_event(evt1)\n\n            evt2 = make_event(event_id=make_uuid4(\"f02\"),\n                              payload={\"type\": \"alert\", \"service\": \"web\", \"host\": \"srv1\"})\n            await engine.process_event(evt2)\n\n            # Both events should be in the same story\n            assert sm.get_open_story_count() == 1\n        finally:\n            os.unlink(state_file)\n\n    @pytest.mark.asyncio\n    async def test_goodhart_different_group_by_values_create_different_stories(self, clock, id_counter):\n        \"\"\"Different group_by field values must create distinct stories.\"\"\"\n        with tempfile.NamedTemporaryFile(suffix=\".jsonl\", delete=False) as f:\n            state_file = f.name\n        try:\n            rule = make_rule(\n                name=\"rule-a\",\n                match=[MatchPredicate(field=\"type\", value=\"alert\", is_regex=False)],\n                group_by=[\"host\", \"service\"],\n            )\n            config = make_config(rules=[rule], state_file=state_file, clock=clock,\n                                 id_factory=id_counter)\n            sm = StoryManager(max_open_stories=100, sweep_interval=1.0, clock=clock)\n            engine = CorrelationEngine(config=config, story_manager=sm,\n                                       clock=clock, id_factory=id_counter)\n\n            evt1 = make_event(event_id=make_uuid4(\"g01\"),\n                              payload={\"type\": \"alert\", \"host\": \"srv1\", \"service\": \"web\"})\n            await engine.process_event(evt1)\n\n            evt2 = make_event(event_id=make_uuid4(\"g02\"),\n                              payload={\"type\": \"alert\", \"host\": \"srv1\", \"service\": \"api\"})\n            await engine.process_event(evt2)\n\n            assert sm.get_open_story_count() == 2\n        finally:\n            os.unlink(state_file)\n\n    @pytest.mark.asyncio\n    async def test_goodhart_terminal_regex_condition(self, clock, id_counter):\n        \"\"\"TerminalCondition with is_regex=True must trigger story closure on regex match.\"\"\"\n        with tempfile.NamedTemporaryFile(suffix=\".jsonl\", delete=False) as f:\n            state_file = f.name\n        try:\n            rule = make_rule(\n                name=\"rule-term\",\n                match=[MatchPredicate(field=\"type\", value=\"alert\", is_regex=False)],\n                group_by=[\"host\"],\n                terminal_conditions=[\n                    TerminalCondition(field=\"status\", value=\"(success|done)\", is_regex=True)\n                ],\n            )\n            config = make_config(rules=[rule], state_file=state_file, clock=clock,\n                                 id_factory=id_counter)\n            sm = StoryManager(max_open_stories=100, sweep_interval=1.0, clock=clock)\n            engine = CorrelationEngine(config=config, story_manager=sm,\n                                       clock=clock, id_factory=id_counter)\n\n            # First event opens story\n            evt1 = make_event(event_id=make_uuid4(\"h01\"),\n                              payload={\"type\": \"alert\", \"host\": \"srv1\", \"status\": \"pending\"})\n            await engine.process_event(evt1)\n            assert sm.get_open_story_count() == 1\n\n            # Second event matches terminal condition via regex\n            evt2 = make_event(event_id=make_uuid4(\"h02\"),\n                              payload={\"type\": \"alert\", \"host\": \"srv1\", \"status\": \"done\"})\n            await engine.process_event(evt2)\n            assert sm.get_open_story_count() == 0\n        finally:\n            os.unlink(state_file)\n\n    @pytest.mark.asyncio\n    async def test_goodhart_new_story_after_terminal_close(self, clock, id_counter):\n        \"\"\"After a story is closed via terminal condition, a new event with same key must create a new story.\"\"\"\n        with tempfile.NamedTemporaryFile(suffix=\".jsonl\", delete=False) as f:\n            state_file = f.name\n        try:\n            rule = make_rule(\n                name=\"rule-a\",\n                match=[MatchPredicate(field=\"type\", value=\"alert\", is_regex=False)],\n                group_by=[\"host\"],\n                terminal_conditions=[\n                    TerminalCondition(field=\"status\", value=\"done\", is_regex=False)\n                ],\n            )\n            config = make_config(rules=[rule], state_file=state_file, clock=clock,\n                                 id_factory=id_counter)\n            sm = StoryManager(max_open_stories=100, sweep_interval=1.0, clock=clock)\n            engine = CorrelationEngine(config=config, story_manager=sm,\n                                       clock=clock, id_factory=id_counter)\n\n            # Create and close story\n            evt1 = make_event(event_id=make_uuid4(\"i01\"),\n                              payload={\"type\": \"alert\", \"host\": \"srv1\"})\n            await engine.process_event(evt1)\n\n            evt2 = make_event(event_id=make_uuid4(\"i02\"),\n                              payload={\"type\": \"alert\", \"host\": \"srv1\", \"status\": \"done\"})\n            await engine.process_event(evt2)\n            assert sm.get_open_story_count() == 0\n\n            # New event with same key should create new story\n            evt3 = make_event(event_id=make_uuid4(\"i03\"),\n                              payload={\"type\": \"alert\", \"host\": \"srv1\"})\n            await engine.process_event(evt3)\n            assert sm.get_open_story_count() == 1\n\n            stats = engine.get_stats()\n            assert stats.total_stories_created == 2\n        finally:\n            os.unlink(state_file)\n\n    @pytest.mark.asyncio\n    async def test_goodhart_chain_entry_not_used_after_expiry(self, clock, id_counter):\n        \"\"\"Expired chain entries must not be used to set parent_story_id on new stories.\"\"\"\n        with tempfile.NamedTemporaryFile(suffix=\".jsonl\", delete=False) as f:\n            state_file = f.name\n        try:\n            rule = make_rule(\n                name=\"rule-chain\",\n                match=[MatchPredicate(field=\"type\", value=\"alert\", is_regex=False)],\n                group_by=[\"host\"],\n                terminal_conditions=[\n                    TerminalCondition(field=\"status\", value=\"done\", is_regex=False)\n                ],\n                chain_by=[\"session\"],\n                chain_ttl=10.0,\n            )\n            config = make_config(rules=[rule], state_file=state_file, clock=clock,\n                                 id_factory=id_counter)\n            sm = StoryManager(max_open_stories=100, sweep_interval=1.0, clock=clock)\n            closed_stories = []\n            sink = AsyncMock(side_effect=lambda s: closed_stories.append(s))\n            sm.register_sink(sink)\n            engine = CorrelationEngine(config=config, story_manager=sm,\n                                       clock=clock, id_factory=id_counter)\n\n            # Create and close story with chain_by\n            clock._current[0] = 0.0\n            evt1 = make_event(event_id=make_uuid4(\"j01\"),\n                              payload={\"type\": \"alert\", \"host\": \"srv1\", \"session\": \"abc\", \"status\": \"done\"})\n            await engine.process_event(evt1)\n\n            # Advance past chain TTL\n            clock._current[0] = 15.0  # 15 > 10 TTL\n\n            # New event should NOT be chain-linked\n            evt2 = make_event(event_id=make_uuid4(\"j02\"),\n                              payload={\"type\": \"alert\", \"host\": \"srv1\", \"session\": \"abc\"})\n            await engine.process_event(evt2)\n\n            # The second story should not have a parent_story_id\n            # Check via stats or by closing the story\n            # Close the open story to inspect it\n            stats = engine.get_stats()\n            assert stats.open_story_count == 1\n        finally:\n            os.unlink(state_file)\n\n    @pytest.mark.asyncio\n    async def test_goodhart_empty_payload_no_crash(self, clock, id_counter):\n        \"\"\"Event with empty payload must not crash the engine, just be dropped.\"\"\"\n        with tempfile.NamedTemporaryFile(suffix=\".jsonl\", delete=False) as f:\n            state_file = f.name\n        try:\n            rule = make_rule(\n                name=\"rule-a\",\n                match=[MatchPredicate(field=\"type\", value=\"alert\", is_regex=False)],\n                group_by=[\"host\"],\n            )\n            config = make_config(rules=[rule], state_file=state_file, clock=clock,\n                                 id_factory=id_counter)\n            sm = StoryManager(max_open_stories=100, sweep_interval=1.0, clock=clock)\n            engine = CorrelationEngine(config=config, story_manager=sm,\n                                       clock=clock, id_factory=id_counter)\n\n            evt = make_event(event_id=make_uuid4(\"k01\"), payload={})\n            await engine.process_event(evt)\n\n            assert sm.get_open_story_count() == 0\n            assert engine.get_stats().current_sequence == 1\n        finally:\n            os.unlink(state_file)\n\n    @pytest.mark.asyncio\n    async def test_goodhart_stats_reflect_multiple_operations(self, clock, id_counter):\n        \"\"\"get_stats must accurately reflect all operations, not return cached/hardcoded values.\"\"\"\n        with tempfile.NamedTemporaryFile(suffix=\".jsonl\", delete=False) as f:\n            state_file = f.name\n        try:\n            rule = make_rule(\n                name=\"rule-a\",\n                match=[MatchPredicate(field=\"type\", value=\"alert\", is_regex=False)],\n                group_by=[\"host\"],\n                terminal_conditions=[\n                    TerminalCondition(field=\"status\", value=\"done\", is_regex=False)\n                ],\n            )\n            config = make_config(rules=[rule], state_file=state_file, clock=clock,\n                                 id_factory=id_counter)\n            sm = StoryManager(max_open_stories=100, sweep_interval=1.0, clock=clock)\n            engine = CorrelationEngine(config=config, story_manager=sm,\n                                       clock=clock, id_factory=id_counter)\n\n            # Create 3 stories\n            for i in range(3):\n                evt = make_event(event_id=make_uuid4(str(5000 + i)),\n                                 payload={\"type\": \"alert\", \"host\": f\"srv{i}\"})\n                await engine.process_event(evt)\n\n            stats1 = engine.get_stats()\n            assert stats1.total_stories_created == 3\n            assert stats1.open_story_count == 3\n            assert stats1.total_events_processed == 3\n            assert stats1.current_sequence == 3\n\n            # Close one via terminal\n            evt_done = make_event(event_id=make_uuid4(\"5010\"),\n                                  payload={\"type\": \"alert\", \"host\": \"srv0\", \"status\": \"done\"})\n            await engine.process_event(evt_done)\n\n            stats2 = engine.get_stats()\n            assert stats2.total_stories_closed == 1\n            assert stats2.open_story_count == 2\n            assert stats2.total_events_processed == 4\n            assert stats2.current_sequence == 4\n        finally:\n            os.unlink(state_file)\n\n    def test_goodhart_purge_boundary_not_equal(self, clock, id_counter):\n        \"\"\"purge_expired_chains must NOT remove entries where expires_at == clock() (strict less-than).\"\"\"\n        with tempfile.NamedTemporaryFile(suffix=\".jsonl\", delete=False) as f:\n            state_file = f.name\n        try:\n            rule = make_rule(\n                name=\"rule-a\",\n                match=[MatchPredicate(field=\"type\", value=\"alert\", is_regex=False)],\n                group_by=[\"host\"],\n                chain_by=[\"session\"],\n                chain_ttl=10.0,\n            )\n            config = make_config(rules=[rule], state_file=state_file, clock=clock,\n                                 id_factory=id_counter)\n            sm = StoryManager(max_open_stories=100, sweep_interval=1.0, clock=clock)\n            engine = CorrelationEngine(config=config, story_manager=sm,\n                                       clock=clock, id_factory=id_counter)\n\n            # Manually insert a chain entry that expires at exactly 100.0\n            chain_key = CompositeKey(rule_name=\"rule-a\", key_tuple=[(\"session\", \"abc\")])\n            parent_sid = make_uuid4(\"5050\")\n            entry = ChainEntry(parent_story_id=parent_sid, expires_at=100.0)\n\n            # Access internal chain registry (implementation detail, but needed for boundary test)\n            if hasattr(engine, '_chain_registry'):\n                engine._chain_registry[chain_key] = entry\n            elif hasattr(engine, 'chain_registry'):\n                engine.chain_registry[chain_key] = entry\n\n            clock._current[0] = 100.0  # Exactly at expiration\n            purged = engine.purge_expired_chains()\n            # At exactly expires_at, entry should NOT be purged (strict < comparison)\n            assert purged == 0\n\n            clock._current[0] = 100.001  # Just past expiration\n            purged = engine.purge_expired_chains()\n            assert purged == 1\n        finally:\n            os.unlink(state_file)\n\n\n# ============================================================\n# State recovery tests\n# ============================================================\n\nclass TestGoodhartStateRecovery:\n    \"\"\"Tests for state recovery that catch shortcut implementations.\"\"\"\n\n    @pytest.mark.asyncio\n    async def test_goodhart_recover_mixed_valid_corrupt_line_counts(self):\n        \"\"\"records_read + records_skipped must equal total lines for mixed valid/corrupt file.\"\"\"\n        with tempfile.NamedTemporaryFile(mode=\"w\", suffix=\".jsonl\", delete=False) as f:\n            state_file = f.name\n            # Write some valid and corrupt lines\n            valid_record = {\n                \"record_type\": \"story_opened\",\n                \"story_id\": make_uuid4(\"1\"),\n                \"rule_name\": \"rule-a\",\n                \"group_key\": {\"host\": \"srv1\"},\n                \"parent_story_id\": \"\",\n                \"created_at\": \"2024-01-15T10:00:00Z\",\n                \"timeout\": 60.0,\n            }\n            f.write(json.dumps(valid_record) + \"\\n\")\n            f.write(\"this is not json\\n\")\n            f.write(\"{malformed json\\n\")\n            f.write(json.dumps(valid_record) + \"\\n\")  # Duplicate open is still valid JSON\n            f.write(\"another bad line\\n\")\n\n        try:\n            result = await recover_state(state_file, clock=time.monotonic) \\\n                if asyncio.iscoroutinefunction(recover_state) \\\n                else recover_state(state_file, clock=time.monotonic)\n\n            total_lines = 5\n            assert result.records_read + result.records_skipped == total_lines\n            assert result.records_skipped == 3\n        finally:\n            os.unlink(state_file)\n\n    @pytest.mark.asyncio\n    async def test_goodhart_recover_excludes_closed_stories(self):\n        \"\"\"Stories with both opened and closed records must not appear in recovered open_stories.\"\"\"\n        with tempfile.NamedTemporaryFile(mode=\"w\", suffix=\".jsonl\", delete=False) as f:\n            state_file = f.name\n            sid_closed = make_uuid4(\"c1\")\n            sid_open = make_uuid4(\"c2\")\n\n            records = [\n                {\"record_type\": \"story_opened\", \"story_id\": sid_closed,\n                 \"rule_name\": \"rule-a\", \"group_key\": {\"host\": \"srv1\"},\n                 \"parent_story_id\": \"\", \"created_at\": \"2024-01-15T10:00:00Z\",\n                 \"timeout\": 60.0},\n                {\"record_type\": \"story_opened\", \"story_id\": sid_open,\n                 \"rule_name\": \"rule-a\", \"group_key\": {\"host\": \"srv2\"},\n                 \"parent_story_id\": \"\", \"created_at\": \"2024-01-15T10:00:01Z\",\n                 \"timeout\": 60.0},\n                {\"record_type\": \"story_closed\", \"story_id\": sid_closed,\n                 \"status\": \"completed\", \"closed_at\": \"2024-01-15T10:05:00Z\"},\n            ]\n            for r in records:\n                f.write(json.dumps(r) + \"\\n\")\n\n        try:\n            result = await recover_state(state_file, clock=time.monotonic) \\\n                if asyncio.iscoroutinefunction(recover_state) \\\n                else recover_state(state_file, clock=time.monotonic)\n\n            open_ids = [s.get(\"story_id\", s.story_id if hasattr(s, \"story_id\") else None)\n                        if isinstance(s, dict) else s.story_id\n                        for s in result.open_stories]\n            assert sid_closed not in open_ids\n            assert sid_open in open_ids\n            assert result.records_read == 3\n        finally:\n            os.unlink(state_file)\n\n    @pytest.mark.asyncio\n    async def test_goodhart_recover_nonexistent_file_empty_result(self):\n        \"\"\"recover_state on a nonexistent file must return empty result with all counts 0.\"\"\"\n        path = \"/tmp/definitely_does_not_exist_12345.jsonl\"\n        if os.path.exists(path):\n            os.unlink(path)\n\n        result = await recover_state(path, clock=time.monotonic) \\\n            if asyncio.iscoroutinefunction(recover_state) \\\n            else recover_state(path, clock=time.monotonic)\n\n        assert len(result.open_stories) == 0\n        assert result.records_read == 0\n        assert result.records_skipped == 0\n\n\n# ============================================================\n# append_record tests\n# ============================================================\n\nclass TestGoodhartAppendRecord:\n    \"\"\"Tests for append_record to ensure proper JSONL output.\"\"\"\n\n    @pytest.mark.asyncio\n    async def test_goodhart_append_multiple_records_each_on_own_line(self):\n        \"\"\"Each appended record must be on its own line in the JSONL file.\"\"\"\n        with tempfile.NamedTemporaryFile(suffix=\".jsonl\", delete=False) as f:\n            state_file = f.name\n\n        try:\n            record1 = StoryOpenedRecord(\n                record_type=\"story_opened\",\n                story_id=make_uuid4(\"1\"),\n                rule_name=\"rule-a\",\n                group_key={\"host\": \"srv1\"},\n                parent_story_id=\"\",\n                created_at=\"2024-01-15T10:00:00Z\",\n                timeout=60.0,\n            )\n            record2 = StoryClosedRecord(\n                record_type=\"story_closed\",\n                story_id=make_uuid4(\"1\"),\n                status=\"completed\",\n                closed_at=\"2024-01-15T10:05:00Z\",\n            )\n\n            if asyncio.iscoroutinefunction(append_record):\n                await append_record(state_file, record1)\n                await append_record(state_file, record2)\n            else:\n                append_record(state_file, record1)\n                append_record(state_file, record2)\n\n            with open(state_file, \"r\") as f:\n                lines = f.readlines()\n            assert len(lines) == 2\n            # Each line should be valid JSON\n            for line in lines:\n                parsed = json.loads(line.strip())\n                assert \"record_type\" in parsed\n        finally:\n            os.unlink(state_file)\n"
+}

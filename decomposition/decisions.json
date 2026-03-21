@@ -1,0 +1,32 @@
+[
+  {
+    "ambiguity": "",
+    "decision": "",
+    "rationale": "The correlation engine and story manager are tightly coupled \u2014 correlation creates/finds stories, story manager closes them and feeds chain_by keys back to correlation. Splitting them would create a circular dependency. JSONL state persistence (state.py) is also included here since it's exclusively used by the story manager for story read/write."
+  },
+  {
+    "ambiguity": "",
+    "decision": "",
+    "rationale": "The engine is the orchestrator, and CLI/MCP are thin entry points that invoke the engine. CLI and MCP have no logic of their own beyond parsing commands and delegating to the engine's query/control interface. Building them together ensures a consistent control API."
+  },
+  {
+    "ambiguity": "",
+    "decision": "",
+    "rationale": "SourceProtocol and SinkProtocol are Protocol classes (structural typing). They belong with the data models since every source/sink/engine depends on them. Placing them in schemas avoids circular imports and makes schemas the single shared foundation."
+  },
+  {
+    "ambiguity": "",
+    "decision": "",
+    "rationale": "Per AS9, Sentinel uses the same HTTP POST transport. The sentinel.py module will import/reuse webhook machinery but add sentinel-specific event_kind parsing and lifecycle mapping. Both live in the sources component."
+  },
+  {
+    "ambiguity": "",
+    "decision": "",
+    "rationale": "Per AS1, constraints.yaml was not provided. Each component will derive relevant constraints from the spec text and acceptance criteria, defining them explicitly in test files and flagging for review. AC12 is distributed across all components."
+  },
+  {
+    "ambiguity": "",
+    "decision": "",
+    "rationale": "Config loading involves YAML parsing, file I/O, and validation logic distinct from pure data model definitions. It depends on schemas for model types but adds its own loading/validation logic. Separating it keeps schemas pure and testable without filesystem."
+  }
+]

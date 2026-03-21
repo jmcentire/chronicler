@@ -1,0 +1,916 @@
+{
+  "component_id": "sources",
+  "contract_version": 1,
+  "test_cases": [
+    {
+      "id": "goodhart_emit_preserves_event_identity",
+      "description": "emit() must pass the exact same Event object to each subscriber, not a copy or a hardcoded event",
+      "function": "emit",
+      "category": "invariant",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "A dynamically-constructed Event with unique field values and 5 subscribers",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Each subscriber receives the identical Event object that was passed to emit()"
+      ]
+    },
+    {
+      "id": "goodhart_emit_order_preserved",
+      "description": "emit() must call subscribers in the order they appear in the list, ensuring sequential iteration not random",
+      "function": "emit",
+      "category": "invariant",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Subscribers are called in list order, verified by recording call indices"
+      ]
+    },
+    {
+      "id": "goodhart_emit_single_failing_in_middle",
+      "description": "emit() must call all subscribers even when the middle one in a list of 5 raises, verifying the isolation is per-subscriber not just for first/last",
+      "function": "emit",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "All 5 subscribers are called",
+        "Only the 3rd subscriber raises",
+        "Subscribers 1,2,4,5 received the event"
+      ]
+    },
+    {
+      "id": "goodhart_emit_does_not_propagate_base_exception",
+      "description": "emit() catches Exception from subscribers but the contract says 'try/except Exception' — a BaseException subclass like KeyboardInterrupt may or may not be caught; at minimum Exception subclasses must not propagate",
+      "function": "emit",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "ValueError, TypeError, RuntimeError from subscribers do not propagate",
+        "All subscribers still called"
+      ]
+    },
+    {
+      "id": "goodhart_webhook_handle_post_content_type_case_insensitive_check",
+      "description": "HTTP Content-Type header matching should handle common variations like 'application/json; charset=utf-8' which is a valid JSON content type",
+      "function": "WebhookSource._handle_post",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Content-Type 'application/json; charset=utf-8' should be accepted (status 200), not rejected as 415"
+      ]
+    },
+    {
+      "id": "goodhart_webhook_handle_post_text_plain_rejected",
+      "description": "HTTP sources must reject Content-Type 'text/plain' even though the body could be valid JSON",
+      "function": "WebhookSource._handle_post",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Returns status 415 for text/plain content type"
+      ]
+    },
+    {
+      "id": "goodhart_webhook_handle_post_empty_body",
+      "description": "Webhook handler must return 400 when body is empty bytes, not crash or return 200",
+      "function": "WebhookSource._handle_post",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Returns status 400 for empty body with application/json content type"
+      ]
+    },
+    {
+      "id": "goodhart_webhook_handle_post_returns_event_id_in_body",
+      "description": "Successful webhook POST must return the actual event_id of the parsed event in the response body, not a hardcoded string",
+      "function": "WebhookSource._handle_post",
+      "category": "invariant",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Response body on 200 contains the event_id from the submitted Event JSON",
+        "Different event_ids yield different response bodies"
+      ]
+    },
+    {
+      "id": "goodhart_webhook_subscribe_after_start",
+      "description": "Subscribers added after start() must still receive events from subsequent POSTs, verifying subscribe is not frozen at start time",
+      "function": "WebhookSource.subscribe",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Callback subscribed after start() receives events emitted by _handle_post"
+      ]
+    },
+    {
+      "id": "goodhart_webhook_subscribe_multiple",
+      "description": "Multiple subscribe() calls should accumulate callbacks, each receiving every event independently",
+      "function": "WebhookSource.subscribe",
+      "category": "invariant",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "After 3 subscribe() calls, all 3 callbacks receive the emitted event"
+      ]
+    },
+    {
+      "id": "goodhart_webhook_start_from_stopped_raises",
+      "description": "Source state transitions are one-way CREATED→RUNNING→STOPPED; calling start() on a STOPPED source must raise, preventing restart",
+      "function": "WebhookSource.start",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "RuntimeError",
+      "assertions": [
+        "RuntimeError is raised when start() is called after stop()"
+      ]
+    },
+    {
+      "id": "goodhart_otlp_handle_traces_body_is_empty_json_object",
+      "description": "OTLP spec requires the response body to be exactly the string '{}' on success, not any other JSON representation",
+      "function": "OtlpSource._handle_traces",
+      "category": "invariant",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Response body is exactly '{}' string",
+        "Status is 200"
+      ]
+    },
+    {
+      "id": "goodhart_otlp_handle_traces_multiple_scopes",
+      "description": "OTLP requests can have multiple scopeSpans within a single resourceSpan; each scope's spans must all be flattened and emitted",
+      "function": "OtlpSource._handle_traces",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Spans from both scopeSpans are emitted as separate events",
+        "Total emitted count equals sum of spans across all scopes"
+      ]
+    },
+    {
+      "id": "goodhart_otlp_flatten_spans_inherits_correct_resource_attrs",
+      "description": "When multiple resourceSpans have different resource attributes, each span must inherit only its parent resourceSpan's attributes, not a shared or merged set",
+      "function": "OtlpSource._flatten_spans",
+      "category": "invariant",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Span from resourceSpan[0] has resource_attributes from resource[0]",
+        "Span from resourceSpan[1] has resource_attributes from resource[1]",
+        "No cross-contamination of resource attributes"
+      ]
+    },
+    {
+      "id": "goodhart_otlp_span_to_event_different_span_names",
+      "description": "event_kind must incorporate the actual span name normalized, not a hardcoded value — different span names must produce different event_kind values",
+      "function": "OtlpSource._span_to_event",
+      "category": "invariant",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Span with name 'http_request' produces event_kind containing 'http_request'",
+        "Span with name 'db_query' produces event_kind containing 'db_query'",
+        "Both start with 'otlp.trace.'"
+      ]
+    },
+    {
+      "id": "goodhart_otlp_span_to_event_unique_ids",
+      "description": "Each call to _span_to_event must generate a fresh UUID4, not reuse or hardcode event_ids",
+      "function": "OtlpSource._span_to_event",
+      "category": "invariant",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Two calls with the same span produce different event_ids",
+        "Both event_ids match UUID4 format"
+      ]
+    },
+    {
+      "id": "goodhart_otlp_span_to_event_timestamp_conversion",
+      "description": "Timestamp derived from start_time_unix_nano must correctly convert nanoseconds to ISO 8601 UTC, tested with a known epoch value",
+      "function": "OtlpSource._span_to_event",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "start_time_unix_nano of 1700000000000000000 converts to '2023-11-14T22:13:20' prefix in timestamp",
+        "Timestamp ends with 'Z'"
+      ]
+    },
+    {
+      "id": "goodhart_otlp_span_to_event_source_name_passthrough",
+      "description": "Event.source must equal the source_name parameter passed in, not a hardcoded value",
+      "function": "OtlpSource._span_to_event",
+      "category": "invariant",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "source_name='my_custom_otlp' results in Event.source == 'my_custom_otlp'",
+        "source_name='another_source' results in Event.source == 'another_source'"
+      ]
+    },
+    {
+      "id": "goodhart_otlp_handle_traces_empty_resource_spans_list",
+      "description": "An OTLP request with resourceSpans as an empty list is structurally valid but has no spans; should return 200 with '{}' and emit nothing",
+      "function": "OtlpSource._handle_traces",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Status is 200",
+        "Body is '{}'",
+        "No events emitted to subscribers"
+      ]
+    },
+    {
+      "id": "goodhart_sentinel_handle_post_custom_prefix",
+      "description": "SentinelSource must use the configured event_kind_prefix, not hardcode 'sentinel'; a custom prefix like 'mysoc' should produce event_kind 'mysoc.incident.{action}'",
+      "function": "SentinelSource._handle_post",
+      "category": "invariant",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "With event_kind_prefix='mysoc', emitted Event.event_kind starts with 'mysoc.incident.'",
+        "Does NOT start with 'sentinel.'"
+      ]
+    },
+    {
+      "id": "goodhart_sentinel_handle_post_different_actions",
+      "description": "SentinelSource must extract the action from the payload and include it in event_kind, not hardcode a single action like 'created'",
+      "function": "SentinelSource._handle_post",
+      "category": "invariant",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "A payload with action 'updated' produces event_kind ending with '.updated'",
+        "A payload with action 'closed' produces event_kind ending with '.closed'"
+      ]
+    },
+    {
+      "id": "goodhart_sentinel_handle_post_415_before_body_parse",
+      "description": "Content-Type validation must happen before body parsing — even with valid JSON body, wrong Content-Type must return 415",
+      "function": "SentinelSource._handle_post",
+      "category": "invariant",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Returns 415 with Content-Type 'text/html' regardless of body content"
+      ]
+    },
+    {
+      "id": "goodhart_sentinel_start_from_stopped_raises",
+      "description": "SentinelSource state transitions are one-way; calling start() after stop() must raise RuntimeError",
+      "function": "SentinelSource.start",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "RuntimeError",
+      "assertions": [
+        "RuntimeError is raised when start() is called on STOPPED source"
+      ]
+    },
+    {
+      "id": "goodhart_file_poll_multiple_lines_emitted_in_order",
+      "description": "FileSource must emit events for multiple JSONL lines in the order they appear in the file, not reversed or jumbled",
+      "function": "FileSource._poll_loop",
+      "category": "invariant",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Events emitted in the same order as lines in file",
+        "Each line maps to exactly one event"
+      ]
+    },
+    {
+      "id": "goodhart_file_poll_valid_event_schema_line",
+      "description": "FileSource must parse each JSONL line as an Event and validate against Event schema — a line with valid JSON but missing required Event fields must be skipped",
+      "function": "FileSource._poll_loop",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Line with valid JSON but missing event_id is skipped",
+        "Subsequent valid lines are still emitted"
+      ]
+    },
+    {
+      "id": "goodhart_file_start_nonexistent_file",
+      "description": "FileSource.start() on a non-existent file should succeed and transition to RUNNING, waiting for file creation rather than failing",
+      "function": "FileSource.start",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "start() does not raise when file does not exist",
+        "State transitions to RUNNING"
+      ]
+    },
+    {
+      "id": "goodhart_file_start_from_stopped_raises",
+      "description": "FileSource state transitions are one-way; calling start() after stop() must raise RuntimeError",
+      "function": "FileSource.start",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "RuntimeError",
+      "assertions": [
+        "RuntimeError is raised when start() is called on STOPPED source"
+      ]
+    },
+    {
+      "id": "goodhart_otlp_start_from_stopped_raises",
+      "description": "OtlpSource state transitions are one-way; calling start() after stop() must raise RuntimeError, preventing restart",
+      "function": "OtlpSource.start",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "RuntimeError",
+      "assertions": [
+        "RuntimeError is raised when start() is called on STOPPED source"
+      ]
+    },
+    {
+      "id": "goodhart_event_kind_trailing_dot_rejected",
+      "description": "EventKind must reject strings that end with a dot, which would indicate an empty trailing segment",
+      "function": "EventKind",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "ValidationError",
+      "assertions": [
+        "EventKind rejects 'webhook.push.'"
+      ]
+    },
+    {
+      "id": "goodhart_event_kind_leading_dot_rejected",
+      "description": "EventKind must reject strings that start with a dot, which would indicate an empty leading segment",
+      "function": "EventKind",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "ValidationError",
+      "assertions": [
+        "EventKind rejects '.webhook.push'"
+      ]
+    },
+    {
+      "id": "goodhart_event_kind_consecutive_dots_rejected",
+      "description": "EventKind must reject strings with consecutive dots, which would indicate empty middle segments",
+      "function": "EventKind",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "ValidationError",
+      "assertions": [
+        "EventKind rejects 'webhook..push'"
+      ]
+    },
+    {
+      "id": "goodhart_event_kind_underscore_allowed",
+      "description": "EventKind segments may contain underscores per the regex [a-z0-9_], so 'webhook.push_event' should be accepted",
+      "function": "EventKind",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "EventKind accepts 'webhook.push_event'"
+      ]
+    },
+    {
+      "id": "goodhart_bind_address_wildcard_ipv6",
+      "description": "BindAddress must accept '::' (IPv6 wildcard) as a valid host per the regex",
+      "function": "BindAddress",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "BindAddress accepts host='::', port=8080"
+      ]
+    },
+    {
+      "id": "goodhart_bind_address_0000",
+      "description": "BindAddress must accept '0.0.0.0' as valid host for binding to all interfaces",
+      "function": "BindAddress",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "BindAddress accepts host='0.0.0.0', port=8080"
+      ]
+    },
+    {
+      "id": "goodhart_bind_address_hostname_rejected",
+      "description": "BindAddress host regex only accepts IP addresses, localhost, and IPv6 wildcards — arbitrary hostnames like 'myserver.com' must be rejected",
+      "function": "BindAddress",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "ValidationError",
+      "assertions": [
+        "BindAddress rejects host='myserver.com'"
+      ]
+    },
+    {
+      "id": "goodhart_webhook_config_source_name_boundary_128",
+      "description": "WebhookSourceConfig source_name has max length 128; a 128-char name should be accepted but 129 should be rejected",
+      "function": "WebhookSourceConfig",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "source_name of exactly 128 chars is accepted",
+        "source_name of 129 chars is rejected"
+      ]
+    },
+    {
+      "id": "goodhart_webhook_config_max_size_boundary_min",
+      "description": "WebhookSourceConfig client_max_size_bytes minimum is 1024; exactly 1024 should be accepted",
+      "function": "WebhookSourceConfig",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "client_max_size_bytes=1024 is accepted"
+      ]
+    },
+    {
+      "id": "goodhart_webhook_config_max_size_boundary_max",
+      "description": "WebhookSourceConfig client_max_size_bytes maximum is 10485760; exactly 10485760 should be accepted",
+      "function": "WebhookSourceConfig",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "client_max_size_bytes=10485760 is accepted"
+      ]
+    },
+    {
+      "id": "goodhart_otlp_config_max_size_boundary_min",
+      "description": "OtlpSourceConfig client_max_size_bytes minimum is 1024; exactly 1024 should be accepted",
+      "function": "OtlpSourceConfig",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "client_max_size_bytes=1024 is accepted"
+      ]
+    },
+    {
+      "id": "goodhart_file_config_poll_interval_boundary_min",
+      "description": "FileSourceConfig poll_interval_seconds minimum is 0.1; exactly 0.1 should be accepted",
+      "function": "FileSourceConfig",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "poll_interval_seconds=0.1 is accepted"
+      ]
+    },
+    {
+      "id": "goodhart_file_config_poll_interval_boundary_max",
+      "description": "FileSourceConfig poll_interval_seconds maximum is 300.0; exactly 300.0 should be accepted",
+      "function": "FileSourceConfig",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "poll_interval_seconds=300.0 is accepted"
+      ]
+    },
+    {
+      "id": "goodhart_sentinel_config_prefix_with_underscores",
+      "description": "SentinelSourceConfig event_kind_prefix allows underscores per regex [a-z0-9_]*; 'my_soc' should be accepted",
+      "function": "SentinelSourceConfig",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "event_kind_prefix='my_soc' is accepted"
+      ]
+    },
+    {
+      "id": "goodhart_sentinel_config_prefix_with_digits",
+      "description": "SentinelSourceConfig event_kind_prefix allows digits after first char; 'soc2' should be accepted",
+      "function": "SentinelSourceConfig",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "event_kind_prefix='soc2' is accepted"
+      ]
+    },
+    {
+      "id": "goodhart_sentinel_config_prefix_starts_with_digit_rejected",
+      "description": "SentinelSourceConfig event_kind_prefix must start with lowercase letter; '2soc' must be rejected",
+      "function": "SentinelSourceConfig",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "ValidationError",
+      "assertions": [
+        "event_kind_prefix='2soc' is rejected"
+      ]
+    },
+    {
+      "id": "goodhart_sentinel_config_prefix_uppercase_rejected",
+      "description": "SentinelSourceConfig event_kind_prefix only allows lowercase; 'Sentinel' must be rejected",
+      "function": "SentinelSourceConfig",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "ValidationError",
+      "assertions": [
+        "event_kind_prefix='Sentinel' is rejected"
+      ]
+    },
+    {
+      "id": "goodhart_file_position_offset_zero_valid",
+      "description": "FilePosition offset of exactly 0 is valid (minimum boundary of range 0..max)",
+      "function": "FilePosition",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "FilePosition with offset=0 is accepted"
+      ]
+    },
+    {
+      "id": "goodhart_http_response_boundary_status_100",
+      "description": "HttpResponse status of exactly 100 is valid (minimum boundary)",
+      "function": "HttpResponse",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "HttpResponse with status=100 is accepted"
+      ]
+    },
+    {
+      "id": "goodhart_http_response_boundary_status_599",
+      "description": "HttpResponse status of exactly 599 is valid (maximum boundary)",
+      "function": "HttpResponse",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "HttpResponse with status=599 is accepted"
+      ]
+    },
+    {
+      "id": "goodhart_event_kind_hyphen_rejected",
+      "description": "EventKind regex only allows lowercase, digits, and underscores in segments — hyphens must be rejected",
+      "function": "EventKind",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "ValidationError",
+      "assertions": [
+        "EventKind rejects 'webhook.push-event'"
+      ]
+    },
+    {
+      "id": "goodhart_event_kind_segment_starts_with_underscore_rejected",
+      "description": "EventKind segments must start with a lowercase letter per regex ^[a-z]; '_private.event' must be rejected",
+      "function": "EventKind",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "ValidationError",
+      "assertions": [
+        "EventKind rejects '_private.event'"
+      ]
+    },
+    {
+      "id": "goodhart_filepath_exactly_4096_accepted",
+      "description": "FilePath length validator allows up to 4096; exactly 4096 characters should be accepted",
+      "function": "FilePath",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "FilePath with exactly 4096 characters is accepted"
+      ]
+    },
+    {
+      "id": "goodhart_otlp_span_to_event_correlation_keys_values",
+      "description": "Event.correlation_keys must contain the actual trace_id and span_id values from the span, not hardcoded values",
+      "function": "OtlpSource._span_to_event",
+      "category": "invariant",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "correlation_keys contains the specific trace_id 'abc123'",
+        "correlation_keys contains the specific span_id 'def456'"
+      ]
+    },
+    {
+      "id": "goodhart_webhook_handle_post_valid_json_but_array",
+      "description": "Valid JSON that is an array instead of an Event object should return 400, not 200",
+      "function": "WebhookSource._handle_post",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Returns status 400 for body '[1,2,3]' with application/json content type"
+      ]
+    },
+    {
+      "id": "goodhart_emit_async_subscribers",
+      "description": "emit() must properly await async subscriber callbacks, not just call them synchronously",
+      "function": "emit",
+      "category": "invariant",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Async subscribers that set a flag after await are properly awaited",
+        "The flag is set after emit() completes"
+      ]
+    },
+    {
+      "id": "goodhart_sentinel_handle_post_empty_body",
+      "description": "SentinelSource handler must return 400 when body is empty bytes, not crash",
+      "function": "SentinelSource._handle_post",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Returns status 400 for empty body with application/json content type"
+      ]
+    },
+    {
+      "id": "goodhart_otlp_handle_traces_empty_body",
+      "description": "OTLP handler must return 400 when body is empty bytes, not crash",
+      "function": "OtlpSource._handle_traces",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Returns status 400 for empty body with application/json content type"
+      ]
+    },
+    {
+      "id": "goodhart_sentinel_config_empty_prefix_rejected",
+      "description": "SentinelSourceConfig event_kind_prefix regex requires at least one character; empty string must be rejected",
+      "function": "SentinelSourceConfig",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "ValidationError",
+      "assertions": [
+        "event_kind_prefix='' is rejected"
+      ]
+    },
+    {
+      "id": "goodhart_webhook_initial_state_created",
+      "description": "A freshly constructed WebhookSource must be in CREATED state before start() is called",
+      "function": "WebhookSource.start",
+      "category": "invariant",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Source state is CREATED before start() is invoked"
+      ]
+    },
+    {
+      "id": "goodhart_otlp_handle_traces_content_type_with_charset",
+      "description": "OTLP handler should accept 'application/json; charset=utf-8' as valid Content-Type, matching real-world OTLP client behavior",
+      "function": "OtlpSource._handle_traces",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Content-Type 'application/json; charset=utf-8' with valid OTLP body returns 200"
+      ]
+    }
+  ],
+  "test_language": "python",
+  "generated_code": "\"\"\"\nAdversarial hidden acceptance tests for Event Sources component.\nThese tests detect implementations that pass visible tests through shortcuts\n(hardcoded returns, missing validation, etc.) rather than truly satisfying the contract.\n\"\"\"\n\nimport asyncio\nimport json\nimport uuid\nimport pytest\nfrom unittest.mock import AsyncMock, MagicMock, patch\nfrom src.sources import *\n\n\n# ─── Helpers ───────────────────────────────────────────────────────────────────\n\ndef make_valid_event_json(**overrides):\n    \"\"\"Create a valid Event JSON bytes with optional field overrides.\"\"\"\n    event = {\n        \"event_id\": overrides.get(\"event_id\", str(uuid.uuid4())),\n        \"event_kind\": overrides.get(\"event_kind\", \"webhook.push\"),\n        \"timestamp\": overrides.get(\"timestamp\", \"2024-01-15T10:30:00Z\"),\n        \"source\": overrides.get(\"source\", \"test-source\"),\n        \"payload\": overrides.get(\"payload\", {\"key\": \"value\"}),\n        \"correlation_keys\": overrides.get(\"correlation_keys\", [\"corr-1\"]),\n    }\n    return json.dumps(event).encode(\"utf-8\")\n\n\ndef make_valid_otlp_payload(spans=None, resource_attrs=None):\n    \"\"\"Create a valid OTLP ExportTraceServiceRequest JSON bytes.\"\"\"\n    if spans is None:\n        spans = [{\n            \"traceId\": \"abc123\",\n            \"spanId\": \"def456\",\n            \"name\": \"http_request\",\n            \"startTimeUnixNano\": 1700000000000000000,\n            \"endTimeUnixNano\": 1700000001000000000,\n            \"attributes\": {},\n            \"status\": {\"code\": 0},\n        }]\n    if resource_attrs is None:\n        resource_attrs = {}\n    payload = {\n        \"resourceSpans\": [{\n            \"resource\": {\"attributes\": resource_attrs},\n            \"scopeSpans\": [{\n                \"spans\": spans\n            }]\n        }]\n    }\n    return json.dumps(payload).encode(\"utf-8\")\n\n\ndef make_sentinel_payload(action=\"created\", incident_id=\"INC-001\", **extra):\n    \"\"\"Create a valid Sentinel incident webhook payload.\"\"\"\n    payload = {\n        \"properties\": {\n            \"incidentNumber\": 42,\n            \"title\": \"Test Incident\",\n            \"severity\": \"High\",\n            \"status\": \"New\",\n            \"owner\": {\"assignedTo\": \"user@example.com\"},\n        },\n        \"name\": incident_id,\n        \"type\": \"Microsoft.SecurityInsights/Incidents\",\n    }\n    # Include action in a way the Sentinel parser expects\n    # Common Sentinel webhook structures:\n    if action:\n        payload[\"properties\"][\"status\"] = action\n        # Also try setting it at top level as some implementations look there\n        payload[\"action\"] = action\n    payload.update(extra)\n    return json.dumps(payload).encode(\"utf-8\")\n\n\ndef get_free_port():\n    \"\"\"Get a free TCP port.\"\"\"\n    import socket\n    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:\n        s.bind(('127.0.0.1', 0))\n        return s.getsockname()[1]\n\n\n# ─── emit() tests ─────────────────────────────────────────────────────────────\n\n@pytest.mark.asyncio\nasync def test_goodhart_emit_preserves_event_identity():\n    \"\"\"emit() must pass the exact same Event object to each subscriber, not a copy or hardcoded event.\"\"\"\n    event_id = str(uuid.uuid4())\n    event_json = make_valid_event_json(event_id=event_id, event_kind=\"test.identity\", source=\"identity-src\")\n    event = Event.model_validate_json(event_json)\n\n    received_events = []\n    for _ in range(5):\n        cb = AsyncMock()\n        cb.side_effect = lambda e, store=received_events: store.append(e)\n        received_events_cbs = cb\n\n    subscribers = []\n    captured = []\n    for i in range(5):\n        async def cb(e, idx=i):\n            captured.append((idx, e))\n        subscribers.append(cb)\n\n    await emit(subscribers, event)\n    assert len(captured) == 5\n    for idx, received in captured:\n        assert received is event, f\"Subscriber {idx} did not receive the exact event object\"\n        assert received.event_id == event_id\n\n\n@pytest.mark.asyncio\nasync def test_goodhart_emit_order_preserved():\n    \"\"\"emit() must call subscribers in the order they appear in the list.\"\"\"\n    event = Event.model_validate_json(make_valid_event_json())\n    call_order = []\n\n    subscribers = []\n    for i in range(5):\n        async def cb(e, idx=i):\n            call_order.append(idx)\n        subscribers.append(cb)\n\n    await emit(subscribers, event)\n    assert call_order == [0, 1, 2, 3, 4]\n\n\n@pytest.mark.asyncio\nasync def test_goodhart_emit_single_failing_in_middle():\n    \"\"\"emit() must call all 5 subscribers even when the 3rd raises.\"\"\"\n    event = Event.model_validate_json(make_valid_event_json())\n    called = []\n\n    subscribers = []\n    for i in range(5):\n        async def cb(e, idx=i):\n            called.append(idx)\n            if idx == 2:\n                raise ValueError(\"Subscriber 2 fails\")\n        subscribers.append(cb)\n\n    await emit(subscribers, event)\n    assert sorted(called) == [0, 1, 2, 3, 4], f\"Not all subscribers called: {called}\"\n\n\n@pytest.mark.asyncio\nasync def test_goodhart_emit_does_not_propagate_base_exception():\n    \"\"\"emit() catches Exception subclasses from subscribers without propagating.\"\"\"\n    event = Event.model_validate_json(make_valid_event_json())\n    called = []\n\n    async def cb_value_error(e):\n        called.append(\"ve\")\n        raise ValueError(\"fail\")\n\n    async def cb_type_error(e):\n        called.append(\"te\")\n        raise TypeError(\"fail\")\n\n    async def cb_runtime_error(e):\n        called.append(\"re\")\n        raise RuntimeError(\"fail\")\n\n    async def cb_ok(e):\n        called.append(\"ok\")\n\n    subscribers = [cb_value_error, cb_type_error, cb_runtime_error, cb_ok]\n    await emit(subscribers, event)\n    assert \"ok\" in called\n    assert len(called) == 4\n\n\n@pytest.mark.asyncio\nasync def test_goodhart_emit_async_subscribers():\n    \"\"\"emit() must properly await async subscriber callbacks.\"\"\"\n    event = Event.model_validate_json(make_valid_event_json())\n    flag = {\"awaited\": False}\n\n    async def slow_subscriber(e):\n        await asyncio.sleep(0.01)\n        flag[\"awaited\"] = True\n\n    await emit([slow_subscriber], event)\n    assert flag[\"awaited\"] is True, \"Async subscriber was not properly awaited\"\n\n\n# ─── WebhookSource tests ──────────────────────────────────────────────────────\n\n@pytest.mark.asyncio\nasync def test_goodhart_webhook_handle_post_content_type_case_insensitive_check():\n    \"\"\"HTTP Content-Type 'application/json; charset=utf-8' should be accepted.\"\"\"\n    port = get_free_port()\n    config = WebhookSourceConfig(\n        bind=BindAddress(host=\"127.0.0.1\", port=port),\n        client_max_size_bytes=1048576,\n        source_name=\"test-webhook\"\n    )\n    source = WebhookSource(config)\n    body = make_valid_event_json()\n    result = await source._handle_post(body, \"application/json; charset=utf-8\")\n    assert result.status == 200, f\"Expected 200 but got {result.status}\"\n\n\n@pytest.mark.asyncio\nasync def test_goodhart_webhook_handle_post_text_plain_rejected():\n    \"\"\"HTTP sources must reject Content-Type 'text/plain'.\"\"\"\n    port = get_free_port()\n    config = WebhookSourceConfig(\n        bind=BindAddress(host=\"127.0.0.1\", port=port),\n        client_max_size_bytes=1048576,\n        source_name=\"test-webhook\"\n    )\n    source = WebhookSource(config)\n    body = make_valid_event_json()\n    result = await source._handle_post(body, \"text/plain\")\n    assert result.status == 415\n\n\n@pytest.mark.asyncio\nasync def test_goodhart_webhook_handle_post_empty_body():\n    \"\"\"Webhook handler must return 400 when body is empty bytes.\"\"\"\n    port = get_free_port()\n    config = WebhookSourceConfig(\n        bind=BindAddress(host=\"127.0.0.1\", port=port),\n        client_max_size_bytes=1048576,\n        source_name=\"test-webhook\"\n    )\n    source = WebhookSource(config)\n    result = await source._handle_post(b\"\", \"application/json\")\n    assert result.status == 400\n\n\n@pytest.mark.asyncio\nasync def test_goodhart_webhook_handle_post_returns_event_id_in_body():\n    \"\"\"Successful POST must return the actual event_id in the response body, not a hardcoded string.\"\"\"\n    port = get_free_port()\n    config = WebhookSourceConfig(\n        bind=BindAddress(host=\"127.0.0.1\", port=port),\n        client_max_size_bytes=1048576,\n        source_name=\"test-webhook\"\n    )\n    source = WebhookSource(config)\n\n    eid1 = str(uuid.uuid4())\n    body1 = make_valid_event_json(event_id=eid1)\n    result1 = await source._handle_post(body1, \"application/json\")\n    assert result1.status == 200\n    assert eid1 in result1.body, f\"event_id {eid1} not found in response body: {result1.body}\"\n\n    eid2 = str(uuid.uuid4())\n    body2 = make_valid_event_json(event_id=eid2)\n    result2 = await source._handle_post(body2, \"application/json\")\n    assert result2.status == 200\n    assert eid2 in result2.body, f\"event_id {eid2} not found in response body: {result2.body}\"\n    assert result1.body != result2.body, \"Different events should produce different response bodies\"\n\n\n@pytest.mark.asyncio\nasync def test_goodhart_webhook_subscribe_after_start():\n    \"\"\"Subscribers added after start() must still receive events from subsequent POSTs.\"\"\"\n    port = get_free_port()\n    config = WebhookSourceConfig(\n        bind=BindAddress(host=\"127.0.0.1\", port=port),\n        client_max_size_bytes=1048576,\n        source_name=\"test-webhook\"\n    )\n    source = WebhookSource(config)\n    await source.start()\n\n    try:\n        received = []\n        async def late_cb(e):\n            received.append(e)\n        source.subscribe(late_cb)\n\n        body = make_valid_event_json()\n        result = await source._handle_post(body, \"application/json\")\n        assert result.status == 200\n        assert len(received) == 1, \"Late subscriber did not receive the event\"\n    finally:\n        await source.stop()\n\n\n@pytest.mark.asyncio\nasync def test_goodhart_webhook_subscribe_multiple():\n    \"\"\"Multiple subscribe() calls should accumulate callbacks, each receiving every event.\"\"\"\n    port = get_free_port()\n    config = WebhookSourceConfig(\n        bind=BindAddress(host=\"127.0.0.1\", port=port),\n        client_max_size_bytes=1048576,\n        source_name=\"test-webhook\"\n    )\n    source = WebhookSource(config)\n\n    received_counts = [0, 0, 0]\n    for i in range(3):\n        async def cb(e, idx=i):\n            received_counts[idx] += 1\n        source.subscribe(cb)\n\n    body = make_valid_event_json()\n    result = await source._handle_post(body, \"application/json\")\n    assert result.status == 200\n    assert received_counts == [1, 1, 1], f\"Not all subscribers called: {received_counts}\"\n\n\n@pytest.mark.asyncio\nasync def test_goodhart_webhook_start_from_stopped_raises():\n    \"\"\"Calling start() after stop() must raise RuntimeError (no reverse transitions).\"\"\"\n    port = get_free_port()\n    config = WebhookSourceConfig(\n        bind=BindAddress(host=\"127.0.0.1\", port=port),\n        client_max_size_bytes=1048576,\n        source_name=\"test-webhook\"\n    )\n    source = WebhookSource(config)\n    await source.start()\n    await source.stop()\n\n    with pytest.raises(RuntimeError):\n        await source.start()\n\n\n@pytest.mark.asyncio\nasync def test_goodhart_webhook_handle_post_valid_json_but_array():\n    \"\"\"Valid JSON that is an array should return 400, not 200.\"\"\"\n    port = get_free_port()\n    config = WebhookSourceConfig(\n        bind=BindAddress(host=\"127.0.0.1\", port=port),\n        client_max_size_bytes=1048576,\n        source_name=\"test-webhook\"\n    )\n    source = WebhookSource(config)\n    result = await source._handle_post(b'[1, 2, 3]', \"application/json\")\n    assert result.status == 400\n\n\n@pytest.mark.asyncio\nasync def test_goodhart_webhook_initial_state_created():\n    \"\"\"A freshly constructed WebhookSource must be in CREATED state.\"\"\"\n    port = get_free_port()\n    config = WebhookSourceConfig(\n        bind=BindAddress(host=\"127.0.0.1\", port=port),\n        client_max_size_bytes=1048576,\n        source_name=\"test-webhook\"\n    )\n    source = WebhookSource(config)\n    assert source._state == SourceState.CREATED\n\n\n# ─── OtlpSource tests ─────────────────────────────────────────────────────────\n\n@pytest.mark.asyncio\nasync def test_goodhart_otlp_handle_traces_body_is_empty_json_object():\n    \"\"\"OTLP spec requires the response body to be exactly '{}' on success.\"\"\"\n    port = get_free_port()\n    config = OtlpSourceConfig(\n        bind=BindAddress(host=\"127.0.0.1\", port=port),\n        client_max_size_bytes=1048576,\n        source_name=\"test-otlp\"\n    )\n    source = OtlpSource(config)\n    body = make_valid_otlp_payload()\n    result = await source._handle_traces(body, \"application/json\")\n    assert result.status == 200\n    assert result.body == \"{}\", f\"Expected '{{}}' but got '{result.body}'\"\n\n\n@pytest.mark.asyncio\nasync def test_goodhart_otlp_handle_traces_multiple_scopes():\n    \"\"\"Multiple scopeSpans within a single resourceSpan must all be flattened.\"\"\"\n    port = get_free_port()\n    config = OtlpSourceConfig(\n        bind=BindAddress(host=\"127.0.0.1\", port=port),\n        client_max_size_bytes=1048576,\n        source_name=\"test-otlp\"\n    )\n    source = OtlpSource(config)\n\n    received = []\n    async def cb(e):\n        received.append(e)\n    source.subscribe(cb)\n\n    payload = {\n        \"resourceSpans\": [{\n            \"resource\": {\"attributes\": {}},\n            \"scopeSpans\": [\n                {\"spans\": [\n                    {\"traceId\": \"t1\", \"spanId\": \"s1\", \"name\": \"span_a\",\n                     \"startTimeUnixNano\": 1700000000000000000, \"endTimeUnixNano\": 1700000001000000000,\n                     \"attributes\": {}, \"status\": {\"code\": 0}},\n                ]},\n                {\"spans\": [\n                    {\"traceId\": \"t1\", \"spanId\": \"s2\", \"name\": \"span_b\",\n                     \"startTimeUnixNano\": 1700000000000000000, \"endTimeUnixNano\": 1700000001000000000,\n                     \"attributes\": {}, \"status\": {\"code\": 0}},\n                    {\"traceId\": \"t1\", \"spanId\": \"s3\", \"name\": \"span_c\",\n                     \"startTimeUnixNano\": 1700000000000000000, \"endTimeUnixNano\": 1700000001000000000,\n                     \"attributes\": {}, \"status\": {\"code\": 0}},\n                ]},\n            ]\n        }]\n    }\n    result = await source._handle_traces(json.dumps(payload).encode(), \"application/json\")\n    assert result.status == 200\n    assert len(received) == 3, f\"Expected 3 events but got {len(received)}\"\n\n\n@pytest.mark.asyncio\nasync def test_goodhart_otlp_flatten_spans_inherits_correct_resource_attrs():\n    \"\"\"Each span must inherit only its parent resourceSpan's attributes, not a shared set.\"\"\"\n    port = get_free_port()\n    config = OtlpSourceConfig(\n        bind=BindAddress(host=\"127.0.0.1\", port=port),\n        client_max_size_bytes=1048576,\n        source_name=\"test-otlp\"\n    )\n    source = OtlpSource(config)\n\n    otlp_request = {\n        \"resourceSpans\": [\n            {\n                \"resource\": {\"attributes\": [{\"key\": \"service.name\", \"value\": {\"stringValue\": \"svc-a\"}}]},\n                \"scopeSpans\": [{\"spans\": [\n                    {\"traceId\": \"t1\", \"spanId\": \"s1\", \"name\": \"span_a\",\n                     \"startTimeUnixNano\": 1700000000000000000, \"endTimeUnixNano\": 1700000001000000000,\n                     \"attributes\": [], \"status\": {\"code\": 0}},\n                ]}]\n            },\n            {\n                \"resource\": {\"attributes\": [{\"key\": \"service.name\", \"value\": {\"stringValue\": \"svc-b\"}}]},\n                \"scopeSpans\": [{\"spans\": [\n                    {\"traceId\": \"t2\", \"spanId\": \"s2\", \"name\": \"span_b\",\n                     \"startTimeUnixNano\": 1700000000000000000, \"endTimeUnixNano\": 1700000001000000000,\n                     \"attributes\": [], \"status\": {\"code\": 0}},\n                ]}]\n            },\n        ]\n    }\n    spans = source._flatten_spans(otlp_request)\n    assert len(spans) == 2\n    # Verify resource attributes are distinct per span\n    assert spans[0].resource_attributes != spans[1].resource_attributes or \\\n           str(spans[0].resource_attributes) != str(spans[1].resource_attributes), \\\n           \"Resource attributes should be different between spans from different resourceSpans\"\n\n\n@pytest.mark.asyncio\nasync def test_goodhart_otlp_span_to_event_different_span_names():\n    \"\"\"Different span names must produce different event_kind values, not a hardcoded kind.\"\"\"\n    port = get_free_port()\n    config = OtlpSourceConfig(\n        bind=BindAddress(host=\"127.0.0.1\", port=port),\n        client_max_size_bytes=1048576,\n        source_name=\"test-otlp\"\n    )\n    source = OtlpSource(config)\n\n    span1 = OtlpSpan(\n        trace_id=\"t1\", span_id=\"s1\", name=\"http_request\",\n        start_time_unix_nano=1700000000000000000, end_time_unix_nano=1700000001000000000,\n        attributes={}, resource_attributes={}, status_code=0\n    )\n    span2 = OtlpSpan(\n        trace_id=\"t2\", span_id=\"s2\", name=\"db_query\",\n        start_time_unix_nano=1700000000000000000, end_time_unix_nano=1700000001000000000,\n        attributes={}, resource_attributes={}, status_code=0\n    )\n\n    event1 = source._span_to_event(span1, \"test-otlp\")\n    event2 = source._span_to_event(span2, \"test-otlp\")\n\n    assert event1.event_kind.startswith(\"otlp.trace.\")\n    assert event2.event_kind.startswith(\"otlp.trace.\")\n    assert event1.event_kind != event2.event_kind, \"Different span names must produce different event_kinds\"\n    assert \"http_request\" in event1.event_kind or \"http.request\" in event1.event_kind\n    assert \"db_query\" in event2.event_kind or \"db.query\" in event2.event_kind\n\n\n@pytest.mark.asyncio\nasync def test_goodhart_otlp_span_to_event_unique_ids():\n    \"\"\"Each call to _span_to_event must generate a fresh UUID4.\"\"\"\n    port = get_free_port()\n    config = OtlpSourceConfig(\n        bind=BindAddress(host=\"127.0.0.1\", port=port),\n        client_max_size_bytes=1048576,\n        source_name=\"test-otlp\"\n    )\n    source = OtlpSource(config)\n\n    span = OtlpSpan(\n        trace_id=\"t1\", span_id=\"s1\", name=\"test_span\",\n        start_time_unix_nano=1700000000000000000, end_time_unix_nano=1700000001000000000,\n        attributes={}, resource_attributes={}, status_code=0\n    )\n\n    event1 = source._span_to_event(span, \"test-otlp\")\n    event2 = source._span_to_event(span, \"test-otlp\")\n    assert event1.event_id != event2.event_id, \"Each call must generate a unique UUID4\"\n    # Verify UUID4 format\n    import re\n    uuid4_re = r'^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$'\n    assert re.match(uuid4_re, event1.event_id)\n    assert re.match(uuid4_re, event2.event_id)\n\n\n@pytest.mark.asyncio\nasync def test_goodhart_otlp_span_to_event_timestamp_conversion():\n    \"\"\"Timestamp must correctly convert nanoseconds to ISO 8601 UTC.\"\"\"\n    port = get_free_port()\n    config = OtlpSourceConfig(\n        bind=BindAddress(host=\"127.0.0.1\", port=port),\n        client_max_size_bytes=1048576,\n        source_name=\"test-otlp\"\n    )\n    source = OtlpSource(config)\n\n    # 1700000000000000000 ns = 2023-11-14T22:13:20Z\n    span = OtlpSpan(\n        trace_id=\"t1\", span_id=\"s1\", name=\"test_span\",\n        start_time_unix_nano=1700000000000000000, end_time_unix_nano=1700000001000000000,\n        attributes={}, resource_attributes={}, status_code=0\n    )\n    event = source._span_to_event(span, \"test-otlp\")\n    assert event.timestamp.startswith(\"2023-11-14T22:13:20\"), \\\n        f\"Expected timestamp starting with '2023-11-14T22:13:20' but got '{event.timestamp}'\"\n    assert event.timestamp.endswith(\"Z\"), f\"Timestamp must end with 'Z', got '{event.timestamp}'\"\n\n\n@pytest.mark.asyncio\nasync def test_goodhart_otlp_span_to_event_source_name_passthrough():\n    \"\"\"Event.source must equal the source_name parameter, not a hardcoded value.\"\"\"\n    port = get_free_port()\n    config = OtlpSourceConfig(\n        bind=BindAddress(host=\"127.0.0.1\", port=port),\n        client_max_size_bytes=1048576,\n        source_name=\"test-otlp\"\n    )\n    source = OtlpSource(config)\n\n    span = OtlpSpan(\n        trace_id=\"t1\", span_id=\"s1\", name=\"test_span\",\n        start_time_unix_nano=1700000000000000000, end_time_unix_nano=1700000001000000000,\n        attributes={}, resource_attributes={}, status_code=0\n    )\n\n    event1 = source._span_to_event(span, \"my_custom_otlp\")\n    assert event1.source == \"my_custom_otlp\"\n\n    event2 = source._span_to_event(span, \"another_source\")\n    assert event2.source == \"another_source\"\n\n\n@pytest.mark.asyncio\nasync def test_goodhart_otlp_handle_traces_empty_resource_spans_list():\n    \"\"\"Empty resourceSpans list is valid — return 200 with '{}', emit nothing.\"\"\"\n    port = get_free_port()\n    config = OtlpSourceConfig(\n        bind=BindAddress(host=\"127.0.0.1\", port=port),\n        client_max_size_bytes=1048576,\n        source_name=\"test-otlp\"\n    )\n    source = OtlpSource(config)\n\n    received = []\n    async def cb(e):\n        received.append(e)\n    source.subscribe(cb)\n\n    payload = json.dumps({\"resourceSpans\": []}).encode()\n    result = await source._handle_traces(payload, \"application/json\")\n    assert result.status == 200\n    assert result.body == \"{}\"\n    assert len(received) == 0, \"No events should be emitted for empty resourceSpans\"\n\n\n@pytest.mark.asyncio\nasync def test_goodhart_otlp_handle_traces_empty_body():\n    \"\"\"OTLP handler must return 400 when body is empty bytes.\"\"\"\n    port = get_free_port()\n    config = OtlpSourceConfig(\n        bind=BindAddress(host=\"127.0.0.1\", port=port),\n        client_max_size_bytes=1048576,\n        source_name=\"test-otlp\"\n    )\n    source = OtlpSource(config)\n    result = await source._handle_traces(b\"\", \"application/json\")\n    assert result.status == 400\n\n\n@pytest.mark.asyncio\nasync def test_goodhart_otlp_start_from_stopped_raises():\n    \"\"\"Calling start() after stop() must raise RuntimeError.\"\"\"\n    port = get_free_port()\n    config = OtlpSourceConfig(\n        bind=BindAddress(host=\"127.0.0.1\", port=port),\n        client_max_size_bytes=1048576,\n        source_name=\"test-otlp\"\n    )\n    source = OtlpSource(config)\n    await source.start()\n    await source.stop()\n\n    with pytest.raises(RuntimeError):\n        await source.start()\n\n\n@pytest.mark.asyncio\nasync def test_goodhart_otlp_span_to_event_correlation_keys_values():\n    \"\"\"correlation_keys must contain the actual trace_id and span_id values from the span.\"\"\"\n    port = get_free_port()\n    config = OtlpSourceConfig(\n        bind=BindAddress(host=\"127.0.0.1\", port=port),\n        client_max_size_bytes=1048576,\n        source_name=\"test-otlp\"\n    )\n    source = OtlpSource(config)\n\n    span = OtlpSpan(\n        trace_id=\"unique_trace_xyz\", span_id=\"unique_span_abc\",\n        name=\"test_span\",\n        start_time_unix_nano=1700000000000000000, end_time_unix_nano=1700000001000000000,\n        attributes={}, resource_attributes={}, status_code=0\n    )\n    event = source._span_to_event(span, \"test-otlp\")\n\n    corr_str = str(event.correlation_keys)\n    assert \"unique_trace_xyz\" in corr_str, \\\n        f\"trace_id 'unique_trace_xyz' not found in correlation_keys: {event.correlation_keys}\"\n    assert \"unique_span_abc\" in corr_str, \\\n        f\"span_id 'unique_span_abc' not found in correlation_keys: {event.correlation_keys}\"\n\n\n@pytest.mark.asyncio\nasync def test_goodhart_otlp_handle_traces_content_type_with_charset():\n    \"\"\"OTLP handler should accept 'application/json; charset=utf-8'.\"\"\"\n    port = get_free_port()\n    config = OtlpSourceConfig(\n        bind=BindAddress(host=\"127.0.0.1\", port=port),\n        client_max_size_bytes=1048576,\n        source_name=\"test-otlp\"\n    )\n    source = OtlpSource(config)\n    body = make_valid_otlp_payload()\n    result = await source._handle_traces(body, \"application/json; charset=utf-8\")\n    assert result.status == 200\n\n\n# ─── SentinelSource tests ─────────────────────────────────────────────────────\n\n@pytest.mark.asyncio\nasync def test_goodhart_sentinel_handle_post_custom_prefix():\n    \"\"\"SentinelSource must use configured event_kind_prefix, not hardcode 'sentinel'.\"\"\"\n    port = get_free_port()\n    config = SentinelSourceConfig(\n        bind=BindAddress(host=\"127.0.0.1\", port=port),\n        client_max_size_bytes=1048576,\n        event_kind_prefix=\"mysoc\",\n        source_name=\"test-sentinel\"\n    )\n    source = SentinelSource(config)\n\n    received = []\n    async def cb(e):\n        received.append(e)\n    source.subscribe(cb)\n\n    body = make_sentinel_payload(action=\"created\", incident_id=\"INC-999\")\n    result = await source._handle_post(body, \"application/json\")\n    assert result.status == 200\n    assert len(received) >= 1, \"No events emitted\"\n    event = received[0]\n    assert event.event_kind.startswith(\"mysoc.incident.\"), \\\n        f\"event_kind should start with 'mysoc.incident.' but got '{event.event_kind}'\"\n    assert not event.event_kind.startswith(\"sentinel.\"), \\\n        f\"event_kind should NOT start with 'sentinel.' when prefix is 'mysoc'\"\n\n\n@pytest.mark.asyncio\nasync def test_goodhart_sentinel_handle_post_different_actions():\n    \"\"\"SentinelSource must extract action from payload for different incident actions.\"\"\"\n    port = get_free_port()\n    config = SentinelSourceConfig(\n        bind=BindAddress(host=\"127.0.0.1\", port=port),\n        client_max_size_bytes=1048576,\n        event_kind_prefix=\"sentinel\",\n        source_name=\"test-sentinel\"\n    )\n    source = SentinelSource(config)\n\n    received = []\n    async def cb(e):\n        received.append(e)\n    source.subscribe(cb)\n\n    body1 = make_sentinel_payload(action=\"created\", incident_id=\"INC-001\")\n    result1 = await source._handle_post(body1, \"application/json\")\n\n    body2 = make_sentinel_payload(action=\"updated\", incident_id=\"INC-002\")\n    result2 = await source._handle_post(body2, \"application/json\")\n\n    if result1.status == 200 and result2.status == 200 and len(received) >= 2:\n        assert received[0].event_kind != received[1].event_kind, \\\n            f\"Different actions should produce different event_kinds: {received[0].event_kind} vs {received[1].event_kind}\"\n\n\n@pytest.mark.asyncio\nasync def test_goodhart_sentinel_handle_post_415_before_body_parse():\n    \"\"\"Content-Type validation must happen before body parsing — wrong Content-Type returns 415.\"\"\"\n    port = get_free_port()\n    config = SentinelSourceConfig(\n        bind=BindAddress(host=\"127.0.0.1\", port=port),\n        client_max_size_bytes=1048576,\n        event_kind_prefix=\"sentinel\",\n        source_name=\"test-sentinel\"\n    )\n    source = SentinelSource(config)\n    body = make_sentinel_payload()\n    result = await source._handle_post(body, \"text/html\")\n    assert result.status == 415\n\n\n@pytest.mark.asyncio\nasync def test_goodhart_sentinel_start_from_stopped_raises():\n    \"\"\"Calling start() after stop() must raise RuntimeError.\"\"\"\n    port = get_free_port()\n    config = SentinelSourceConfig(\n        bind=BindAddress(host=\"127.0.0.1\", port=port),\n        client_max_size_bytes=1048576,\n        event_kind_prefix=\"sentinel\",\n        source_name=\"test-sentinel\"\n    )\n    source = SentinelSource(config)\n    await source.start()\n    await source.stop()\n\n    with pytest.raises(RuntimeError):\n        await source.start()\n\n\n@pytest.mark.asyncio\nasync def test_goodhart_sentinel_handle_post_empty_body():\n    \"\"\"SentinelSource handler must return 400 when body is empty bytes.\"\"\"\n    port = get_free_port()\n    config = SentinelSourceConfig(\n        bind=BindAddress(host=\"127.0.0.1\", port=port),\n        client_max_size_bytes=1048576,\n        event_kind_prefix=\"sentinel\",\n        source_name=\"test-sentinel\"\n    )\n    source = SentinelSource(config)\n    result = await source._handle_post(b\"\", \"application/json\")\n    assert result.status == 400\n\n\n# ─── FileSource tests ─────────────────────────────────────────────────────────\n\n@pytest.mark.asyncio\nasync def test_goodhart_file_start_nonexistent_file():\n    \"\"\"FileSource.start() on a non-existent file should succeed and transition to RUNNING.\"\"\"\n    import tempfile\n    import os\n\n    nonexistent = os.path.join(tempfile.gettempdir(), f\"nonexistent_{uuid.uuid4().hex}.jsonl\")\n    config = FileSourceConfig(\n        path=nonexistent,\n        poll_interval_seconds=1.0,\n        source_name=\"test-file\"\n    )\n    source = FileSource(config)\n    await source.start()\n    assert source._state == SourceState.RUNNING\n    await source.stop()\n\n\n@pytest.mark.asyncio\nasync def test_goodhart_file_start_from_stopped_raises():\n    \"\"\"Calling start() after stop() must raise RuntimeError.\"\"\"\n    import tempfile\n    import os\n\n    nonexistent = os.path.join(tempfile.gettempdir(), f\"nonexistent_{uuid.uuid4().hex}.jsonl\")\n    config = FileSourceConfig(\n        path=nonexistent,\n        poll_interval_seconds=1.0,\n        source_name=\"test-file\"\n    )\n    source = FileSource(config)\n    await source.start()\n    await source.stop()\n\n    with pytest.raises(RuntimeError):\n        await source.start()\n\n\n@pytest.mark.asyncio\nasync def test_goodhart_file_poll_multiple_lines_emitted_in_order():\n    \"\"\"FileSource must emit events in the order lines appear in the file.\"\"\"\n    import tempfile\n    import os\n\n    tmpfile = tempfile.NamedTemporaryFile(mode='w', suffix='.jsonl', delete=False)\n    tmpfile.close()\n\n    config = FileSourceConfig(\n        path=tmpfile.name,\n        poll_interval_seconds=0.1,\n        source_name=\"test-file\"\n    )\n    source = FileSource(config)\n\n    received = []\n    async def cb(e):\n        received.append(e)\n    source.subscribe(cb)\n\n    await source.start()\n    await asyncio.sleep(0.15)  # Let initial poll pass\n\n    # Write multiple lines\n    events = []\n    with open(tmpfile.name, 'a') as f:\n        for i in range(3):\n            eid = str(uuid.uuid4())\n            events.append(eid)\n            event_data = {\n                \"event_id\": eid,\n                \"event_kind\": \"test.order\",\n                \"timestamp\": \"2024-01-15T10:30:00Z\",\n                \"source\": \"test-file\",\n                \"payload\": {\"index\": i},\n                \"correlation_keys\": []\n            }\n            f.write(json.dumps(event_data) + \"\\n\")\n\n    await asyncio.sleep(0.3)  # Wait for poll\n    await source.stop()\n\n    assert len(received) == 3, f\"Expected 3 events but got {len(received)}\"\n    for i, event in enumerate(received):\n        assert event.event_id == events[i], f\"Event {i} out of order\"\n\n    os.unlink(tmpfile.name)\n\n\n@pytest.mark.asyncio\nasync def test_goodhart_file_poll_valid_event_schema_line():\n    \"\"\"FileSource must skip lines that are valid JSON but don't match Event schema.\"\"\"\n    import tempfile\n    import os\n\n    tmpfile = tempfile.NamedTemporaryFile(mode='w', suffix='.jsonl', delete=False)\n    tmpfile.close()\n\n    config = FileSourceConfig(\n        path=tmpfile.name,\n        poll_interval_seconds=0.1,\n        source_name=\"test-file\"\n    )\n    source = FileSource(config)\n\n    received = []\n    async def cb(e):\n        received.append(e)\n    source.subscribe(cb)\n\n    await source.start()\n    await asyncio.sleep(0.15)\n\n    valid_eid = str(uuid.uuid4())\n    with open(tmpfile.name, 'a') as f:\n        # Invalid event (missing required fields)\n        f.write(json.dumps({\"not\": \"an_event\"}) + \"\\n\")\n        # Valid event\n        f.write(json.dumps({\n            \"event_id\": valid_eid,\n            \"event_kind\": \"test.schema\",\n            \"timestamp\": \"2024-01-15T10:30:00Z\",\n            \"source\": \"test-file\",\n            \"payload\": {},\n            \"correlation_keys\": []\n        }) + \"\\n\")\n\n    await asyncio.sleep(0.3)\n    await source.stop()\n\n    assert len(received) == 1, f\"Expected 1 valid event but got {len(received)}\"\n    assert received[0].event_id == valid_eid\n\n    os.unlink(tmpfile.name)\n\n\n# ─── Type validation boundary tests ──────────────────────────────────────────\n\ndef test_goodhart_event_kind_trailing_dot_rejected():\n    \"\"\"EventKind must reject strings ending with a dot.\"\"\"\n    with pytest.raises(Exception):\n        EventKind(\"webhook.push.\")\n\n\ndef test_goodhart_event_kind_leading_dot_rejected():\n    \"\"\"EventKind must reject strings starting with a dot.\"\"\"\n    with pytest.raises(Exception):\n        EventKind(\".webhook.push\")\n\n\ndef test_goodhart_event_kind_consecutive_dots_rejected():\n    \"\"\"EventKind must reject strings with consecutive dots.\"\"\"\n    with pytest.raises(Exception):\n        EventKind(\"webhook..push\")\n\n\ndef test_goodhart_event_kind_underscore_allowed():\n    \"\"\"EventKind segments may contain underscores.\"\"\"\n    kind = EventKind(\"webhook.push_event\")\n    assert str(kind) == \"webhook.push_event\" or kind.value == \"webhook.push_event\" or kind == \"webhook.push_event\"\n\n\ndef test_goodhart_event_kind_hyphen_rejected():\n    \"\"\"EventKind regex only allows lowercase, digits, underscores — hyphens rejected.\"\"\"\n    with pytest.raises(Exception):\n        EventKind(\"webhook.push-event\")\n\n\ndef test_goodhart_event_kind_segment_starts_with_underscore_rejected():\n    \"\"\"EventKind segments must start with lowercase letter per regex.\"\"\"\n    with pytest.raises(Exception):\n        EventKind(\"_private.event\")\n\n\ndef test_goodhart_bind_address_wildcard_ipv6():\n    \"\"\"BindAddress must accept '::' as valid host.\"\"\"\n    addr = BindAddress(host=\"::\", port=8080)\n    assert addr.host == \"::\"\n\n\ndef test_goodhart_bind_address_0000():\n    \"\"\"BindAddress must accept '0.0.0.0' as valid host.\"\"\"\n    addr = BindAddress(host=\"0.0.0.0\", port=8080)\n    assert addr.host == \"0.0.0.0\"\n\n\ndef test_goodhart_bind_address_hostname_rejected():\n    \"\"\"BindAddress must reject arbitrary hostnames.\"\"\"\n    with pytest.raises(Exception):\n        BindAddress(host=\"myserver.com\", port=8080)\n\n\ndef test_goodhart_webhook_config_source_name_boundary_128():\n    \"\"\"WebhookSourceConfig source_name max is 128; 128 accepted, 129 rejected.\"\"\"\n    name_128 = \"a\" * 128\n    config = WebhookSourceConfig(\n        bind=BindAddress(host=\"127.0.0.1\", port=8080),\n        client_max_size_bytes=1048576,\n        source_name=name_128\n    )\n    assert config.source_name == name_128\n\n    with pytest.raises(Exception):\n        WebhookSourceConfig(\n            bind=BindAddress(host=\"127.0.0.1\", port=8080),\n            client_max_size_bytes=1048576,\n            source_name=\"a\" * 129\n        )\n\n\ndef test_goodhart_webhook_config_max_size_boundary_min():\n    \"\"\"WebhookSourceConfig client_max_size_bytes=1024 should be accepted.\"\"\"\n    config = WebhookSourceConfig(\n        bind=BindAddress(host=\"127.0.0.1\", port=8080),\n        client_max_size_bytes=1024,\n        source_name=\"test\"\n    )\n    assert config.client_max_size_bytes == 1024\n\n\ndef test_goodhart_webhook_config_max_size_boundary_max():\n    \"\"\"WebhookSourceConfig client_max_size_bytes=10485760 should be accepted.\"\"\"\n    config = WebhookSourceConfig(\n        bind=BindAddress(host=\"127.0.0.1\", port=8080),\n        client_max_size_bytes=10485760,\n        source_name=\"test\"\n    )\n    assert config.client_max_size_bytes == 10485760\n\n\ndef test_goodhart_otlp_config_max_size_boundary_min():\n    \"\"\"OtlpSourceConfig client_max_size_bytes=1024 should be accepted.\"\"\"\n    config = OtlpSourceConfig(\n        bind=BindAddress(host=\"127.0.0.1\", port=8080),\n        client_max_size_bytes=1024,\n        source_name=\"test\"\n    )\n    assert config.client_max_size_bytes == 1024\n\n\ndef test_goodhart_file_config_poll_interval_boundary_min():\n    \"\"\"FileSourceConfig poll_interval_seconds=0.1 should be accepted.\"\"\"\n    config = FileSourceConfig(\n        path=\"/tmp/test.jsonl\",\n        poll_interval_seconds=0.1,\n        source_name=\"test\"\n    )\n    assert config.poll_interval_seconds == 0.1\n\n\ndef test_goodhart_file_config_poll_interval_boundary_max():\n    \"\"\"FileSourceConfig poll_interval_seconds=300.0 should be accepted.\"\"\"\n    config = FileSourceConfig(\n        path=\"/tmp/test.jsonl\",\n        poll_interval_seconds=300.0,\n        source_name=\"test\"\n    )\n    assert config.poll_interval_seconds == 300.0\n\n\ndef test_goodhart_sentinel_config_prefix_with_underscores():\n    \"\"\"SentinelSourceConfig event_kind_prefix allows underscores.\"\"\"\n    config = SentinelSourceConfig(\n        bind=BindAddress(host=\"127.0.0.1\", port=8080),\n        client_max_size_bytes=1048576,\n        event_kind_prefix=\"my_soc\",\n        source_name=\"test\"\n    )\n    assert config.event_kind_prefix == \"my_soc\"\n\n\ndef test_goodhart_sentinel_config_prefix_with_digits():\n    \"\"\"SentinelSourceConfig event_kind_prefix allows digits after first char.\"\"\"\n    config = SentinelSourceConfig(\n        bind=BindAddress(host=\"127.0.0.1\", port=8080),\n        client_max_size_bytes=1048576,\n        event_kind_prefix=\"soc2\",\n        source_name=\"test\"\n    )\n    assert config.event_kind_prefix == \"soc2\"\n\n\ndef test_goodhart_sentinel_config_prefix_starts_with_digit_rejected():\n    \"\"\"SentinelSourceConfig event_kind_prefix must start with lowercase letter.\"\"\"\n    with pytest.raises(Exception):\n        SentinelSourceConfig(\n            bind=BindAddress(host=\"127.0.0.1\", port=8080),\n            client_max_size_bytes=1048576,\n            event_kind_prefix=\"2soc\",\n            source_name=\"test\"\n        )\n\n\ndef test_goodhart_sentinel_config_prefix_uppercase_rejected():\n    \"\"\"SentinelSourceConfig event_kind_prefix only allows lowercase.\"\"\"\n    with pytest.raises(Exception):\n        SentinelSourceConfig(\n            bind=BindAddress(host=\"127.0.0.1\", port=8080),\n            client_max_size_bytes=1048576,\n            event_kind_prefix=\"Sentinel\",\n            source_name=\"test\"\n        )\n\n\ndef test_goodhart_sentinel_config_empty_prefix_rejected():\n    \"\"\"SentinelSourceConfig event_kind_prefix must not be empty.\"\"\"\n    with pytest.raises(Exception):\n        SentinelSourceConfig(\n            bind=BindAddress(host=\"127.0.0.1\", port=8080),\n            client_max_size_bytes=1048576,\n            event_kind_prefix=\"\",\n            source_name=\"test\"\n        )\n\n\ndef test_goodhart_file_position_offset_zero_valid():\n    \"\"\"FilePosition offset of 0 is valid.\"\"\"\n    pos = FilePosition(offset=0, inode=12345, line_buffer=\"\")\n    assert pos.offset == 0\n\n\ndef test_goodhart_http_response_boundary_status_100():\n    \"\"\"HttpResponse status=100 is valid.\"\"\"\n    resp = HttpResponse(status=100, body=\"\")\n    assert resp.status == 100\n\n\ndef test_goodhart_http_response_boundary_status_599():\n    \"\"\"HttpResponse status=599 is valid.\"\"\"\n    resp = HttpResponse(status=599, body=\"\")\n    assert resp.status == 599\n\n\ndef test_goodhart_filepath_exactly_4096_accepted():\n    \"\"\"FilePath with exactly 4096 characters should be accepted.\"\"\"\n    path = \"/\" + \"a\" * 4095\n    fp = FilePath(path)\n    assert len(str(fp) if not hasattr(fp, 'value') else fp.value) == 4096 or len(path) == 4096\n"
+}

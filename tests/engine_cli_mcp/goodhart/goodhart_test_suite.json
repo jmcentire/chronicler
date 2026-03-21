@@ -1,0 +1,1017 @@
+{
+  "component_id": "engine_cli_mcp",
+  "contract_version": 1,
+  "test_cases": [
+    {
+      "id": "goodhart_engine_config_frozen",
+      "description": "EngineConfig is a frozen Pydantic model — attribute assignment after construction must be rejected",
+      "function": "EngineConfig",
+      "category": "invariant",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "A valid EngineConfig instance, then attempt to mutate queue_max_size",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Attempting to set an attribute on a constructed EngineConfig raises an error"
+      ]
+    },
+    {
+      "id": "goodhart_source_status_frozen",
+      "description": "SourceStatus is a frozen Pydantic model — mutation after construction must be rejected",
+      "function": "SourceStatus",
+      "category": "invariant",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Attempting to set events_received on a constructed SourceStatus raises an error"
+      ]
+    },
+    {
+      "id": "goodhart_sink_status_frozen",
+      "description": "SinkStatus is a frozen Pydantic model — mutation after construction must be rejected",
+      "function": "SinkStatus",
+      "category": "invariant",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Attempting to set events_emitted on a constructed SinkStatus raises an error"
+      ]
+    },
+    {
+      "id": "goodhart_engine_status_frozen",
+      "description": "EngineStatus is a frozen Pydantic model — mutation after construction must be rejected",
+      "function": "EngineStatus",
+      "category": "invariant",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Attempting to set phase on a constructed EngineStatus raises an error"
+      ]
+    },
+    {
+      "id": "goodhart_engine_config_drain_timeout_boundary_low",
+      "description": "EngineConfig drain_timeout_seconds must accept exact lower bound 0.1 and reject values just below it",
+      "function": "EngineConfig",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "drain_timeout_seconds=0.1 is accepted",
+        "drain_timeout_seconds=0.09 is rejected"
+      ]
+    },
+    {
+      "id": "goodhart_engine_config_drain_timeout_boundary_high",
+      "description": "EngineConfig drain_timeout_seconds must accept exact upper bound 60.0 and reject values just above it",
+      "function": "EngineConfig",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "drain_timeout_seconds=60.0 is accepted",
+        "drain_timeout_seconds=60.1 is rejected"
+      ]
+    },
+    {
+      "id": "goodhart_engine_config_source_restart_delay_zero",
+      "description": "EngineConfig source_restart_delay_seconds accepts 0.0 as the minimum bound",
+      "function": "EngineConfig",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "source_restart_delay_seconds=0.0 is accepted"
+      ]
+    },
+    {
+      "id": "goodhart_engine_config_source_restart_delay_max",
+      "description": "EngineConfig source_restart_delay_seconds accepts 300.0 and rejects 300.1",
+      "function": "EngineConfig",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "source_restart_delay_seconds=300.0 is accepted",
+        "source_restart_delay_seconds=300.1 is rejected"
+      ]
+    },
+    {
+      "id": "goodhart_engine_config_state_file_max_length",
+      "description": "EngineConfig state_file accepts a string of exactly 4096 characters and rejects 4097",
+      "function": "EngineConfig",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "state_file of length 4096 is accepted",
+        "state_file of length 4097 is rejected"
+      ]
+    },
+    {
+      "id": "goodhart_queue_bound_negative",
+      "description": "QueueBound must reject negative values, not just zero",
+      "function": "QueueBound",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {
+        "value": "-1"
+      },
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "QueueBound(-1) raises a validation error"
+      ]
+    },
+    {
+      "id": "goodhart_datetime_iso_fractional_seconds",
+      "description": "DatetimeISO must accept ISO-8601 strings with varying fractional second precision",
+      "function": "DatetimeISO",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Accepts datetime with 1 fractional digit",
+        "Accepts datetime with 6 fractional digits",
+        "Accepts datetime with 9 fractional digits (nanoseconds)"
+      ]
+    },
+    {
+      "id": "goodhart_datetime_iso_negative_offset",
+      "description": "DatetimeISO must accept ISO-8601 strings with negative timezone offsets",
+      "function": "DatetimeISO",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Accepts '2024-01-01T00:00:00-05:00'"
+      ]
+    },
+    {
+      "id": "goodhart_datetime_iso_rejects_date_only",
+      "description": "DatetimeISO must reject date-only strings without time component",
+      "function": "DatetimeISO",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {
+        "value": "2024-01-01"
+      },
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Rejects '2024-01-01'"
+      ]
+    },
+    {
+      "id": "goodhart_datetime_iso_rejects_space_separator",
+      "description": "DatetimeISO must reject datetime strings using space separator instead of T",
+      "function": "DatetimeISO",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {
+        "value": "2024-01-01 12:00:00Z"
+      },
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Rejects '2024-01-01 12:00:00Z'"
+      ]
+    },
+    {
+      "id": "goodhart_story_id_exactly_256",
+      "description": "StoryId must accept a string of exactly 256 characters (max boundary)",
+      "function": "StoryId",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "StoryId with 256-char string is accepted"
+      ]
+    },
+    {
+      "id": "goodhart_story_id_single_char",
+      "description": "StoryId must accept a single-character string (min boundary)",
+      "function": "StoryId",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "StoryId with 1-char string is accepted"
+      ]
+    },
+    {
+      "id": "goodhart_story_summary_negative_events",
+      "description": "StorySummary must reject negative event_count values, not just zero",
+      "function": "StorySummary",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "StorySummary with event_count=-1 raises validation error"
+      ]
+    },
+    {
+      "id": "goodhart_story_list_result_negative_total",
+      "description": "StoryListResult must reject negative total values",
+      "function": "StoryListResult",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "StoryListResult with total=-1 raises validation error"
+      ]
+    },
+    {
+      "id": "goodhart_replay_result_negative_events_processed",
+      "description": "ReplayResult must reject negative events_processed, events_skipped, stories_created, stories_closed, and duration_seconds independently",
+      "function": "ReplayResult",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Negative events_processed is rejected",
+        "Negative events_skipped is rejected",
+        "Negative stories_created is rejected",
+        "Negative stories_closed is rejected",
+        "Negative duration_seconds is rejected"
+      ]
+    },
+    {
+      "id": "goodhart_replay_file_spec_max_path_length",
+      "description": "ReplayFileSpec must accept file_path of exactly 4096 characters and reject 4097",
+      "function": "ReplayFileSpec",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "file_path of 4096 chars accepted",
+        "file_path of 4097 chars rejected"
+      ]
+    },
+    {
+      "id": "goodhart_engine_status_negative_open_stories",
+      "description": "EngineStatus must reject negative open_stories_count",
+      "function": "EngineStatus",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "EngineStatus with open_stories_count=-1 raises validation error"
+      ]
+    },
+    {
+      "id": "goodhart_engine_status_negative_closed_stories",
+      "description": "EngineStatus must reject negative closed_stories_count",
+      "function": "EngineStatus",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "EngineStatus with closed_stories_count=-1 raises validation error"
+      ]
+    },
+    {
+      "id": "goodhart_engine_status_zero_uptime",
+      "description": "EngineStatus must accept uptime_seconds of exactly 0.0",
+      "function": "EngineStatus",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "EngineStatus with uptime_seconds=0.0 is accepted"
+      ]
+    },
+    {
+      "id": "goodhart_source_status_zero_events",
+      "description": "SourceStatus must accept events_received=0 as the minimum valid value",
+      "function": "SourceStatus",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "SourceStatus with events_received=0 is accepted"
+      ]
+    },
+    {
+      "id": "goodhart_sink_status_zero_errors",
+      "description": "SinkStatus must accept errors=0 and events_emitted=0 as minimum valid values",
+      "function": "SinkStatus",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "SinkStatus with errors=0 and events_emitted=0 is accepted"
+      ]
+    },
+    {
+      "id": "goodhart_source_status_null_last_event_at",
+      "description": "SourceStatus must accept None/null for last_event_at as it is OptionalDatetimeISO",
+      "function": "SourceStatus",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "SourceStatus with last_event_at=None is accepted"
+      ]
+    },
+    {
+      "id": "goodhart_sink_status_null_last_emit_at",
+      "description": "SinkStatus must accept None/null for last_emit_at as it is OptionalDatetimeISO",
+      "function": "SinkStatus",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "SinkStatus with last_emit_at=None is accepted"
+      ]
+    },
+    {
+      "id": "goodhart_engine_status_null_started_at",
+      "description": "EngineStatus must accept None/null for started_at (e.g., when phase is CREATED)",
+      "function": "EngineStatus",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "EngineStatus with started_at=None is accepted"
+      ]
+    },
+    {
+      "id": "goodhart_engine_status_empty_sources_sinks",
+      "description": "EngineStatus must accept empty lists for sources and sinks",
+      "function": "EngineStatus",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "EngineStatus with sources=[] and sinks=[] is accepted"
+      ]
+    },
+    {
+      "id": "goodhart_engine_status_multiple_sources_sinks",
+      "description": "EngineStatus must accept multiple source and sink status entries",
+      "function": "EngineStatus",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "EngineStatus with 3 sources and 2 sinks is accepted and fields are correct"
+      ]
+    },
+    {
+      "id": "goodhart_engine_init_queue_size_from_config",
+      "description": "Engine constructor must create queue with maxsize matching config.queue_max_size for any valid value, not just a default",
+      "function": "ChroniclerEngine.__init__",
+      "category": "invariant",
+      "setup_description": "Create engine with different queue_max_size values and verify queue maxsize matches",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Engine with queue_max_size=7 has queue maxsize=7",
+        "Engine with queue_max_size=50000 has queue maxsize=50000"
+      ]
+    },
+    {
+      "id": "goodhart_engine_status_reflects_phase_stopped",
+      "description": "status() must reflect the current engine phase accurately even after stop, not a cached value",
+      "function": "ChroniclerEngine.status",
+      "category": "invariant",
+      "setup_description": "Start engine, stop it, then call status() and verify phase is STOPPED",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "After stop(), status().phase is STOPPED"
+      ]
+    },
+    {
+      "id": "goodhart_engine_status_started_at_set_after_start",
+      "description": "After start(), status() must include a non-None started_at timestamp",
+      "function": "ChroniclerEngine.status",
+      "category": "invariant",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "status().started_at is not None after successful start()"
+      ]
+    },
+    {
+      "id": "goodhart_engine_status_started_at_none_in_created",
+      "description": "Before start(), status().started_at must be None",
+      "function": "ChroniclerEngine.status",
+      "category": "invariant",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "status().started_at is None when engine is in CREATED phase"
+      ]
+    },
+    {
+      "id": "goodhart_engine_stop_from_created_raises",
+      "description": "Calling stop() on an engine in CREATED phase must raise an error, since precondition requires RUNNING or STARTING",
+      "function": "ChroniclerEngine.stop",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "stop() raises when engine phase is CREATED"
+      ]
+    },
+    {
+      "id": "goodhart_engine_run_calls_start_if_needed",
+      "description": "run() must call start() internally if engine is still in CREATED phase, transitioning through STARTING to RUNNING",
+      "function": "ChroniclerEngine.run",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Engine reaches RUNNING phase during run() even if start() was not called explicitly",
+        "Engine reaches STOPPED phase after run() completes"
+      ]
+    },
+    {
+      "id": "goodhart_engine_submit_event_returns_bool",
+      "description": "submit_event must return a boolean True on success, not a truthy non-bool value",
+      "function": "ChroniclerEngine.submit_event",
+      "category": "invariant",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Return value is exactly True (type bool)",
+        "Return value is exactly False (type bool) when queue full"
+      ]
+    },
+    {
+      "id": "goodhart_engine_aexit_returns_false",
+      "description": "__aexit__ must return exactly False (not None or other falsy value) so exceptions propagate",
+      "function": "ChroniclerEngine.__aexit__",
+      "category": "invariant",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "__aexit__ return value is exactly False"
+      ]
+    },
+    {
+      "id": "goodhart_engine_status_uptime_increases",
+      "description": "Engine uptime_seconds should reflect elapsed time since start, increasing between successive calls while RUNNING",
+      "function": "ChroniclerEngine.status",
+      "category": "invariant",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Two successive status() calls show non-decreasing uptime_seconds",
+        "uptime_seconds is 0.0 or near-zero when in CREATED phase"
+      ]
+    },
+    {
+      "id": "goodhart_engine_status_queue_depth_reflects_queue",
+      "description": "status().queue_depth must reflect the actual number of items in the internal queue, not a hardcoded value",
+      "function": "ChroniclerEngine.status",
+      "category": "invariant",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "queue_depth is 0 when queue is empty",
+        "queue_depth matches number of enqueued events"
+      ]
+    },
+    {
+      "id": "goodhart_engine_multiple_source_failures_continue",
+      "description": "When multiple sources fail during startup, engine continues running with remaining healthy sources rather than stopping",
+      "function": "ChroniclerEngine.start",
+      "category": "invariant",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Engine phase is RUNNING even when 2 out of 3 sources fail to initialize",
+        "Failed sources are marked with FAILED health"
+      ]
+    },
+    {
+      "id": "goodhart_engine_multiple_sink_failures_continue",
+      "description": "When multiple sinks fail during startup, engine continues running with remaining healthy sinks",
+      "function": "ChroniclerEngine.start",
+      "category": "invariant",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Engine phase is RUNNING even when sinks fail to initialize",
+        "Failed sinks are marked with FAILED health"
+      ]
+    },
+    {
+      "id": "goodhart_cli_exit_code_values",
+      "description": "CliExitCode enum values must map to specific integer exit codes (0, 1, 2, 3, 4)",
+      "function": "CliExitCode",
+      "category": "invariant",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "SUCCESS_0 has value 0",
+        "CONFIG_ERROR_1 has value 1",
+        "RUNTIME_ERROR_2 has value 2",
+        "FILE_NOT_FOUND_3 has value 3",
+        "STATE_READ_ERROR_4 has value 4"
+      ]
+    },
+    {
+      "id": "goodhart_cli_stories_list_filter_closed",
+      "description": "cli_cmd_stories_list with CLOSED filter must return only closed stories, not all stories",
+      "function": "cli_cmd_stories_list",
+      "category": "happy_path",
+      "setup_description": "State file containing both open and closed stories; filter with CLOSED",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Only stories with closed status are included in result",
+        "filter_applied field is CLOSED"
+      ]
+    },
+    {
+      "id": "goodhart_cli_stories_list_filter_all",
+      "description": "cli_cmd_stories_list with ALL filter must return both open and closed stories",
+      "function": "cli_cmd_stories_list",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Both open and closed stories are included",
+        "filter_applied field is ALL"
+      ]
+    },
+    {
+      "id": "goodhart_cli_cmd_stories_show_state_file_missing",
+      "description": "cli_cmd_stories_show must handle missing state file gracefully",
+      "function": "cli_cmd_stories_show",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Returns non-zero exit code when state file does not exist"
+      ]
+    },
+    {
+      "id": "goodhart_mcp_tool_result_error_message_null_on_success",
+      "description": "McpToolResult must accept None for error_message when success is true (OptionalString)",
+      "function": "McpToolResult",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "McpToolResult with success=True and error_message=None is valid"
+      ]
+    },
+    {
+      "id": "goodhart_mcp_tool_result_error_message_present_on_failure",
+      "description": "McpToolResult with success=False should have a non-None error_message",
+      "function": "McpToolResult",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "McpToolResult with success=False and error_message='some error' is valid"
+      ]
+    },
+    {
+      "id": "goodhart_engine_config_queue_max_size_one",
+      "description": "EngineConfig must accept queue_max_size=1 as valid minimum and the engine should function with a queue of size 1",
+      "function": "EngineConfig",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "EngineConfig with queue_max_size=1 is accepted"
+      ]
+    },
+    {
+      "id": "goodhart_engine_config_queue_max_size_100000",
+      "description": "EngineConfig must accept queue_max_size=100000 as valid maximum",
+      "function": "EngineConfig",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "EngineConfig with queue_max_size=100000 is accepted"
+      ]
+    },
+    {
+      "id": "goodhart_engine_phase_has_exactly_six_values",
+      "description": "EnginePhase enum must have exactly 6 members, no more and no less",
+      "function": "EnginePhase",
+      "category": "invariant",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "len(EnginePhase) == 6"
+      ]
+    },
+    {
+      "id": "goodhart_mcp_tool_name_has_exactly_four_values",
+      "description": "McpToolName enum must have exactly 4 members corresponding to the four MCP tools",
+      "function": "McpToolName",
+      "category": "invariant",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "len(McpToolName) == 4"
+      ]
+    },
+    {
+      "id": "goodhart_cli_exit_code_has_exactly_five_values",
+      "description": "CliExitCode enum must have exactly 5 members",
+      "function": "CliExitCode",
+      "category": "invariant",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "len(CliExitCode) == 5"
+      ]
+    },
+    {
+      "id": "goodhart_story_filter_has_exactly_three_values",
+      "description": "StoryFilter enum must have exactly 3 members: OPEN, CLOSED, ALL",
+      "function": "StoryFilter",
+      "category": "invariant",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "len(StoryFilter) == 3"
+      ]
+    },
+    {
+      "id": "goodhart_engine_status_returns_engine_status_type",
+      "description": "status() must return an actual EngineStatus instance, not a dict or other type",
+      "function": "ChroniclerEngine.status",
+      "category": "invariant",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "isinstance(result, EngineStatus) is True"
+      ]
+    },
+    {
+      "id": "goodhart_engine_status_source_count_matches",
+      "description": "status().sources list length must match the number of configured sources",
+      "function": "ChroniclerEngine.status",
+      "category": "invariant",
+      "setup_description": "Create engine with 2 mock sources and verify status reports 2 source entries",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "len(status.sources) equals number of configured sources"
+      ]
+    },
+    {
+      "id": "goodhart_engine_status_sink_count_matches",
+      "description": "status().sinks list length must match the number of configured sinks",
+      "function": "ChroniclerEngine.status",
+      "category": "invariant",
+      "setup_description": "Create engine with 3 mock sinks and verify status reports 3 sink entries",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "len(status.sinks) equals number of configured sinks"
+      ]
+    },
+    {
+      "id": "goodhart_engine_config_mcp_enabled_bool",
+      "description": "EngineConfig mcp_enabled field must be a boolean; non-bool truthy values should be coerced or rejected",
+      "function": "EngineConfig",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "EngineConfig with mcp_enabled=True is accepted",
+        "EngineConfig with mcp_enabled=False is accepted"
+      ]
+    },
+    {
+      "id": "goodhart_replay_result_all_zeros_valid",
+      "description": "ReplayResult must accept all fields set to zero (empty file replay scenario)",
+      "function": "ReplayResult",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "ReplayResult with total_lines=0, events_processed=0, events_skipped=0, stories_created=0, stories_closed=0, duration_seconds=0.0 is valid"
+      ]
+    },
+    {
+      "id": "goodhart_engine_status_total_events_processed_tracks",
+      "description": "total_events_processed in status must increase as events are processed through the engine",
+      "function": "ChroniclerEngine.status",
+      "category": "invariant",
+      "setup_description": "Start engine, check status, submit events, process them, check status again",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "total_events_processed is 0 before any events",
+        "total_events_processed increases after submitting and processing events"
+      ]
+    },
+    {
+      "id": "goodhart_engine_config_negative_source_restart_delay",
+      "description": "EngineConfig must reject negative source_restart_delay_seconds",
+      "function": "EngineConfig",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "source_restart_delay_seconds=-0.1 raises validation error"
+      ]
+    },
+    {
+      "id": "goodhart_engine_config_drain_timeout_zero",
+      "description": "EngineConfig must reject drain_timeout_seconds=0.0 since minimum is 0.1",
+      "function": "EngineConfig",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "drain_timeout_seconds=0.0 raises validation error"
+      ]
+    },
+    {
+      "id": "goodhart_mcp_tool_status_contains_phase",
+      "description": "MCP chronicler_status tool result data must contain the phase field reflecting actual engine state",
+      "function": "mcp_tool_chronicler_status",
+      "category": "invariant",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "result.data contains 'phase' key",
+        "phase value matches engine's current phase"
+      ]
+    },
+    {
+      "id": "goodhart_cli_cmd_replay_returns_zero_on_success",
+      "description": "cli_cmd_replay must return integer 0 on successful replay, not just a falsy value",
+      "function": "cli_cmd_replay",
+      "category": "invariant",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Return value is exactly 0 (int)"
+      ]
+    },
+    {
+      "id": "goodhart_engine_phase_error_only_from_starting",
+      "description": "ERROR phase can only be reached from STARTING phase, not from RUNNING or other phases",
+      "function": "ChroniclerEngine.start",
+      "category": "invariant",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Engine that fails during startup has phase ERROR",
+        "Engine that encounters errors during RUNNING does not transition to ERROR"
+      ]
+    }
+  ],
+  "test_language": "python",
+  "generated_code": "\"\"\"\nHidden adversarial acceptance tests for Engine, CLI & MCP Server component.\nThese tests target gaps in visible test coverage to catch implementations\nthat hardcode returns or take shortcuts based on visible test inputs.\n\"\"\"\nimport asyncio\nimport json\nimport os\nimport tempfile\nfrom unittest.mock import AsyncMock, MagicMock, patch, PropertyMock\nfrom datetime import datetime, timezone\n\nimport pytest\n\nfrom src.engine_cli_mcp import *\n\n\n# ============================================================\n# Helper factory functions\n# ============================================================\n\ndef make_engine_config(**overrides):\n    \"\"\"Create a valid EngineConfig with sensible defaults, allowing overrides.\"\"\"\n    defaults = dict(\n        queue_max_size=100,\n        drain_timeout_seconds=5.0,\n        mcp_enabled=False,\n        state_file=\"/tmp/test_state.jsonl\",\n        source_restart_delay_seconds=1.0,\n    )\n    defaults.update(overrides)\n    return EngineConfig(**defaults)\n\n\ndef make_source_status(**overrides):\n    defaults = dict(\n        source_id=\"src-1\",\n        source_type=\"webhook\",\n        health=SourceHealth.HEALTHY,\n        events_received=0,\n        last_event_at=None,\n    )\n    defaults.update(overrides)\n    return SourceStatus(**defaults)\n\n\ndef make_sink_status(**overrides):\n    defaults = dict(\n        sink_id=\"sink-1\",\n        sink_type=\"disk\",\n        health=SinkHealth.HEALTHY,\n        events_emitted=0,\n        errors=0,\n        last_emit_at=None,\n    )\n    defaults.update(overrides)\n    return SinkStatus(**defaults)\n\n\ndef make_engine_status(**overrides):\n    defaults = dict(\n        phase=EnginePhase.CREATED,\n        uptime_seconds=0.0,\n        total_events_processed=0,\n        open_stories_count=0,\n        closed_stories_count=0,\n        sources=[],\n        sinks=[],\n        queue_depth=0,\n        started_at=None,\n    )\n    defaults.update(overrides)\n    return EngineStatus(**defaults)\n\n\ndef make_story_summary(**overrides):\n    defaults = dict(\n        story_id=\"story-1\",\n        title=\"Test Story\",\n        status=\"open\",\n        event_count=1,\n        created_at=\"2024-01-01T00:00:00Z\",\n        updated_at=\"2024-01-01T00:00:00Z\",\n        correlation_rule_id=\"rule-1\",\n    )\n    defaults.update(overrides)\n    return StorySummary(**defaults)\n\n\n# ============================================================\n# Frozen model tests\n# ============================================================\n\nclass TestGoodhartFrozenModels:\n    \"\"\"Frozen Pydantic models must reject attribute mutation after construction.\"\"\"\n\n    def test_goodhart_engine_config_frozen(self):\n        \"\"\"EngineConfig is a frozen Pydantic model — attribute assignment after construction must be rejected\"\"\"\n        config = make_engine_config()\n        with pytest.raises(Exception):  # ValidationError or AttributeError\n            config.queue_max_size = 999\n\n    def test_goodhart_source_status_frozen(self):\n        \"\"\"SourceStatus is a frozen Pydantic model — mutation after construction must be rejected\"\"\"\n        ss = make_source_status(events_received=5)\n        with pytest.raises(Exception):\n            ss.events_received = 10\n\n    def test_goodhart_sink_status_frozen(self):\n        \"\"\"SinkStatus is a frozen Pydantic model — mutation after construction must be rejected\"\"\"\n        sk = make_sink_status(events_emitted=5)\n        with pytest.raises(Exception):\n            sk.events_emitted = 10\n\n    def test_goodhart_engine_status_frozen(self):\n        \"\"\"EngineStatus is a frozen Pydantic model — mutation after construction must be rejected\"\"\"\n        es = make_engine_status()\n        with pytest.raises(Exception):\n            es.phase = EnginePhase.RUNNING\n\n\n# ============================================================\n# Boundary tests for EngineConfig\n# ============================================================\n\nclass TestGoodhartEngineConfigBoundaries:\n\n    def test_goodhart_engine_config_drain_timeout_boundary_low(self):\n        \"\"\"EngineConfig drain_timeout_seconds must accept exact lower bound 0.1 and reject values just below it\"\"\"\n        # Accept 0.1\n        cfg = make_engine_config(drain_timeout_seconds=0.1)\n        assert cfg.drain_timeout_seconds == pytest.approx(0.1)\n        # Reject 0.09\n        with pytest.raises(Exception):\n            make_engine_config(drain_timeout_seconds=0.09)\n\n    def test_goodhart_engine_config_drain_timeout_boundary_high(self):\n        \"\"\"EngineConfig drain_timeout_seconds must accept exact upper bound 60.0 and reject values just above it\"\"\"\n        cfg = make_engine_config(drain_timeout_seconds=60.0)\n        assert cfg.drain_timeout_seconds == pytest.approx(60.0)\n        with pytest.raises(Exception):\n            make_engine_config(drain_timeout_seconds=60.1)\n\n    def test_goodhart_engine_config_drain_timeout_zero(self):\n        \"\"\"EngineConfig must reject drain_timeout_seconds=0.0 since minimum is 0.1\"\"\"\n        with pytest.raises(Exception):\n            make_engine_config(drain_timeout_seconds=0.0)\n\n    def test_goodhart_engine_config_source_restart_delay_zero(self):\n        \"\"\"EngineConfig source_restart_delay_seconds accepts 0.0 as the minimum bound\"\"\"\n        cfg = make_engine_config(source_restart_delay_seconds=0.0)\n        assert cfg.source_restart_delay_seconds == pytest.approx(0.0)\n\n    def test_goodhart_engine_config_source_restart_delay_max(self):\n        \"\"\"EngineConfig source_restart_delay_seconds accepts 300.0 and rejects 300.1\"\"\"\n        cfg = make_engine_config(source_restart_delay_seconds=300.0)\n        assert cfg.source_restart_delay_seconds == pytest.approx(300.0)\n        with pytest.raises(Exception):\n            make_engine_config(source_restart_delay_seconds=300.1)\n\n    def test_goodhart_engine_config_negative_source_restart_delay(self):\n        \"\"\"EngineConfig must reject negative source_restart_delay_seconds\"\"\"\n        with pytest.raises(Exception):\n            make_engine_config(source_restart_delay_seconds=-0.1)\n\n    def test_goodhart_engine_config_state_file_max_length(self):\n        \"\"\"EngineConfig state_file accepts a string of exactly 4096 characters and rejects 4097\"\"\"\n        long_path = \"a\" * 4096\n        cfg = make_engine_config(state_file=long_path)\n        assert len(cfg.state_file) == 4096\n        with pytest.raises(Exception):\n            make_engine_config(state_file=\"a\" * 4097)\n\n    def test_goodhart_engine_config_queue_max_size_one(self):\n        \"\"\"EngineConfig must accept queue_max_size=1 as valid minimum\"\"\"\n        cfg = make_engine_config(queue_max_size=1)\n        assert cfg.queue_max_size == 1\n\n    def test_goodhart_engine_config_queue_max_size_100000(self):\n        \"\"\"EngineConfig must accept queue_max_size=100000 as valid maximum\"\"\"\n        cfg = make_engine_config(queue_max_size=100000)\n        assert cfg.queue_max_size == 100000\n\n    def test_goodhart_engine_config_mcp_enabled_bool(self):\n        \"\"\"EngineConfig mcp_enabled field must accept boolean values\"\"\"\n        cfg_true = make_engine_config(mcp_enabled=True)\n        assert cfg_true.mcp_enabled is True\n        cfg_false = make_engine_config(mcp_enabled=False)\n        assert cfg_false.mcp_enabled is False\n\n\n# ============================================================\n# DatetimeISO boundary tests\n# ============================================================\n\nclass TestGoodhartDatetimeISO:\n\n    def test_goodhart_datetime_iso_fractional_seconds(self):\n        \"\"\"DatetimeISO must accept ISO-8601 strings with varying fractional second precision\"\"\"\n        # 1 fractional digit\n        DatetimeISO(value=\"2024-01-01T12:00:00.1Z\")\n        # 6 fractional digits (microseconds)\n        DatetimeISO(value=\"2024-01-01T12:00:00.123456Z\")\n        # 9 fractional digits (nanoseconds)\n        DatetimeISO(value=\"2024-01-01T12:00:00.123456789Z\")\n\n    def test_goodhart_datetime_iso_negative_offset(self):\n        \"\"\"DatetimeISO must accept ISO-8601 strings with negative timezone offsets\"\"\"\n        dt = DatetimeISO(value=\"2024-01-01T00:00:00-05:00\")\n        assert dt.value == \"2024-01-01T00:00:00-05:00\"\n\n    def test_goodhart_datetime_iso_rejects_date_only(self):\n        \"\"\"DatetimeISO must reject date-only strings without time component\"\"\"\n        with pytest.raises(Exception):\n            DatetimeISO(value=\"2024-01-01\")\n\n    def test_goodhart_datetime_iso_rejects_space_separator(self):\n        \"\"\"DatetimeISO must reject datetime strings using space separator instead of T\"\"\"\n        with pytest.raises(Exception):\n            DatetimeISO(value=\"2024-01-01 12:00:00Z\")\n\n\n# ============================================================\n# QueueBound boundary tests\n# ============================================================\n\nclass TestGoodhartQueueBound:\n\n    def test_goodhart_queue_bound_negative(self):\n        \"\"\"QueueBound must reject negative values, not just zero\"\"\"\n        with pytest.raises(Exception):\n            QueueBound(value=-1)\n\n    def test_goodhart_queue_bound_large_negative(self):\n        \"\"\"QueueBound must reject large negative values\"\"\"\n        with pytest.raises(Exception):\n            QueueBound(value=-99999)\n\n\n# ============================================================\n# StoryId boundary tests\n# ============================================================\n\nclass TestGoodhartStoryId:\n\n    def test_goodhart_story_id_exactly_256(self):\n        \"\"\"StoryId must accept a string of exactly 256 characters (max boundary)\"\"\"\n        sid = StoryId(value=\"x\" * 256)\n        assert len(sid.value) == 256\n\n    def test_goodhart_story_id_single_char(self):\n        \"\"\"StoryId must accept a single-character string (min boundary)\"\"\"\n        sid = StoryId(value=\"a\")\n        assert sid.value == \"a\"\n\n\n# ============================================================\n# StorySummary error cases\n# ============================================================\n\nclass TestGoodhartStorySummary:\n\n    def test_goodhart_story_summary_negative_events(self):\n        \"\"\"StorySummary must reject negative event_count values, not just zero\"\"\"\n        with pytest.raises(Exception):\n            make_story_summary(event_count=-1)\n\n    def test_goodhart_story_summary_event_count_one(self):\n        \"\"\"StorySummary must accept event_count=1 as the minimum valid value\"\"\"\n        ss = make_story_summary(event_count=1)\n        assert ss.event_count == 1\n\n\n# ============================================================\n# StoryListResult error cases\n# ============================================================\n\nclass TestGoodhartStoryListResult:\n\n    def test_goodhart_story_list_result_negative_total(self):\n        \"\"\"StoryListResult must reject negative total values\"\"\"\n        with pytest.raises(Exception):\n            StoryListResult(total=-1, stories=[], filter_applied=StoryFilter.ALL)\n\n    def test_goodhart_story_list_result_zero_total(self):\n        \"\"\"StoryListResult must accept total=0 with empty stories list\"\"\"\n        result = StoryListResult(total=0, stories=[], filter_applied=StoryFilter.ALL)\n        assert result.total == 0\n        assert result.stories == []\n\n\n# ============================================================\n# ReplayResult comprehensive validation\n# ============================================================\n\nclass TestGoodhartReplayResult:\n\n    def test_goodhart_replay_result_negative_events_processed(self):\n        \"\"\"ReplayResult must reject negative events_processed\"\"\"\n        with pytest.raises(Exception):\n            ReplayResult(\n                file_path=\"/tmp/test.jsonl\",\n                total_lines=10,\n                events_processed=-1,\n                events_skipped=0,\n                stories_created=0,\n                stories_closed=0,\n                duration_seconds=1.0,\n            )\n\n    def test_goodhart_replay_result_negative_events_skipped(self):\n        \"\"\"ReplayResult must reject negative events_skipped\"\"\"\n        with pytest.raises(Exception):\n            ReplayResult(\n                file_path=\"/tmp/test.jsonl\",\n                total_lines=10,\n                events_processed=10,\n                events_skipped=-1,\n                stories_created=0,\n                stories_closed=0,\n                duration_seconds=1.0,\n            )\n\n    def test_goodhart_replay_result_negative_stories_created(self):\n        \"\"\"ReplayResult must reject negative stories_created\"\"\"\n        with pytest.raises(Exception):\n            ReplayResult(\n                file_path=\"/tmp/test.jsonl\",\n                total_lines=10,\n                events_processed=10,\n                events_skipped=0,\n                stories_created=-1,\n                stories_closed=0,\n                duration_seconds=1.0,\n            )\n\n    def test_goodhart_replay_result_negative_stories_closed(self):\n        \"\"\"ReplayResult must reject negative stories_closed\"\"\"\n        with pytest.raises(Exception):\n            ReplayResult(\n                file_path=\"/tmp/test.jsonl\",\n                total_lines=10,\n                events_processed=10,\n                events_skipped=0,\n                stories_created=0,\n                stories_closed=-1,\n                duration_seconds=1.0,\n            )\n\n    def test_goodhart_replay_result_negative_duration(self):\n        \"\"\"ReplayResult must reject negative duration_seconds\"\"\"\n        with pytest.raises(Exception):\n            ReplayResult(\n                file_path=\"/tmp/test.jsonl\",\n                total_lines=10,\n                events_processed=10,\n                events_skipped=0,\n                stories_created=0,\n                stories_closed=0,\n                duration_seconds=-0.1,\n            )\n\n    def test_goodhart_replay_result_all_zeros_valid(self):\n        \"\"\"ReplayResult must accept all fields set to zero (empty file replay scenario)\"\"\"\n        rr = ReplayResult(\n            file_path=\"/tmp/empty.jsonl\",\n            total_lines=0,\n            events_processed=0,\n            events_skipped=0,\n            stories_created=0,\n            stories_closed=0,\n            duration_seconds=0.0,\n        )\n        assert rr.total_lines == 0\n        assert rr.events_processed == 0\n        assert rr.duration_seconds == pytest.approx(0.0)\n\n\n# ============================================================\n# ReplayFileSpec boundary tests\n# ============================================================\n\nclass TestGoodhartReplayFileSpec:\n\n    def test_goodhart_replay_file_spec_max_path_length(self):\n        \"\"\"ReplayFileSpec must accept file_path of exactly 4096 characters and reject 4097\"\"\"\n        spec = ReplayFileSpec(file_path=\"a\" * 4096, suppress_sinks=False)\n        assert len(spec.file_path) == 4096\n        with pytest.raises(Exception):\n            ReplayFileSpec(file_path=\"a\" * 4097, suppress_sinks=False)\n\n\n# ============================================================\n# EngineStatus additional validation\n# ============================================================\n\nclass TestGoodhartEngineStatusValidation:\n\n    def test_goodhart_engine_status_negative_open_stories(self):\n        \"\"\"EngineStatus must reject negative open_stories_count\"\"\"\n        with pytest.raises(Exception):\n            make_engine_status(open_stories_count=-1)\n\n    def test_goodhart_engine_status_negative_closed_stories(self):\n        \"\"\"EngineStatus must reject negative closed_stories_count\"\"\"\n        with pytest.raises(Exception):\n            make_engine_status(closed_stories_count=-1)\n\n    def test_goodhart_engine_status_zero_uptime(self):\n        \"\"\"EngineStatus must accept uptime_seconds of exactly 0.0\"\"\"\n        es = make_engine_status(uptime_seconds=0.0)\n        assert es.uptime_seconds == pytest.approx(0.0)\n\n    def test_goodhart_engine_status_null_started_at(self):\n        \"\"\"EngineStatus must accept None/null for started_at\"\"\"\n        es = make_engine_status(started_at=None)\n        assert es.started_at is None\n\n    def test_goodhart_engine_status_empty_sources_sinks(self):\n        \"\"\"EngineStatus must accept empty lists for sources and sinks\"\"\"\n        es = make_engine_status(sources=[], sinks=[])\n        assert es.sources == []\n        assert es.sinks == []\n\n    def test_goodhart_engine_status_multiple_sources_sinks(self):\n        \"\"\"EngineStatus must accept multiple source and sink status entries\"\"\"\n        sources = [\n            make_source_status(source_id=\"src-1\"),\n            make_source_status(source_id=\"src-2\"),\n            make_source_status(source_id=\"src-3\"),\n        ]\n        sinks = [\n            make_sink_status(sink_id=\"sink-1\"),\n            make_sink_status(sink_id=\"sink-2\"),\n        ]\n        es = make_engine_status(sources=sources, sinks=sinks)\n        assert len(es.sources) == 3\n        assert len(es.sinks) == 2\n\n\n# ============================================================\n# SourceStatus / SinkStatus optional field tests\n# ============================================================\n\nclass TestGoodhartOptionalFields:\n\n    def test_goodhart_source_status_zero_events(self):\n        \"\"\"SourceStatus must accept events_received=0 as the minimum valid value\"\"\"\n        ss = make_source_status(events_received=0)\n        assert ss.events_received == 0\n\n    def test_goodhart_source_status_null_last_event_at(self):\n        \"\"\"SourceStatus must accept None/null for last_event_at\"\"\"\n        ss = make_source_status(last_event_at=None)\n        assert ss.last_event_at is None\n\n    def test_goodhart_sink_status_zero_errors(self):\n        \"\"\"SinkStatus must accept errors=0 and events_emitted=0\"\"\"\n        sk = make_sink_status(errors=0, events_emitted=0)\n        assert sk.errors == 0\n        assert sk.events_emitted == 0\n\n    def test_goodhart_sink_status_null_last_emit_at(self):\n        \"\"\"SinkStatus must accept None/null for last_emit_at\"\"\"\n        sk = make_sink_status(last_emit_at=None)\n        assert sk.last_emit_at is None\n\n\n# ============================================================\n# Enum cardinality tests (detect extra or missing members)\n# ============================================================\n\nclass TestGoodhartEnumCardinality:\n\n    def test_goodhart_engine_phase_has_exactly_six_values(self):\n        \"\"\"EnginePhase enum must have exactly 6 members, no more and no less\"\"\"\n        assert len(EnginePhase) == 6\n\n    def test_goodhart_mcp_tool_name_has_exactly_four_values(self):\n        \"\"\"McpToolName enum must have exactly 4 members\"\"\"\n        assert len(McpToolName) == 4\n\n    def test_goodhart_cli_exit_code_has_exactly_five_values(self):\n        \"\"\"CliExitCode enum must have exactly 5 members\"\"\"\n        assert len(CliExitCode) == 5\n\n    def test_goodhart_story_filter_has_exactly_three_values(self):\n        \"\"\"StoryFilter enum must have exactly 3 members\"\"\"\n        assert len(StoryFilter) == 3\n\n    def test_goodhart_source_health_has_exactly_four_values(self):\n        \"\"\"SourceHealth enum must have exactly 4 members\"\"\"\n        assert len(SourceHealth) == 4\n\n    def test_goodhart_sink_health_has_exactly_four_values(self):\n        \"\"\"SinkHealth enum must have exactly 4 members\"\"\"\n        assert len(SinkHealth) == 4\n\n\n# ============================================================\n# CliExitCode value mapping tests\n# ============================================================\n\nclass TestGoodhartCliExitCodeValues:\n\n    def test_goodhart_cli_exit_code_values(self):\n        \"\"\"CliExitCode enum values must map to specific integer exit codes (0, 1, 2, 3, 4)\"\"\"\n        assert CliExitCode.SUCCESS_0.value == 0\n        assert CliExitCode.CONFIG_ERROR_1.value == 1\n        assert CliExitCode.RUNTIME_ERROR_2.value == 2\n        assert CliExitCode.FILE_NOT_FOUND_3.value == 3\n        assert CliExitCode.STATE_READ_ERROR_4.value == 4\n\n\n# ============================================================\n# McpToolResult optional fields\n# ============================================================\n\nclass TestGoodhartMcpToolResult:\n\n    def test_goodhart_mcp_tool_result_error_message_null_on_success(self):\n        \"\"\"McpToolResult must accept None for error_message when success is true\"\"\"\n        result = McpToolResult(\n            tool_name=\"chronicler_status\",\n            success=True,\n            data={\"phase\": \"RUNNING\"},\n            error_message=None,\n        )\n        assert result.error_message is None\n        assert result.success is True\n\n    def test_goodhart_mcp_tool_result_error_message_present_on_failure(self):\n        \"\"\"McpToolResult with success=False should accept a non-None error_message\"\"\"\n        result = McpToolResult(\n            tool_name=\"chronicler_status\",\n            success=False,\n            data={},\n            error_message=\"Engine is unavailable\",\n        )\n        assert result.success is False\n        assert result.error_message == \"Engine is unavailable\"\n\n    def test_goodhart_mcp_tool_result_empty_data(self):\n        \"\"\"McpToolResult must accept an empty dict for data\"\"\"\n        result = McpToolResult(\n            tool_name=\"chronicler_status\",\n            success=True,\n            data={},\n            error_message=None,\n        )\n        assert result.data == {}\n"
+}

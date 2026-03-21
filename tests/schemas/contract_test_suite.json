@@ -1,0 +1,1787 @@
+{
+  "component_id": "schemas",
+  "contract_version": 1,
+  "test_cases": [
+    {
+      "id": "type_event_kind_valid",
+      "description": "EventKind accepts valid lowercase dot-separated identifiers",
+      "function": "EventKind",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {
+        "value": "ci.build.completed"
+      },
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "EventKind('ci.build.completed').value == 'ci.build.completed'",
+        "EventKind constructed without error"
+      ]
+    },
+    {
+      "id": "type_event_kind_invalid_uppercase",
+      "description": "EventKind rejects uppercase characters",
+      "function": "EventKind",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {
+        "value": "CI.build"
+      },
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "ValidationError",
+      "assertions": []
+    },
+    {
+      "id": "type_event_kind_invalid_empty",
+      "description": "EventKind rejects empty string",
+      "function": "EventKind",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {
+        "value": ""
+      },
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "ValidationError",
+      "assertions": []
+    },
+    {
+      "id": "type_event_kind_invalid_starts_with_digit",
+      "description": "EventKind rejects identifiers starting with digit",
+      "function": "EventKind",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {
+        "value": "1ci.build"
+      },
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "ValidationError",
+      "assertions": []
+    },
+    {
+      "id": "type_event_kind_max_length",
+      "description": "EventKind accepts identifier at max length 255",
+      "function": "EventKind",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {
+        "value": "a + 'b' * 254 (255 chars total)"
+      },
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Length 255 accepted"
+      ]
+    },
+    {
+      "id": "type_event_kind_over_max_length",
+      "description": "EventKind rejects identifier exceeding 255 chars",
+      "function": "EventKind",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {
+        "value": "a + 'b' * 255 (256 chars total)"
+      },
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "ValidationError",
+      "assertions": []
+    },
+    {
+      "id": "type_entity_kind_valid",
+      "description": "EntityKind accepts valid lowercase identifier",
+      "function": "EntityKind",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {
+        "value": "repository"
+      },
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "EntityKind('repository').value == 'repository'"
+      ]
+    },
+    {
+      "id": "type_entity_id_valid",
+      "description": "EntityId accepts non-empty string up to 1024 chars",
+      "function": "EntityId",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {
+        "value": "repo-123"
+      },
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "EntityId('repo-123').value == 'repo-123'"
+      ]
+    },
+    {
+      "id": "type_entity_id_empty",
+      "description": "EntityId rejects empty string",
+      "function": "EntityId",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {
+        "value": ""
+      },
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "ValidationError",
+      "assertions": []
+    },
+    {
+      "id": "type_entity_id_max_length",
+      "description": "EntityId accepts string at max 1024 chars",
+      "function": "EntityId",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {
+        "value": "'x' * 1024"
+      },
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Length 1024 accepted"
+      ]
+    },
+    {
+      "id": "type_entity_id_over_max",
+      "description": "EntityId rejects string over 1024 chars",
+      "function": "EntityId",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {
+        "value": "'x' * 1025"
+      },
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "ValidationError",
+      "assertions": []
+    },
+    {
+      "id": "type_actor_id_valid",
+      "description": "ActorId accepts non-empty string up to 512 chars",
+      "function": "ActorId",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {
+        "value": "user@example.com"
+      },
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "ActorId('user@example.com').value == 'user@example.com'"
+      ]
+    },
+    {
+      "id": "type_actor_id_empty",
+      "description": "ActorId rejects empty string",
+      "function": "ActorId",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {
+        "value": ""
+      },
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "ValidationError",
+      "assertions": []
+    },
+    {
+      "id": "type_sha256_hex_valid",
+      "description": "Sha256Hex accepts valid 64-char lowercase hex string",
+      "function": "Sha256Hex",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {
+        "value": "a"
+      },
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Sha256Hex with 64 hex chars accepted"
+      ]
+    },
+    {
+      "id": "type_sha256_hex_invalid_length",
+      "description": "Sha256Hex rejects string not exactly 64 chars",
+      "function": "Sha256Hex",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {
+        "value": "abcdef"
+      },
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "ValidationError",
+      "assertions": []
+    },
+    {
+      "id": "type_sha256_hex_uppercase",
+      "description": "Sha256Hex rejects uppercase hex",
+      "function": "Sha256Hex",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {
+        "value": "A * 64"
+      },
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "ValidationError",
+      "assertions": []
+    },
+    {
+      "id": "type_story_id_valid",
+      "description": "StoryId accepts valid UUID4 string",
+      "function": "StoryId",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {
+        "value": "12345678-1234-4123-8123-123456789abc"
+      },
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "StoryId accepted"
+      ]
+    },
+    {
+      "id": "type_story_id_invalid",
+      "description": "StoryId rejects non-UUID4 string",
+      "function": "StoryId",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {
+        "value": "not-a-uuid"
+      },
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "ValidationError",
+      "assertions": []
+    },
+    {
+      "id": "type_aware_datetime_valid",
+      "description": "AwareDatetime accepts timezone-aware ISO 8601 datetime",
+      "function": "AwareDatetime",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Timezone-aware datetime accepted"
+      ]
+    },
+    {
+      "id": "type_aware_datetime_naive",
+      "description": "AwareDatetime rejects naive datetime",
+      "function": "AwareDatetime",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "ValidationError",
+      "assertions": []
+    },
+    {
+      "id": "type_context_dict_valid",
+      "description": "ContextDict accepts dict with string keys and str|int|float|bool|None values",
+      "function": "ContextDict",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {
+        "value": "{\"key\": \"val\", \"count\": 42, \"flag\": true, \"rate\": 3.14, \"empty\": null}"
+      },
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "All value types accepted"
+      ]
+    },
+    {
+      "id": "type_context_dict_invalid_value_type",
+      "description": "ContextDict rejects dict with list value",
+      "function": "ContextDict",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {
+        "value": "{\"key\": [1, 2, 3]}"
+      },
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "ValidationError",
+      "assertions": []
+    },
+    {
+      "id": "type_context_dict_empty_key",
+      "description": "ContextDict rejects dict with empty string key",
+      "function": "ContextDict",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {
+        "value": "{\"\": \"val\"}"
+      },
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "ValidationError",
+      "assertions": []
+    },
+    {
+      "id": "type_context_dict_empty_dict",
+      "description": "ContextDict accepts empty dict",
+      "function": "ContextDict",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {
+        "value": "{}"
+      },
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Empty dict is valid"
+      ]
+    },
+    {
+      "id": "type_correlation_keys_valid",
+      "description": "CorrelationKeys accepts dict with non-empty string keys and values",
+      "function": "CorrelationKeys",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {
+        "value": "{\"repo\": \"myrepo\", \"branch\": \"main\"}"
+      },
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "CorrelationKeys accepted"
+      ]
+    },
+    {
+      "id": "type_correlation_keys_empty_value",
+      "description": "CorrelationKeys rejects empty string value",
+      "function": "CorrelationKeys",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {
+        "value": "{\"repo\": \"\"}"
+      },
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "ValidationError",
+      "assertions": []
+    },
+    {
+      "id": "type_correlation_keys_empty_key",
+      "description": "CorrelationKeys rejects empty string key",
+      "function": "CorrelationKeys",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {
+        "value": "{\"\": \"val\"}"
+      },
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "ValidationError",
+      "assertions": []
+    },
+    {
+      "id": "type_story_status_values",
+      "description": "StoryStatus enum has open and closed variants",
+      "function": "StoryStatus",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "StoryStatus.open exists",
+        "StoryStatus.closed exists"
+      ]
+    },
+    {
+      "id": "type_close_reason_values",
+      "description": "CloseReason enum has terminal, timeout, evicted variants",
+      "function": "CloseReason",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "CloseReason.terminal exists",
+        "CloseReason.timeout exists",
+        "CloseReason.evicted exists"
+      ]
+    },
+    {
+      "id": "type_terminal_event_pattern_valid",
+      "description": "TerminalEventPattern accepts dict with non-empty string keys and string values",
+      "function": "TerminalEventPattern",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {
+        "value": "{\"event_kind\": \"ci.build.completed\"}"
+      },
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "TerminalEventPattern accepted"
+      ]
+    },
+    {
+      "id": "type_terminal_event_pattern_empty_key",
+      "description": "TerminalEventPattern rejects empty key",
+      "function": "TerminalEventPattern",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "ValidationError",
+      "assertions": []
+    },
+    {
+      "id": "type_event_kind_set_valid",
+      "description": "EventKindSet accepts non-empty list of event kinds",
+      "function": "EventKindSet",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "EventKindSet with one or more items accepted"
+      ]
+    },
+    {
+      "id": "type_event_kind_set_empty",
+      "description": "EventKindSet rejects empty list",
+      "function": "EventKindSet",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "ValidationError",
+      "assertions": []
+    },
+    {
+      "id": "compute_event_id_deterministic",
+      "description": "compute_event_id returns same output for same inputs",
+      "function": "compute_event_id",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Two calls with identical inputs produce identical output",
+        "Output is 64 lowercase hex chars"
+      ]
+    },
+    {
+      "id": "compute_event_id_sensitivity_event_kind",
+      "description": "Changing event_kind produces different id",
+      "function": "compute_event_id",
+      "category": "invariant",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Different event_kind -> different id"
+      ]
+    },
+    {
+      "id": "compute_event_id_sensitivity_entity_kind",
+      "description": "Changing entity_kind produces different id",
+      "function": "compute_event_id",
+      "category": "invariant",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Different entity_kind -> different id"
+      ]
+    },
+    {
+      "id": "compute_event_id_sensitivity_entity_id",
+      "description": "Changing entity_id produces different id",
+      "function": "compute_event_id",
+      "category": "invariant",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Different entity_id -> different id"
+      ]
+    },
+    {
+      "id": "compute_event_id_sensitivity_actor",
+      "description": "Changing actor produces different id",
+      "function": "compute_event_id",
+      "category": "invariant",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Different actor -> different id"
+      ]
+    },
+    {
+      "id": "compute_event_id_sensitivity_timestamp",
+      "description": "Changing timestamp produces different id",
+      "function": "compute_event_id",
+      "category": "invariant",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Different timestamp -> different id"
+      ]
+    },
+    {
+      "id": "compute_event_id_sensitivity_context",
+      "description": "Changing context produces different id",
+      "function": "compute_event_id",
+      "category": "invariant",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Different context -> different id"
+      ]
+    },
+    {
+      "id": "compute_event_id_sensitivity_correlation_keys",
+      "description": "Changing correlation_keys produces different id",
+      "function": "compute_event_id",
+      "category": "invariant",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Different correlation_keys -> different id"
+      ]
+    },
+    {
+      "id": "compute_event_id_naive_timestamp_error",
+      "description": "compute_event_id raises error on naive timestamp",
+      "function": "compute_event_id",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "naive_timestamp",
+      "assertions": []
+    },
+    {
+      "id": "create_event_happy_path",
+      "description": "create_event returns a frozen Event with correct computed id",
+      "function": "create_event",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Returned Event is frozen",
+        "Event.id is 64 hex chars",
+        "Event.id matches compute_event_id output",
+        "All fields match inputs"
+      ]
+    },
+    {
+      "id": "create_event_source_excluded_from_hash",
+      "description": "Changing source does not change the event id",
+      "function": "create_event",
+      "category": "invariant",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Two events with different source but same identity fields have same id"
+      ]
+    },
+    {
+      "id": "create_event_same_inputs_same_id",
+      "description": "Creating the same event twice produces Events with identical ids",
+      "function": "create_event",
+      "category": "invariant",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "event1.id == event2.id"
+      ]
+    },
+    {
+      "id": "create_event_invalid_event_kind",
+      "description": "create_event rejects invalid event_kind pattern",
+      "function": "create_event",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {
+        "event_kind": "INVALID"
+      },
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "ValidationError",
+      "assertions": []
+    },
+    {
+      "id": "create_event_invalid_entity_kind",
+      "description": "create_event rejects invalid entity_kind pattern",
+      "function": "create_event",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {
+        "entity_kind": "INVALID"
+      },
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "ValidationError",
+      "assertions": []
+    },
+    {
+      "id": "create_event_empty_entity_id",
+      "description": "create_event rejects empty entity_id",
+      "function": "create_event",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {
+        "entity_id": ""
+      },
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "ValidationError",
+      "assertions": []
+    },
+    {
+      "id": "create_event_empty_actor",
+      "description": "create_event rejects empty actor",
+      "function": "create_event",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {
+        "actor": ""
+      },
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "ValidationError",
+      "assertions": []
+    },
+    {
+      "id": "create_event_naive_timestamp",
+      "description": "create_event rejects naive timestamp",
+      "function": "create_event",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "ValidationError",
+      "assertions": []
+    },
+    {
+      "id": "create_event_invalid_context_value",
+      "description": "create_event rejects context with non-primitive value",
+      "function": "create_event",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {
+        "context": "{\"key\": [1, 2]}"
+      },
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "ValidationError",
+      "assertions": []
+    },
+    {
+      "id": "create_event_invalid_correlation_key",
+      "description": "create_event rejects correlation key with empty value",
+      "function": "create_event",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {
+        "correlation_keys": "{\"repo\": \"\"}"
+      },
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "ValidationError",
+      "assertions": []
+    },
+    {
+      "id": "create_story_happy_path",
+      "description": "create_story returns a frozen open Story with correct initial state",
+      "function": "create_story",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "story.status == 'open'",
+        "story.events == (first_event_id,)",
+        "story.event_count == 1",
+        "story.end_ts is None",
+        "story.duration is None",
+        "story.close_reason is None",
+        "story.story_id is valid UUID4"
+      ]
+    },
+    {
+      "id": "create_story_empty_story_type",
+      "description": "create_story rejects empty story_type",
+      "function": "create_story",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {
+        "story_type": ""
+      },
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "ValidationError",
+      "assertions": []
+    },
+    {
+      "id": "create_story_empty_correlation_rule",
+      "description": "create_story rejects empty correlation_rule",
+      "function": "create_story",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {
+        "correlation_rule": ""
+      },
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "ValidationError",
+      "assertions": []
+    },
+    {
+      "id": "create_story_invalid_first_event_id",
+      "description": "create_story rejects invalid SHA-256 hex string for first_event_id",
+      "function": "create_story",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {
+        "first_event_id": "not-a-hash"
+      },
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "ValidationError",
+      "assertions": []
+    },
+    {
+      "id": "create_story_no_parent",
+      "description": "create_story accepts None for parent_story_id",
+      "function": "create_story",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {
+        "parent_story_id": "None"
+      },
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "story.parent_story_id is None"
+      ]
+    },
+    {
+      "id": "append_event_happy_path",
+      "description": "append_event_to_story adds event and increments count",
+      "function": "append_event_to_story",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "new_story.events == original.events + (new_id,)",
+        "new_story.event_count == original.event_count + 1",
+        "new_story.status == 'open'",
+        "new_story.story_id == original.story_id"
+      ]
+    },
+    {
+      "id": "append_event_original_unchanged",
+      "description": "Original story is unchanged after append (immutability)",
+      "function": "append_event_to_story",
+      "category": "invariant",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "original.event_count unchanged",
+        "original.events unchanged"
+      ]
+    },
+    {
+      "id": "append_event_story_not_open",
+      "description": "append_event_to_story raises error on closed story",
+      "function": "append_event_to_story",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "story_not_open",
+      "assertions": []
+    },
+    {
+      "id": "append_event_duplicate_id",
+      "description": "append_event_to_story rejects duplicate event_id",
+      "function": "append_event_to_story",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "duplicate_event_id",
+      "assertions": []
+    },
+    {
+      "id": "close_story_happy_path",
+      "description": "close_story returns closed story with correct end_ts, duration, close_reason",
+      "function": "close_story",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "closed.status == 'closed'",
+        "closed.close_reason == close_reason",
+        "closed.end_ts == end_ts",
+        "closed.duration == (end_ts - start_ts).total_seconds()",
+        "closed.story_id == original.story_id",
+        "closed.events == original.events"
+      ]
+    },
+    {
+      "id": "close_story_original_unchanged",
+      "description": "Original story unchanged after close (immutability)",
+      "function": "close_story",
+      "category": "invariant",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "original.status == 'open'"
+      ]
+    },
+    {
+      "id": "close_story_already_closed",
+      "description": "close_story raises error on already-closed story",
+      "function": "close_story",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "story_already_closed",
+      "assertions": []
+    },
+    {
+      "id": "close_story_end_before_start",
+      "description": "close_story raises error when end_ts < start_ts",
+      "function": "close_story",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "end_before_start",
+      "assertions": []
+    },
+    {
+      "id": "close_story_zero_duration",
+      "description": "close_story with end_ts == start_ts produces duration 0.0",
+      "function": "close_story",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "closed.duration == 0.0"
+      ]
+    },
+    {
+      "id": "validate_consistency_valid_open",
+      "description": "validate_story_consistency returns True for valid open story",
+      "function": "validate_story_consistency",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Returns True"
+      ]
+    },
+    {
+      "id": "validate_consistency_valid_closed",
+      "description": "validate_story_consistency returns True for valid closed story",
+      "function": "validate_story_consistency",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Returns True"
+      ]
+    },
+    {
+      "id": "validate_open_has_end_ts",
+      "description": "Rejects open story with end_ts set",
+      "function": "validate_story_consistency",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "open_story_has_end_ts",
+      "assertions": []
+    },
+    {
+      "id": "validate_open_has_close_reason",
+      "description": "Rejects open story with close_reason set",
+      "function": "validate_story_consistency",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "open_story_has_close_reason",
+      "assertions": []
+    },
+    {
+      "id": "validate_open_has_duration",
+      "description": "Rejects open story with duration set",
+      "function": "validate_story_consistency",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "open_story_has_duration",
+      "assertions": []
+    },
+    {
+      "id": "validate_closed_missing_end_ts",
+      "description": "Rejects closed story without end_ts",
+      "function": "validate_story_consistency",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "closed_story_missing_end_ts",
+      "assertions": []
+    },
+    {
+      "id": "validate_closed_missing_close_reason",
+      "description": "Rejects closed story without close_reason",
+      "function": "validate_story_consistency",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "closed_story_missing_close_reason",
+      "assertions": []
+    },
+    {
+      "id": "validate_closed_missing_duration",
+      "description": "Rejects closed story without duration",
+      "function": "validate_story_consistency",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "closed_story_missing_duration",
+      "assertions": []
+    },
+    {
+      "id": "validate_event_count_mismatch",
+      "description": "Rejects story where event_count != len(events)",
+      "function": "validate_story_consistency",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "event_count_mismatch",
+      "assertions": []
+    },
+    {
+      "id": "matches_terminal_empty_pattern",
+      "description": "Empty pattern matches all events (vacuously true)",
+      "function": "matches_terminal_pattern",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Returns True"
+      ]
+    },
+    {
+      "id": "matches_terminal_event_kind_match",
+      "description": "Pattern matching event_kind returns True on match",
+      "function": "matches_terminal_pattern",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Returns True"
+      ]
+    },
+    {
+      "id": "matches_terminal_event_kind_no_match",
+      "description": "Pattern matching event_kind returns False on mismatch",
+      "function": "matches_terminal_pattern",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Returns False"
+      ]
+    },
+    {
+      "id": "matches_terminal_context_key",
+      "description": "Pattern matching context.<key> returns True on match",
+      "function": "matches_terminal_pattern",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Returns True"
+      ]
+    },
+    {
+      "id": "matches_terminal_missing_context_key",
+      "description": "Pattern referencing missing context key returns False",
+      "function": "matches_terminal_pattern",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Returns False"
+      ]
+    },
+    {
+      "id": "matches_terminal_correlation_key",
+      "description": "Pattern matching correlation_keys.<key> returns True on match",
+      "function": "matches_terminal_pattern",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Returns True"
+      ]
+    },
+    {
+      "id": "matches_terminal_multi_field",
+      "description": "Pattern with multiple fields - all must match",
+      "function": "matches_terminal_pattern",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Returns True only if all match"
+      ]
+    },
+    {
+      "id": "extract_group_key_happy_path",
+      "description": "extract_group_key returns correct dict from correlation_keys fields",
+      "function": "extract_group_key",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Returned dict has len(group_by) entries",
+        "Values match event fields"
+      ]
+    },
+    {
+      "id": "extract_group_key_missing_field",
+      "description": "extract_group_key raises error for missing field path",
+      "function": "extract_group_key",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "missing_field",
+      "assertions": []
+    },
+    {
+      "id": "extract_group_key_top_level_field",
+      "description": "extract_group_key extracts top-level event fields like event_kind",
+      "function": "extract_group_key",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Value matches event.event_kind"
+      ]
+    },
+    {
+      "id": "event_round_trip",
+      "description": "event_to_dict -> event_from_dict produces Event with same id",
+      "function": "event_to_dict",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "round_tripped.id == original.id",
+        "All fields match"
+      ]
+    },
+    {
+      "id": "event_from_dict_missing_field",
+      "description": "event_from_dict raises error when required field missing",
+      "function": "event_from_dict",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "ValidationError",
+      "assertions": []
+    },
+    {
+      "id": "event_from_dict_id_mismatch",
+      "description": "event_from_dict raises error when provided id doesn't match computed hash",
+      "function": "event_from_dict",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "id_mismatch",
+      "assertions": []
+    },
+    {
+      "id": "event_from_dict_no_id_computes_it",
+      "description": "event_from_dict computes id if absent from dict",
+      "function": "event_from_dict",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Event.id is computed correctly"
+      ]
+    },
+    {
+      "id": "story_round_trip",
+      "description": "story_to_dict -> story_from_dict produces equivalent Story",
+      "function": "story_to_dict",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "All fields match original story"
+      ]
+    },
+    {
+      "id": "story_from_dict_lifecycle_inconsistency",
+      "description": "story_from_dict rejects open story with end_ts set",
+      "function": "story_from_dict",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "lifecycle_inconsistency",
+      "assertions": []
+    },
+    {
+      "id": "story_from_dict_event_count_mismatch",
+      "description": "story_from_dict rejects story where event_count != len(events)",
+      "function": "story_from_dict",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "event_count_mismatch",
+      "assertions": []
+    },
+    {
+      "id": "story_from_dict_missing_field",
+      "description": "story_from_dict raises error on missing required field",
+      "function": "story_from_dict",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "ValidationError",
+      "assertions": []
+    },
+    {
+      "id": "config_happy_path",
+      "description": "load_chronicler_config loads valid YAML configuration",
+      "function": "load_chronicler_config",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Returned ChroniclerConfig is valid",
+        "Sources, sinks, rules all present"
+      ]
+    },
+    {
+      "id": "config_file_not_found",
+      "description": "load_chronicler_config raises error for missing file",
+      "function": "load_chronicler_config",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "file_not_found",
+      "assertions": []
+    },
+    {
+      "id": "config_invalid_yaml",
+      "description": "load_chronicler_config raises error for invalid YAML content",
+      "function": "load_chronicler_config",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "invalid_yaml",
+      "assertions": []
+    },
+    {
+      "id": "config_empty_sources",
+      "description": "load_chronicler_config rejects config with no sources",
+      "function": "load_chronicler_config",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "empty_sources",
+      "assertions": []
+    },
+    {
+      "id": "config_empty_sinks",
+      "description": "load_chronicler_config rejects config with no sinks",
+      "function": "load_chronicler_config",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "empty_sinks",
+      "assertions": []
+    },
+    {
+      "id": "config_empty_rules",
+      "description": "load_chronicler_config rejects config with no correlation rules",
+      "function": "load_chronicler_config",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "empty_rules",
+      "assertions": []
+    },
+    {
+      "id": "config_validation_error",
+      "description": "load_chronicler_config rejects config with invalid field values",
+      "function": "load_chronicler_config",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "validation_error",
+      "assertions": []
+    },
+    {
+      "id": "config_webhook_source",
+      "description": "WebhookSourceConfig validates port range and path pattern",
+      "function": "WebhookSourceConfig",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Valid config accepted"
+      ]
+    },
+    {
+      "id": "config_webhook_source_invalid_port",
+      "description": "WebhookSourceConfig rejects port 0",
+      "function": "WebhookSourceConfig",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "ValidationError",
+      "assertions": []
+    },
+    {
+      "id": "config_webhook_source_invalid_path",
+      "description": "WebhookSourceConfig rejects path not starting with /",
+      "function": "WebhookSourceConfig",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "ValidationError",
+      "assertions": []
+    },
+    {
+      "id": "config_file_source_valid",
+      "description": "FileSourceConfig validates path and poll_interval_seconds",
+      "function": "FileSourceConfig",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Valid config accepted"
+      ]
+    },
+    {
+      "id": "config_file_source_poll_too_low",
+      "description": "FileSourceConfig rejects poll_interval_seconds below 0.1",
+      "function": "FileSourceConfig",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "ValidationError",
+      "assertions": []
+    },
+    {
+      "id": "config_stigmergy_sink_valid",
+      "description": "StigmergySinkConfig accepts valid URL and timeout",
+      "function": "StigmergySinkConfig",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Valid config accepted"
+      ]
+    },
+    {
+      "id": "config_stigmergy_sink_invalid_url",
+      "description": "StigmergySinkConfig rejects URL not starting with http",
+      "function": "StigmergySinkConfig",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "ValidationError",
+      "assertions": []
+    },
+    {
+      "id": "config_disk_sink_valid",
+      "description": "DiskSinkConfig accepts valid paths",
+      "function": "DiskSinkConfig",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Valid config accepted"
+      ]
+    },
+    {
+      "id": "config_disk_sink_empty_path",
+      "description": "DiskSinkConfig rejects empty events_path",
+      "function": "DiskSinkConfig",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "ValidationError",
+      "assertions": []
+    },
+    {
+      "id": "config_memory_limits_valid",
+      "description": "MemoryLimitsConfig accepts valid ranges",
+      "function": "MemoryLimitsConfig",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Valid config accepted"
+      ]
+    },
+    {
+      "id": "config_memory_limits_zero_stories",
+      "description": "MemoryLimitsConfig rejects max_open_stories < 1",
+      "function": "MemoryLimitsConfig",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "ValidationError",
+      "assertions": []
+    },
+    {
+      "id": "config_kindex_sink_valid",
+      "description": "KindexSinkConfig accepts valid config with noteworthiness filter",
+      "function": "KindexSinkConfig",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Valid config accepted"
+      ]
+    },
+    {
+      "id": "config_noteworthiness_filter_valid",
+      "description": "NoteworthinessFilter accepts valid values",
+      "function": "NoteworthinessFilter",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Valid filter accepted"
+      ]
+    },
+    {
+      "id": "config_noteworthiness_filter_min_event_count_zero",
+      "description": "NoteworthinessFilter rejects min_event_count < 1",
+      "function": "NoteworthinessFilter",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "ValidationError",
+      "assertions": []
+    },
+    {
+      "id": "correlation_rule_valid",
+      "description": "CorrelationRule accepts valid configuration",
+      "function": "CorrelationRule",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Valid rule accepted",
+        "Rule is frozen"
+      ]
+    },
+    {
+      "id": "correlation_rule_invalid_name",
+      "description": "CorrelationRule rejects name starting with digit",
+      "function": "CorrelationRule",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "ValidationError",
+      "assertions": []
+    },
+    {
+      "id": "correlation_rule_timeout_too_low",
+      "description": "CorrelationRule rejects timeout below 0.001",
+      "function": "CorrelationRule",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "ValidationError",
+      "assertions": []
+    },
+    {
+      "id": "immutability_event",
+      "description": "Event instances are frozen - attribute assignment raises error",
+      "function": "Event",
+      "category": "invariant",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Assigning attribute raises error"
+      ]
+    },
+    {
+      "id": "immutability_story",
+      "description": "Story instances are frozen - attribute assignment raises error",
+      "function": "Story",
+      "category": "invariant",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Assigning attribute raises error"
+      ]
+    },
+    {
+      "id": "immutability_correlation_rule",
+      "description": "CorrelationRule instances are frozen - attribute assignment raises error",
+      "function": "CorrelationRule",
+      "category": "invariant",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Assigning attribute raises error"
+      ]
+    }
+  ],
+  "test_language": "python",
+  "generated_code": "\"\"\"\nContract tests for the Chronicler schemas module.\nTests cover types, functions, invariants, and configuration validation.\n\nRun with: pytest tests/test_schemas.py -v\n\"\"\"\nimport json\nimport re\nimport hashlib\nimport uuid\nfrom datetime import datetime, timezone, timedelta\nfrom unittest.mock import patch, MagicMock\n\nimport pytest\n\n# Import everything from the schemas module\nfrom schemas import (\n    EventKind,\n    EntityKind,\n    EntityId,\n    ActorId,\n    Sha256Hex,\n    StoryId,\n    AwareDatetime,\n    ContextDict,\n    CorrelationKeys,\n    StoryStatus,\n    CloseReason,\n    Event,\n    Story,\n    TerminalEventPattern,\n    GroupByKeys,\n    ChainByKeys,\n    EventKindSet,\n    CorrelationRule,\n    SourceType,\n    WebhookSourceConfig,\n    OtlpSourceConfig,\n    FileSourceConfig,\n    SentinelSourceConfig,\n    StigmergySinkConfig,\n    ApprenticeSinkConfig,\n    DiskSinkConfig,\n    KindexSinkConfig,\n    NoteworthinessFilter,\n    MemoryLimitsConfig,\n    ChroniclerConfig,\n    SinkType,\n    compute_event_id,\n    create_event,\n    create_story,\n    append_event_to_story,\n    close_story,\n    validate_story_consistency,\n    matches_terminal_pattern,\n    extract_group_key,\n    load_chronicler_config,\n    event_to_dict,\n    event_from_dict,\n    story_to_dict,\n    story_from_dict,\n)\n\n# ─── Fixtures ────────────────────────────────────────────────────────────────\n\nVALID_SHA256 = \"a\" * 64\nVALID_SHA256_B = \"b\" * 64\nVALID_SHA256_C = \"c\" * 64\n\nVALID_UUID4 = \"12345678-1234-4123-8123-123456789abc\"\n\nNOW = datetime(2024, 1, 15, 12, 0, 0, tzinfo=timezone.utc)\nLATER = datetime(2024, 1, 15, 13, 0, 0, tzinfo=timezone.utc)\nEARLIER = datetime(2024, 1, 15, 11, 0, 0, tzinfo=timezone.utc)\nNAIVE_DT = datetime(2024, 1, 15, 12, 0, 0)\n\n\ndef make_valid_event_kwargs():\n    \"\"\"Return kwargs suitable for create_event.\"\"\"\n    return dict(\n        event_kind=\"ci.build.completed\",\n        entity_kind=\"repository\",\n        entity_id=\"repo-123\",\n        actor=\"user@example.com\",\n        timestamp=NOW,\n        context={\"status\": \"success\", \"count\": 42},\n        correlation_keys={\"repo\": \"myrepo\", \"branch\": \"main\"},\n        source=\"webhook\",\n    )\n\n\ndef make_valid_event():\n    \"\"\"Create a valid Event instance.\"\"\"\n    return create_event(**make_valid_event_kwargs())\n\n\ndef make_valid_open_story(event=None):\n    \"\"\"Create a valid open Story.\"\"\"\n    if event is None:\n        event = make_valid_event()\n    return create_story(\n        story_type=\"ci.pipeline\",\n        correlation_rule=\"ci_rule\",\n        group_key={\"repo\": \"myrepo\", \"branch\": \"main\"},\n        first_event_id=event.id,\n        start_ts=NOW,\n        parent_story_id=None,\n    )\n\n\ndef make_valid_closed_story():\n    \"\"\"Create a valid closed Story.\"\"\"\n    story = make_valid_open_story()\n    return close_story(story, CloseReason.terminal, LATER)\n\n\n# ─── Test Types ──────────────────────────────────────────────────────────────\n\n\nclass TestTypes:\n    \"\"\"Test primitive/constrained type validators.\"\"\"\n\n    # --- EventKind ---\n    def test_event_kind_valid(self):\n        ek = EventKind(\"ci.build.completed\")\n        # Access underlying value; may be .value or direct str depending on impl\n        assert str(ek) or ek  # At minimum, construction succeeds\n\n    def test_event_kind_single_char(self):\n        \"\"\"Minimum valid EventKind is a single lowercase letter.\"\"\"\n        ek = EventKind(\"a\")\n        assert ek\n\n    def test_event_kind_with_underscores_and_dots(self):\n        ek = EventKind(\"ci_build.step.completed\")\n        assert ek\n\n    def test_event_kind_max_length_255(self):\n        val = \"a\" + \"b\" * 254  # 255 chars total\n        ek = EventKind(val)\n        assert ek\n\n    def test_event_kind_rejects_256_chars(self):\n        val = \"a\" + \"b\" * 255  # 256 chars total\n        with pytest.raises(Exception):  # ValidationError\n            EventKind(val)\n\n    def test_event_kind_rejects_uppercase(self):\n        with pytest.raises(Exception):\n            EventKind(\"CI.build\")\n\n    def test_event_kind_rejects_empty(self):\n        with pytest.raises(Exception):\n            EventKind(\"\")\n\n    def test_event_kind_rejects_starts_with_digit(self):\n        with pytest.raises(Exception):\n            EventKind(\"1ci.build\")\n\n    def test_event_kind_rejects_special_chars(self):\n        with pytest.raises(Exception):\n            EventKind(\"ci-build\")  # hyphen not allowed\n\n    def test_event_kind_rejects_spaces(self):\n        with pytest.raises(Exception):\n            EventKind(\"ci build\")\n\n    # --- EntityKind ---\n    def test_entity_kind_valid(self):\n        ek = EntityKind(\"repository\")\n        assert ek\n\n    def test_entity_kind_rejects_uppercase(self):\n        with pytest.raises(Exception):\n            EntityKind(\"Repository\")\n\n    def test_entity_kind_rejects_empty(self):\n        with pytest.raises(Exception):\n            EntityKind(\"\")\n\n    # --- EntityId ---\n    def test_entity_id_valid(self):\n        eid = EntityId(\"repo-123\")\n        assert eid\n\n    def test_entity_id_rejects_empty(self):\n        with pytest.raises(Exception):\n            EntityId(\"\")\n\n    def test_entity_id_max_length_1024(self):\n        eid = EntityId(\"x\" * 1024)\n        assert eid\n\n    def test_entity_id_rejects_1025_chars(self):\n        with pytest.raises(Exception):\n            EntityId(\"x\" * 1025)\n\n    # --- ActorId ---\n    def test_actor_id_valid(self):\n        aid = ActorId(\"user@example.com\")\n        assert aid\n\n    def test_actor_id_rejects_empty(self):\n        with pytest.raises(Exception):\n            ActorId(\"\")\n\n    def test_actor_id_max_length_512(self):\n        aid = ActorId(\"x\" * 512)\n        assert aid\n\n    def test_actor_id_rejects_513_chars(self):\n        with pytest.raises(Exception):\n            ActorId(\"x\" * 513)\n\n    # --- Sha256Hex ---\n    def test_sha256_hex_valid(self):\n        s = Sha256Hex(\"a\" * 64)\n        assert s\n\n    def test_sha256_hex_valid_mixed_hex(self):\n        s = Sha256Hex(\"0123456789abcdef\" * 4)\n        assert s\n\n    def test_sha256_hex_rejects_short(self):\n        with pytest.raises(Exception):\n            Sha256Hex(\"abcdef\")\n\n    def test_sha256_hex_rejects_65_chars(self):\n        with pytest.raises(Exception):\n            Sha256Hex(\"a\" * 65)\n\n    def test_sha256_hex_rejects_uppercase(self):\n        with pytest.raises(Exception):\n            Sha256Hex(\"A\" * 64)\n\n    def test_sha256_hex_rejects_non_hex(self):\n        with pytest.raises(Exception):\n            Sha256Hex(\"g\" * 64)\n\n    # --- StoryId ---\n    def test_story_id_valid_uuid4(self):\n        sid = StoryId(VALID_UUID4)\n        assert sid\n\n    def test_story_id_rejects_non_uuid(self):\n        with pytest.raises(Exception):\n            StoryId(\"not-a-uuid\")\n\n    def test_story_id_rejects_uuid_version_1(self):\n        # UUID v1 has a different version nibble\n        with pytest.raises(Exception):\n            StoryId(\"12345678-1234-1123-8123-123456789abc\")\n\n    # --- AwareDatetime ---\n    def test_aware_datetime_valid(self):\n        # Should accept timezone-aware datetime\n        adt = AwareDatetime(NOW)\n        assert adt\n\n    def test_aware_datetime_rejects_naive(self):\n        with pytest.raises(Exception):\n            AwareDatetime(NAIVE_DT)\n\n    def test_aware_datetime_non_utc_tz(self):\n        \"\"\"Non-UTC but still timezone-aware should be accepted.\"\"\"\n        tz_plus5 = timezone(timedelta(hours=5))\n        dt = datetime(2024, 1, 15, 12, 0, 0, tzinfo=tz_plus5)\n        adt = AwareDatetime(dt)\n        assert adt\n\n    # --- ContextDict ---\n    def test_context_dict_valid_all_types(self):\n        cd = ContextDict({\"s\": \"val\", \"i\": 42, \"f\": 3.14, \"b\": True, \"n\": None})\n        assert cd\n\n    def test_context_dict_empty(self):\n        cd = ContextDict({})\n        assert cd\n\n    def test_context_dict_rejects_list_value(self):\n        with pytest.raises(Exception):\n            ContextDict({\"key\": [1, 2, 3]})\n\n    def test_context_dict_rejects_dict_value(self):\n        with pytest.raises(Exception):\n            ContextDict({\"key\": {\"nested\": \"bad\"}})\n\n    def test_context_dict_rejects_empty_key(self):\n        with pytest.raises(Exception):\n            ContextDict({\"\": \"val\"})\n\n    # --- CorrelationKeys ---\n    def test_correlation_keys_valid(self):\n        ck = CorrelationKeys({\"repo\": \"myrepo\", \"branch\": \"main\"})\n        assert ck\n\n    def test_correlation_keys_rejects_empty_value(self):\n        with pytest.raises(Exception):\n            CorrelationKeys({\"repo\": \"\"})\n\n    def test_correlation_keys_rejects_empty_key(self):\n        with pytest.raises(Exception):\n            CorrelationKeys({\"\": \"val\"})\n\n    def test_correlation_keys_empty_dict_accepted(self):\n        \"\"\"Empty CorrelationKeys dict should be valid (no entries is ok).\"\"\"\n        # Contract says all k,v must be non-empty strings - vacuously true for empty dict\n        ck = CorrelationKeys({})\n        assert ck\n\n    # --- StoryStatus ---\n    def test_story_status_open(self):\n        assert StoryStatus.open\n\n    def test_story_status_closed(self):\n        assert StoryStatus.closed\n\n    # --- CloseReason ---\n    def test_close_reason_terminal(self):\n        assert CloseReason.terminal\n\n    def test_close_reason_timeout(self):\n        assert CloseReason.timeout\n\n    def test_close_reason_evicted(self):\n        assert CloseReason.evicted\n\n    # --- TerminalEventPattern ---\n    def test_terminal_event_pattern_valid(self):\n        tp = TerminalEventPattern({\"event_kind\": \"ci.build.completed\"})\n        assert tp\n\n    def test_terminal_event_pattern_rejects_empty_key(self):\n        with pytest.raises(Exception):\n            TerminalEventPattern({\"\": \"value\"})\n\n    # --- EventKindSet ---\n    def test_event_kind_set_valid(self):\n        eks = EventKindSet([\"ci.build.completed\", \"ci.build.started\"])\n        assert eks\n\n    def test_event_kind_set_single_item(self):\n        eks = EventKindSet([\"ci.build.completed\"])\n        assert eks\n\n    def test_event_kind_set_rejects_empty(self):\n        with pytest.raises(Exception):\n            EventKindSet([])\n\n\n# ─── Test compute_event_id ───────────────────────────────────────────────────\n\n\nclass TestComputeEventId:\n    \"\"\"Test the content-addressable event ID computation.\"\"\"\n\n    def _base_kwargs(self):\n        return dict(\n            event_kind=\"ci.build.completed\",\n            entity_kind=\"repository\",\n            entity_id=\"repo-123\",\n            actor=\"user@example.com\",\n            timestamp=NOW,\n            context={\"status\": \"success\"},\n            correlation_keys={\"repo\": \"myrepo\"},\n        )\n\n    def test_returns_64_hex_chars(self):\n        result = compute_event_id(**self._base_kwargs())\n        assert len(result) == 64\n        assert re.match(r\"^[0-9a-f]{64}$\", result)\n\n    def test_deterministic(self):\n        \"\"\"Same inputs always produce same output.\"\"\"\n        id1 = compute_event_id(**self._base_kwargs())\n        id2 = compute_event_id(**self._base_kwargs())\n        assert id1 == id2\n\n    def test_sensitivity_event_kind(self):\n        base_id = compute_event_id(**self._base_kwargs())\n        kwargs = self._base_kwargs()\n        kwargs[\"event_kind\"] = \"ci.build.started\"\n        changed_id = compute_event_id(**kwargs)\n        assert base_id != changed_id\n\n    def test_sensitivity_entity_kind(self):\n        base_id = compute_event_id(**self._base_kwargs())\n        kwargs = self._base_kwargs()\n        kwargs[\"entity_kind\"] = \"pipeline\"\n        changed_id = compute_event_id(**kwargs)\n        assert base_id != changed_id\n\n    def test_sensitivity_entity_id(self):\n        base_id = compute_event_id(**self._base_kwargs())\n        kwargs = self._base_kwargs()\n        kwargs[\"entity_id\"] = \"repo-456\"\n        changed_id = compute_event_id(**kwargs)\n        assert base_id != changed_id\n\n    def test_sensitivity_actor(self):\n        base_id = compute_event_id(**self._base_kwargs())\n        kwargs = self._base_kwargs()\n        kwargs[\"actor\"] = \"other@example.com\"\n        changed_id = compute_event_id(**kwargs)\n        assert base_id != changed_id\n\n    def test_sensitivity_timestamp(self):\n        base_id = compute_event_id(**self._base_kwargs())\n        kwargs = self._base_kwargs()\n        kwargs[\"timestamp\"] = LATER\n        changed_id = compute_event_id(**kwargs)\n        assert base_id != changed_id\n\n    def test_sensitivity_context(self):\n        base_id = compute_event_id(**self._base_kwargs())\n        kwargs = self._base_kwargs()\n        kwargs[\"context\"] = {\"status\": \"failure\"}\n        changed_id = compute_event_id(**kwargs)\n        assert base_id != changed_id\n\n    def test_sensitivity_correlation_keys(self):\n        base_id = compute_event_id(**self._base_kwargs())\n        kwargs = self._base_kwargs()\n        kwargs[\"correlation_keys\"] = {\"repo\": \"otherrepo\"}\n        changed_id = compute_event_id(**kwargs)\n        assert base_id != changed_id\n\n    def test_naive_timestamp_rejected(self):\n        kwargs = self._base_kwargs()\n        kwargs[\"timestamp\"] = NAIVE_DT\n        with pytest.raises(Exception):\n            compute_event_id(**kwargs)\n\n    def test_empty_context_and_correlation_keys(self):\n        \"\"\"Edge case: empty context and empty correlation_keys.\"\"\"\n        result = compute_event_id(\n            event_kind=\"ci.build.completed\",\n            entity_kind=\"repository\",\n            entity_id=\"repo-123\",\n            actor=\"user@example.com\",\n            timestamp=NOW,\n            context={},\n            correlation_keys={},\n        )\n        assert len(result) == 64\n        assert re.match(r\"^[0-9a-f]{64}$\", result)\n\n\n# ─── Test create_event ───────────────────────────────────────────────────────\n\n\nclass TestCreateEvent:\n    \"\"\"Test event creation including automatic ID computation.\"\"\"\n\n    def test_happy_path(self):\n        event = make_valid_event()\n        # Event.id should be a valid SHA-256 hex\n        assert len(event.id) == 64\n        assert re.match(r\"^[0-9a-f]{64}$\", event.id)\n        # Fields should match inputs\n        assert event.event_kind == \"ci.build.completed\"\n        assert event.entity_kind == \"repository\"\n        assert event.entity_id == \"repo-123\"\n        assert event.actor == \"user@example.com\"\n        assert event.source == \"webhook\"\n\n    def test_id_matches_compute_event_id(self):\n        \"\"\"Event.id must match what compute_event_id returns.\"\"\"\n        kwargs = make_valid_event_kwargs()\n        event = create_event(**kwargs)\n        expected_id = compute_event_id(\n            event_kind=kwargs[\"event_kind\"],\n            entity_kind=kwargs[\"entity_kind\"],\n            entity_id=kwargs[\"entity_id\"],\n            actor=kwargs[\"actor\"],\n            timestamp=kwargs[\"timestamp\"],\n            context=kwargs[\"context\"],\n            correlation_keys=kwargs[\"correlation_keys\"],\n        )\n        assert event.id == expected_id\n\n    def test_same_inputs_same_id(self):\n        \"\"\"Creating the same event twice produces identical IDs.\"\"\"\n        event1 = create_event(**make_valid_event_kwargs())\n        event2 = create_event(**make_valid_event_kwargs())\n        assert event1.id == event2.id\n\n    def test_source_excluded_from_hash(self):\n        \"\"\"Changing source does not change the event id.\"\"\"\n        kwargs1 = make_valid_event_kwargs()\n        kwargs1[\"source\"] = \"webhook\"\n        kwargs2 = make_valid_event_kwargs()\n        kwargs2[\"source\"] = \"otlp\"\n        event1 = create_event(**kwargs1)\n        event2 = create_event(**kwargs2)\n        assert event1.id == event2.id\n\n    def test_event_is_frozen(self):\n        \"\"\"Event instances are frozen (immutable).\"\"\"\n        event = make_valid_event()\n        with pytest.raises(Exception):\n            event.source = \"changed\"\n\n    def test_invalid_event_kind(self):\n        kwargs = make_valid_event_kwargs()\n        kwargs[\"event_kind\"] = \"INVALID\"\n        with pytest.raises(Exception):\n            create_event(**kwargs)\n\n    def test_invalid_entity_kind(self):\n        kwargs = make_valid_event_kwargs()\n        kwargs[\"entity_kind\"] = \"INVALID-KIND\"\n        with pytest.raises(Exception):\n            create_event(**kwargs)\n\n    def test_empty_entity_id(self):\n        kwargs = make_valid_event_kwargs()\n        kwargs[\"entity_id\"] = \"\"\n        with pytest.raises(Exception):\n            create_event(**kwargs)\n\n    def test_empty_actor(self):\n        kwargs = make_valid_event_kwargs()\n        kwargs[\"actor\"] = \"\"\n        with pytest.raises(Exception):\n            create_event(**kwargs)\n\n    def test_naive_timestamp(self):\n        kwargs = make_valid_event_kwargs()\n        kwargs[\"timestamp\"] = NAIVE_DT\n        with pytest.raises(Exception):\n            create_event(**kwargs)\n\n    def test_invalid_context_value(self):\n        kwargs = make_valid_event_kwargs()\n        kwargs[\"context\"] = {\"key\": [1, 2, 3]}\n        with pytest.raises(Exception):\n            create_event(**kwargs)\n\n    def test_invalid_correlation_key_empty_value(self):\n        kwargs = make_valid_event_kwargs()\n        kwargs[\"correlation_keys\"] = {\"repo\": \"\"}\n        with pytest.raises(Exception):\n            create_event(**kwargs)\n\n    def test_invalid_correlation_key_empty_key(self):\n        kwargs = make_valid_event_kwargs()\n        kwargs[\"correlation_keys\"] = {\"\": \"myrepo\"}\n        with pytest.raises(Exception):\n            create_event(**kwargs)\n\n\n# ─── Test Story Creation & Lifecycle ─────────────────────────────────────────\n\n\nclass TestCreateStory:\n    \"\"\"Test story creation.\"\"\"\n\n    def test_happy_path(self):\n        event = make_valid_event()\n        story = create_story(\n            story_type=\"ci.pipeline\",\n            correlation_rule=\"ci_rule\",\n            group_key={\"repo\": \"myrepo\", \"branch\": \"main\"},\n            first_event_id=event.id,\n            start_ts=NOW,\n            parent_story_id=None,\n        )\n        assert story.status == StoryStatus.open\n        assert story.events == (event.id,)\n        assert story.event_count == 1\n        assert story.end_ts is None\n        assert story.duration is None\n        assert story.close_reason is None\n        assert story.story_type == \"ci.pipeline\"\n        assert story.correlation_rule == \"ci_rule\"\n        # Verify story_id is a valid UUID4\n        assert re.match(\n            r\"^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$\",\n            story.story_id,\n        )\n\n    def test_with_parent_story_id(self):\n        event = make_valid_event()\n        story = create_story(\n            story_type=\"ci.pipeline\",\n            correlation_rule=\"ci_rule\",\n            group_key={\"repo\": \"myrepo\"},\n            first_event_id=event.id,\n            start_ts=NOW,\n            parent_story_id=VALID_UUID4,\n        )\n        assert story.parent_story_id == VALID_UUID4\n\n    def test_no_parent(self):\n        event = make_valid_event()\n        story = create_story(\n            story_type=\"ci.pipeline\",\n            correlation_rule=\"ci_rule\",\n            group_key={\"repo\": \"myrepo\"},\n            first_event_id=event.id,\n            start_ts=NOW,\n            parent_story_id=None,\n        )\n        assert story.parent_story_id is None\n\n    def test_empty_story_type_rejected(self):\n        event = make_valid_event()\n        with pytest.raises(Exception):\n            create_story(\n                story_type=\"\",\n                correlation_rule=\"ci_rule\",\n                group_key={\"repo\": \"myrepo\"},\n                first_event_id=event.id,\n                start_ts=NOW,\n                parent_story_id=None,\n            )\n\n    def test_empty_correlation_rule_rejected(self):\n        event = make_valid_event()\n        with pytest.raises(Exception):\n            create_story(\n                story_type=\"ci.pipeline\",\n                correlation_rule=\"\",\n                group_key={\"repo\": \"myrepo\"},\n                first_event_id=event.id,\n                start_ts=NOW,\n                parent_story_id=None,\n            )\n\n    def test_invalid_first_event_id_rejected(self):\n        with pytest.raises(Exception):\n            create_story(\n                story_type=\"ci.pipeline\",\n                correlation_rule=\"ci_rule\",\n                group_key={\"repo\": \"myrepo\"},\n                first_event_id=\"not-a-hash\",\n                start_ts=NOW,\n                parent_story_id=None,\n            )\n\n\nclass TestStoryLifecycle:\n    \"\"\"Test append_event_to_story and close_story.\"\"\"\n\n    # --- append_event_to_story ---\n    def test_append_event_happy_path(self):\n        story = make_valid_open_story()\n        original_events = story.events\n        original_count = story.event_count\n        new_story = append_event_to_story(story, VALID_SHA256_B)\n        assert new_story.events == original_events + (VALID_SHA256_B,)\n        assert new_story.event_count == original_count + 1\n        assert new_story.status == StoryStatus.open\n        assert new_story.story_id == story.story_id\n\n    def test_append_event_original_unchanged(self):\n        story = make_valid_open_story()\n        original_events = story.events\n        original_count = story.event_count\n        _ = append_event_to_story(story, VALID_SHA256_B)\n        # Original unchanged\n        assert story.events == original_events\n        assert story.event_count == original_count\n\n    def test_append_event_multiple(self):\n        story = make_valid_open_story()\n        story2 = append_event_to_story(story, VALID_SHA256_B)\n        story3 = append_event_to_story(story2, VALID_SHA256_C)\n        assert story3.event_count == 3\n        assert len(story3.events) == 3\n\n    def test_append_event_story_not_open(self):\n        closed_story = make_valid_closed_story()\n        with pytest.raises(Exception):\n            append_event_to_story(closed_story, VALID_SHA256_B)\n\n    def test_append_event_duplicate_id(self):\n        story = make_valid_open_story()\n        # The first event id is already in story.events\n        first_event_id = story.events[0]\n        with pytest.raises(Exception):\n            append_event_to_story(story, first_event_id)\n\n    # --- close_story ---\n    def test_close_story_happy_path(self):\n        story = make_valid_open_story()\n        closed = close_story(story, CloseReason.terminal, LATER)\n        assert closed.status == StoryStatus.closed\n        assert closed.close_reason == CloseReason.terminal\n        assert closed.end_ts == LATER\n        expected_duration = (LATER - NOW).total_seconds()\n        assert closed.duration == expected_duration\n        assert closed.duration >= 0.0\n        assert closed.story_id == story.story_id\n        assert closed.events == story.events\n\n    def test_close_story_original_unchanged(self):\n        story = make_valid_open_story()\n        _ = close_story(story, CloseReason.terminal, LATER)\n        assert story.status == StoryStatus.open\n        assert story.end_ts is None\n        assert story.close_reason is None\n\n    def test_close_story_already_closed(self):\n        closed_story = make_valid_closed_story()\n        with pytest.raises(Exception):\n            close_story(closed_story, CloseReason.timeout, LATER)\n\n    def test_close_story_end_before_start(self):\n        story = make_valid_open_story()\n        with pytest.raises(Exception):\n            close_story(story, CloseReason.terminal, EARLIER)\n\n    def test_close_story_zero_duration(self):\n        \"\"\"end_ts == start_ts produces duration 0.0.\"\"\"\n        story = make_valid_open_story()\n        closed = close_story(story, CloseReason.terminal, story.start_ts)\n        assert closed.duration == 0.0\n\n    def test_close_story_timeout_reason(self):\n        story = make_valid_open_story()\n        closed = close_story(story, CloseReason.timeout, LATER)\n        assert closed.close_reason == CloseReason.timeout\n\n    def test_close_story_evicted_reason(self):\n        story = make_valid_open_story()\n        closed = close_story(story, CloseReason.evicted, LATER)\n        assert closed.close_reason == CloseReason.evicted\n\n\n# ─── Test validate_story_consistency ─────────────────────────────────────────\n\n\nclass TestValidateStoryConsistency:\n    \"\"\"Test the story consistency validator.\"\"\"\n\n    def test_valid_open_story(self):\n        story = make_valid_open_story()\n        result = validate_story_consistency(story)\n        assert result is True\n\n    def test_valid_closed_story(self):\n        story = make_valid_closed_story()\n        result = validate_story_consistency(story)\n        assert result is True\n\n    def test_open_story_with_end_ts_rejected(self):\n        \"\"\"Open story with end_ts set should fail consistency.\"\"\"\n        # We must create an inconsistent story; since frozen, we use model construction\n        # that bypasses validators or use construct/model_construct\n        story = make_valid_open_story()\n        with pytest.raises(Exception):\n            # Attempt to create inconsistent state via model_copy\n            story.model_copy(update={\"end_ts\": LATER})\n\n    def test_open_story_with_close_reason_rejected(self):\n        story = make_valid_open_story()\n        with pytest.raises(Exception):\n            story.model_copy(update={\"close_reason\": CloseReason.terminal})\n\n    def test_open_story_with_duration_rejected(self):\n        story = make_valid_open_story()\n        with pytest.raises(Exception):\n            story.model_copy(update={\"duration\": 100.0})\n\n    def test_closed_story_missing_end_ts_rejected(self):\n        \"\"\"Closed story without end_ts should fail.\"\"\"\n        story = make_valid_open_story()\n        with pytest.raises(Exception):\n            story.model_copy(\n                update={\n                    \"status\": StoryStatus.closed,\n                    \"close_reason\": CloseReason.terminal,\n                    \"duration\": 100.0,\n                    # end_ts intentionally missing (None)\n                }\n            )\n\n    def test_closed_story_missing_close_reason_rejected(self):\n        story = make_valid_open_story()\n        with pytest.raises(Exception):\n            story.model_copy(\n                update={\n                    \"status\": StoryStatus.closed,\n                    \"end_ts\": LATER,\n                    \"duration\": 100.0,\n                    # close_reason intentionally missing (None)\n                }\n            )\n\n    def test_closed_story_missing_duration_rejected(self):\n        story = make_valid_open_story()\n        with pytest.raises(Exception):\n            story.model_copy(\n                update={\n                    \"status\": StoryStatus.closed,\n                    \"end_ts\": LATER,\n                    \"close_reason\": CloseReason.terminal,\n                    # duration intentionally missing (None)\n                }\n            )\n\n    def test_event_count_mismatch_rejected(self):\n        \"\"\"Story with event_count != len(events) should fail.\"\"\"\n        story = make_valid_open_story()\n        with pytest.raises(Exception):\n            story.model_copy(update={\"event_count\": 99})\n\n\n# ─── Test Correlation Helpers ────────────────────────────────────────────────\n\n\nclass TestCorrelationHelpers:\n    \"\"\"Test matches_terminal_pattern and extract_group_key.\"\"\"\n\n    def _make_event(self):\n        return make_valid_event()\n\n    # --- matches_terminal_pattern ---\n    def test_empty_pattern_matches_all(self):\n        event = self._make_event()\n        pattern = TerminalEventPattern({})\n        assert matches_terminal_pattern(event, pattern) is True\n\n    def test_event_kind_match(self):\n        event = self._make_event()\n        pattern = TerminalEventPattern({\"event_kind\": \"ci.build.completed\"})\n        assert matches_terminal_pattern(event, pattern) is True\n\n    def test_event_kind_no_match(self):\n        event = self._make_event()\n        pattern = TerminalEventPattern({\"event_kind\": \"ci.build.started\"})\n        assert matches_terminal_pattern(event, pattern) is False\n\n    def test_entity_kind_match(self):\n        event = self._make_event()\n        pattern = TerminalEventPattern({\"entity_kind\": \"repository\"})\n        assert matches_terminal_pattern(event, pattern) is True\n\n    def test_context_key_match(self):\n        event = self._make_event()\n        pattern = TerminalEventPattern({\"context.status\": \"success\"})\n        assert matches_terminal_pattern(event, pattern) is True\n\n    def test_context_key_no_match(self):\n        event = self._make_event()\n        pattern = TerminalEventPattern({\"context.status\": \"failure\"})\n        assert matches_terminal_pattern(event, pattern) is False\n\n    def test_missing_context_key_returns_false(self):\n        event = self._make_event()\n        pattern = TerminalEventPattern({\"context.nonexistent\": \"value\"})\n        assert matches_terminal_pattern(event, pattern) is False\n\n    def test_correlation_key_match(self):\n        event = self._make_event()\n        pattern = TerminalEventPattern({\"correlation_keys.repo\": \"myrepo\"})\n        assert matches_terminal_pattern(event, pattern) is True\n\n    def test_multi_field_all_match(self):\n        event = self._make_event()\n        pattern = TerminalEventPattern({\n            \"event_kind\": \"ci.build.completed\",\n            \"context.status\": \"success\",\n        })\n        assert matches_terminal_pattern(event, pattern) is True\n\n    def test_multi_field_partial_match_returns_false(self):\n        event = self._make_event()\n        pattern = TerminalEventPattern({\n            \"event_kind\": \"ci.build.completed\",\n            \"context.status\": \"failure\",  # This won't match\n        })\n        assert matches_terminal_pattern(event, pattern) is False\n\n    def test_actor_match(self):\n        event = self._make_event()\n        pattern = TerminalEventPattern({\"actor\": \"user@example.com\"})\n        assert matches_terminal_pattern(event, pattern) is True\n\n    def test_entity_id_match(self):\n        event = self._make_event()\n        pattern = TerminalEventPattern({\"entity_id\": \"repo-123\"})\n        assert matches_terminal_pattern(event, pattern) is True\n\n    # --- extract_group_key ---\n    def test_extract_group_key_correlation_keys(self):\n        event = self._make_event()\n        group_by = GroupByKeys([\"correlation_keys.repo\", \"correlation_keys.branch\"])\n        result = extract_group_key(event, group_by)\n        assert len(result) == 2\n        assert result[\"correlation_keys.repo\"] == \"myrepo\"\n        assert result[\"correlation_keys.branch\"] == \"main\"\n\n    def test_extract_group_key_top_level_field(self):\n        event = self._make_event()\n        group_by = GroupByKeys([\"event_kind\"])\n        result = extract_group_key(event, group_by)\n        assert result[\"event_kind\"] == \"ci.build.completed\"\n\n    def test_extract_group_key_context_field(self):\n        event = self._make_event()\n        group_by = GroupByKeys([\"context.status\"])\n        result = extract_group_key(event, group_by)\n        assert result[\"context.status\"] == \"success\"\n\n    def test_extract_group_key_missing_field(self):\n        event = self._make_event()\n        group_by = GroupByKeys([\"correlation_keys.nonexistent\"])\n        with pytest.raises(Exception):\n            extract_group_key(event, group_by)\n\n\n# ─── Test Serialization ─────────────────────────────────────────────────────\n\n\nclass TestSerialization:\n    \"\"\"Test event_to_dict, event_from_dict, story_to_dict, story_from_dict.\"\"\"\n\n    # --- Event round trip ---\n    def test_event_round_trip(self):\n        event = make_valid_event()\n        d = event_to_dict(event)\n        restored = event_from_dict(d)\n        assert restored.id == event.id\n        assert restored.event_kind == event.event_kind\n        assert restored.entity_kind == event.entity_kind\n        assert restored.entity_id == event.entity_id\n        assert restored.actor == event.actor\n        assert restored.source == event.source\n\n    def test_event_to_dict_all_fields_present(self):\n        event = make_valid_event()\n        d = event_to_dict(event)\n        assert \"id\" in d\n        assert \"event_kind\" in d\n        assert \"entity_kind\" in d\n        assert \"entity_id\" in d\n        assert \"actor\" in d\n        assert \"timestamp\" in d\n        assert \"context\" in d\n        assert \"correlation_keys\" in d\n        assert \"source\" in d\n\n    def test_event_to_dict_json_serializable(self):\n        event = make_valid_event()\n        d = event_to_dict(event)\n        # Should not raise\n        json.dumps(d)\n\n    def test_event_from_dict_missing_required_field(self):\n        event = make_valid_event()\n        d = event_to_dict(event)\n        del d[\"event_kind\"]\n        with pytest.raises(Exception):\n            event_from_dict(d)\n\n    def test_event_from_dict_id_mismatch(self):\n        event = make_valid_event()\n        d = event_to_dict(event)\n        d[\"id\"] = \"0\" * 64  # Wrong hash\n        with pytest.raises(Exception):\n            event_from_dict(d)\n\n    def test_event_from_dict_no_id_computes_it(self):\n        event = make_valid_event()\n        d = event_to_dict(event)\n        original_id = d.pop(\"id\")\n        restored = event_from_dict(d)\n        assert restored.id == original_id\n\n    def test_event_from_dict_invalid_field_value(self):\n        event = make_valid_event()\n        d = event_to_dict(event)\n        d[\"event_kind\"] = \"INVALID_KIND\"\n        with pytest.raises(Exception):\n            event_from_dict(d)\n\n    # --- Story round trip ---\n    def test_story_round_trip_open(self):\n        story = make_valid_open_story()\n        d = story_to_dict(story)\n        restored = story_from_dict(d)\n        assert restored.story_id == story.story_id\n        assert restored.status == story.status\n        assert restored.event_count == story.event_count\n        assert restored.story_type == story.story_type\n\n    def test_story_round_trip_closed(self):\n        story = make_valid_closed_story()\n        d = story_to_dict(story)\n        restored = story_from_dict(d)\n        assert restored.story_id == story.story_id\n        assert restored.status == StoryStatus.closed\n        assert restored.close_reason == story.close_reason\n        assert restored.duration == story.duration\n\n    def test_story_to_dict_all_fields_present(self):\n        story = make_valid_open_story()\n        d = story_to_dict(story)\n        assert \"story_id\" in d\n        assert \"story_type\" in d\n        assert \"correlation_rule\" in d\n        assert \"group_key\" in d\n        assert \"events\" in d\n        assert \"status\" in d\n        assert \"start_ts\" in d\n        assert \"event_count\" in d\n\n    def test_story_to_dict_events_is_list(self):\n        story = make_valid_open_story()\n        d = story_to_dict(story)\n        assert isinstance(d[\"events\"], list)\n\n    def test_story_to_dict_json_serializable(self):\n        story = make_valid_closed_story()\n        d = story_to_dict(story)\n        json.dumps(d)\n\n    def test_story_from_dict_lifecycle_inconsistency(self):\n        \"\"\"Open story with end_ts set should fail lifecycle validation.\"\"\"\n        story = make_valid_open_story()\n        d = story_to_dict(story)\n        d[\"end_ts\"] = LATER.isoformat()\n        with pytest.raises(Exception):\n            story_from_dict(d)\n\n    def test_story_from_dict_event_count_mismatch(self):\n        story = make_valid_open_story()\n        d = story_to_dict(story)\n        d[\"event_count\"] = 99\n        with pytest.raises(Exception):\n            story_from_dict(d)\n\n    def test_story_from_dict_missing_required_field(self):\n        story = make_valid_open_story()\n        d = story_to_dict(story)\n        del d[\"story_type\"]\n        with pytest.raises(Exception):\n            story_from_dict(d)\n\n\n# ─── Test Configuration ─────────────────────────────────────────────────────\n\n\nclass TestConfig:\n    \"\"\"Test configuration types and load_chronicler_config.\"\"\"\n\n    # --- Individual config types ---\n    def test_webhook_source_config_valid(self):\n        cfg = WebhookSourceConfig(\n            type=\"webhook\",\n            host=\"0.0.0.0\",\n            port=8080,\n            path=\"/events\",\n            source_label=\"main_webhook\",\n        )\n        assert cfg.port == 8080\n        assert cfg.path == \"/events\"\n\n    def test_webhook_source_config_port_zero(self):\n        with pytest.raises(Exception):\n            WebhookSourceConfig(\n                type=\"webhook\", host=\"0.0.0.0\", port=0, path=\"/events\", source_label=\"x\"\n            )\n\n    def test_webhook_source_config_port_65536(self):\n        with pytest.raises(Exception):\n            WebhookSourceConfig(\n                type=\"webhook\", host=\"0.0.0.0\", port=65536, path=\"/events\", source_label=\"x\"\n            )\n\n    def test_webhook_source_config_invalid_path(self):\n        with pytest.raises(Exception):\n            WebhookSourceConfig(\n                type=\"webhook\", host=\"0.0.0.0\", port=8080, path=\"no-leading-slash\", source_label=\"x\"\n            )\n\n    def test_webhook_source_config_valid_path_with_segments(self):\n        cfg = WebhookSourceConfig(\n            type=\"webhook\", host=\"0.0.0.0\", port=8080, path=\"/api/v1/events\", source_label=\"x\"\n        )\n        assert cfg.path == \"/api/v1/events\"\n\n    def test_otlp_source_config_valid(self):\n        cfg = OtlpSourceConfig(\n            type=\"otlp\", host=\"0.0.0.0\", port=4317, source_label=\"otlp_source\"\n        )\n        assert cfg.port == 4317\n\n    def test_file_source_config_valid(self):\n        cfg = FileSourceConfig(\n            type=\"file\",\n            path=\"/var/log/events.jsonl\",\n            poll_interval_seconds=1.0,\n            source_label=\"file_source\",\n        )\n        assert cfg.poll_interval_seconds == 1.0\n\n    def test_file_source_config_poll_too_low(self):\n        with pytest.raises(Exception):\n            FileSourceConfig(\n                type=\"file\",\n                path=\"/var/log/events.jsonl\",\n                poll_interval_seconds=0.01,\n                source_label=\"x\",\n            )\n\n    def test_file_source_config_poll_too_high(self):\n        with pytest.raises(Exception):\n            FileSourceConfig(\n                type=\"file\",\n                path=\"/var/log/events.jsonl\",\n                poll_interval_seconds=3601,\n                source_label=\"x\",\n            )\n\n    def test_file_source_config_empty_path(self):\n        with pytest.raises(Exception):\n            FileSourceConfig(\n                type=\"file\", path=\"\", poll_interval_seconds=1.0, source_label=\"x\"\n            )\n\n    def test_sentinel_source_config_valid(self):\n        cfg = SentinelSourceConfig(\n            type=\"sentinel\", host=\"0.0.0.0\", port=9090, source_label=\"sentinel\"\n        )\n        assert cfg.port == 9090\n\n    def test_stigmergy_sink_config_valid(self):\n        cfg = StigmergySinkConfig(\n            type=\"stigmergy\", url=\"https://stigmergy.example.com\", timeout_seconds=30.0\n        )\n        assert cfg.url.startswith(\"https://\")\n\n    def test_stigmergy_sink_config_invalid_url(self):\n        with pytest.raises(Exception):\n            StigmergySinkConfig(\n                type=\"stigmergy\", url=\"ftp://not-http.com\", timeout_seconds=30.0\n            )\n\n    def test_stigmergy_sink_config_timeout_too_low(self):\n        with pytest.raises(Exception):\n            StigmergySinkConfig(\n                type=\"stigmergy\", url=\"https://example.com\", timeout_seconds=0.1\n            )\n\n    def test_stigmergy_sink_config_timeout_too_high(self):\n        with pytest.raises(Exception):\n            StigmergySinkConfig(\n                type=\"stigmergy\", url=\"https://example.com\", timeout_seconds=301\n            )\n\n    def test_apprentice_sink_config_valid(self):\n        cfg = ApprenticeSinkConfig(\n            type=\"apprentice\", url=\"http://apprentice.local\", timeout_seconds=5.0\n        )\n        assert cfg\n\n    def test_disk_sink_config_valid(self):\n        cfg = DiskSinkConfig(\n            type=\"disk\", events_path=\"/data/events.jsonl\", stories_path=\"/data/stories.jsonl\"\n        )\n        assert cfg\n\n    def test_disk_sink_config_empty_events_path(self):\n        with pytest.raises(Exception):\n            DiskSinkConfig(type=\"disk\", events_path=\"\", stories_path=\"/data/stories.jsonl\")\n\n    def test_disk_sink_config_empty_stories_path(self):\n        with pytest.raises(Exception):\n            DiskSinkConfig(type=\"disk\", events_path=\"/data/events.jsonl\", stories_path=\"\")\n\n    def test_kindex_sink_config_valid(self):\n        nf = NoteworthinessFilter(\n            min_event_count=2,\n            min_duration_seconds=0.0,\n            story_types=[\"ci.pipeline\"],\n            exclude_close_reasons=[\"evicted\"],\n        )\n        cfg = KindexSinkConfig(\n            type=\"kindex\",\n            url=\"https://kindex.example.com\",\n            timeout_seconds=10.0,\n            noteworthiness=nf,\n        )\n        assert cfg\n\n    def test_noteworthiness_filter_valid(self):\n        nf = NoteworthinessFilter(\n            min_event_count=1,\n            min_duration_seconds=0.0,\n            story_types=[],\n            exclude_close_reasons=[],\n        )\n        assert nf.min_event_count == 1\n\n    def test_noteworthiness_filter_min_event_count_zero(self):\n        with pytest.raises(Exception):\n            NoteworthinessFilter(\n                min_event_count=0,\n                min_duration_seconds=0.0,\n                story_types=[],\n                exclude_close_reasons=[],\n            )\n\n    def test_noteworthiness_filter_negative_duration(self):\n        with pytest.raises(Exception):\n            NoteworthinessFilter(\n                min_event_count=1,\n                min_duration_seconds=-1.0,\n                story_types=[],\n                exclude_close_reasons=[],\n            )\n\n    def test_memory_limits_config_valid(self):\n        cfg = MemoryLimitsConfig(max_open_stories=10000, max_events_per_story=1000)\n        assert cfg.max_open_stories == 10000\n\n    def test_memory_limits_config_zero_stories(self):\n        with pytest.raises(Exception):\n            MemoryLimitsConfig(max_open_stories=0, max_events_per_story=1000)\n\n    def test_memory_limits_config_zero_events(self):\n        with pytest.raises(Exception):\n            MemoryLimitsConfig(max_open_stories=1000, max_events_per_story=0)\n\n    def test_memory_limits_config_max_boundary(self):\n        cfg = MemoryLimitsConfig(max_open_stories=1000000, max_events_per_story=100000)\n        assert cfg.max_open_stories == 1000000\n\n    def test_memory_limits_config_over_max(self):\n        with pytest.raises(Exception):\n            MemoryLimitsConfig(max_open_stories=1000001, max_events_per_story=1000)\n\n    # --- CorrelationRule ---\n    def test_correlation_rule_valid(self):\n        rule = CorrelationRule(\n            name=\"ci.pipeline.rule\",\n            event_kinds=[\"ci.build.started\", \"ci.build.completed\"],\n            group_by=[\"correlation_keys.repo\"],\n            chain_by=[],\n            terminal_event={\"event_kind\": \"ci.build.completed\"},\n            timeout=300.0,\n            story_type=\"ci.pipeline\",\n        )\n        assert rule.name == \"ci.pipeline.rule\"\n\n    def test_correlation_rule_frozen(self):\n        rule = CorrelationRule(\n            name=\"testRule\",\n            event_kinds=[\"ci.build.completed\"],\n            group_by=[\"correlation_keys.repo\"],\n            chain_by=[],\n            terminal_event={\"event_kind\": \"ci.build.completed\"},\n            timeout=300.0,\n            story_type=\"ci.pipeline\",\n        )\n        with pytest.raises(Exception):\n            rule.name = \"changed\"\n\n    def test_correlation_rule_invalid_name_starts_with_digit(self):\n        with pytest.raises(Exception):\n            CorrelationRule(\n                name=\"1invalid\",\n                event_kinds=[\"ci.build.completed\"],\n                group_by=[\"correlation_keys.repo\"],\n                chain_by=[],\n                terminal_event={},\n                timeout=300.0,\n                story_type=\"ci.pipeline\",\n            )\n\n    def test_correlation_rule_timeout_too_low(self):\n        with pytest.raises(Exception):\n            CorrelationRule(\n                name=\"testRule\",\n                event_kinds=[\"ci.build.completed\"],\n                group_by=[\"correlation_keys.repo\"],\n                chain_by=[],\n                terminal_event={},\n                timeout=0.0001,\n                story_type=\"ci.pipeline\",\n            )\n\n    def test_correlation_rule_empty_story_type(self):\n        with pytest.raises(Exception):\n            CorrelationRule(\n                name=\"testRule\",\n                event_kinds=[\"ci.build.completed\"],\n                group_by=[\"correlation_keys.repo\"],\n                chain_by=[],\n                terminal_event={},\n                timeout=300.0,\n                story_type=\"\",\n            )\n\n\nclass TestLoadChroniclerConfig:\n    \"\"\"Test load_chronicler_config with file fixtures.\"\"\"\n\n    def _write_valid_config(self, tmp_path):\n        \"\"\"Write a valid YAML config file and return its path.\"\"\"\n        config_content = \"\"\"\nsources:\n  - type: webhook\n    host: \"0.0.0.0\"\n    port: 8080\n    path: \"/events\"\n    source_label: \"main_webhook\"\nsinks:\n  - type: disk\n    events_path: \"/data/events.jsonl\"\n    stories_path: \"/data/stories.jsonl\"\ncorrelation_rules:\n  - name: ciPipeline\n    event_kinds:\n      - \"ci.build.started\"\n      - \"ci.build.completed\"\n    group_by:\n      - \"correlation_keys.repo\"\n    chain_by: []\n    terminal_event:\n      event_kind: \"ci.build.completed\"\n    timeout: 300.0\n    story_type: \"ci.pipeline\"\nmemory_limits:\n  max_open_stories: 10000\n  max_events_per_story: 1000\nstate_path: \"/data/state\"\n\"\"\"\n        config_path = tmp_path / \"config.yaml\"\n        config_path.write_text(config_content)\n        return str(config_path)\n\n    def test_happy_path(self, tmp_path):\n        config_path = self._write_valid_config(tmp_path)\n        config = load_chronicler_config(config_path)\n        assert len(config.sources) >= 1\n        assert len(config.sinks) >= 1\n        assert len(config.correlation_rules) >= 1\n        assert config.memory_limits.max_open_stories == 10000\n\n    def test_file_not_found(self):\n        with pytest.raises(Exception):\n            load_chronicler_config(\"/nonexistent/path/config.yaml\")\n\n    def test_invalid_yaml(self, tmp_path):\n        config_path = tmp_path / \"bad.yaml\"\n        config_path.write_text(\"{{{{invalid yaml content!!!:::\")\n        with pytest.raises(Exception):\n            load_chronicler_config(str(config_path))\n\n    def test_empty_sources(self, tmp_path):\n        config_content = \"\"\"\nsources: []\nsinks:\n  - type: disk\n    events_path: \"/data/events.jsonl\"\n    stories_path: \"/data/stories.jsonl\"\ncorrelation_rules:\n  - name: ciPipeline\n    event_kinds: [\"ci.build.started\"]\n    group_by: [\"correlation_keys.repo\"]\n    chain_by: []\n    terminal_event: {}\n    timeout: 300.0\n    story_type: \"ci.pipeline\"\nmemory_limits:\n  max_open_stories: 10000\n  max_events_per_story: 1000\nstate_path: \"/data/state\"\n\"\"\"\n        config_path = tmp_path / \"config.yaml\"\n        config_path.write_text(config_content)\n        with pytest.raises(Exception):\n            load_chronicler_config(str(config_path))\n\n    def test_empty_sinks(self, tmp_path):\n        config_content = \"\"\"\nsources:\n  - type: webhook\n    host: \"0.0.0.0\"\n    port: 8080\n    path: \"/events\"\n    source_label: \"x\"\nsinks: []\ncorrelation_rules:\n  - name: ciPipeline\n    event_kinds: [\"ci.build.started\"]\n    group_by: [\"correlation_keys.repo\"]\n    chain_by: []\n    terminal_event: {}\n    timeout: 300.0\n    story_type: \"ci.pipeline\"\nmemory_limits:\n  max_open_stories: 10000\n  max_events_per_story: 1000\nstate_path: \"/data/state\"\n\"\"\"\n        config_path = tmp_path / \"config.yaml\"\n        config_path.write_text(config_content)\n        with pytest.raises(Exception):\n            load_chronicler_config(str(config_path))\n\n    def test_empty_rules(self, tmp_path):\n        config_content = \"\"\"\nsources:\n  - type: webhook\n    host: \"0.0.0.0\"\n    port: 8080\n    path: \"/events\"\n    source_label: \"x\"\nsinks:\n  - type: disk\n    events_path: \"/data/events.jsonl\"\n    stories_path: \"/data/stories.jsonl\"\ncorrelation_rules: []\nmemory_limits:\n  max_open_stories: 10000\n  max_events_per_story: 1000\nstate_path: \"/data/state\"\n\"\"\"\n        config_path = tmp_path / \"config.yaml\"\n        config_path.write_text(config_content)\n        with pytest.raises(Exception):\n            load_chronicler_config(str(config_path))\n\n    def test_validation_error_invalid_port(self, tmp_path):\n        config_content = \"\"\"\nsources:\n  - type: webhook\n    host: \"0.0.0.0\"\n    port: 99999\n    path: \"/events\"\n    source_label: \"x\"\nsinks:\n  - type: disk\n    events_path: \"/data/events.jsonl\"\n    stories_path: \"/data/stories.jsonl\"\ncorrelation_rules:\n  - name: ciPipeline\n    event_kinds: [\"ci.build.started\"]\n    group_by: [\"correlation_keys.repo\"]\n    chain_by: []\n    terminal_event: {}\n    timeout: 300.0\n    story_type: \"ci.pipeline\"\nmemory_limits:\n  max_open_stories: 10000\n  max_events_per_story: 1000\nstate_path: \"/data/state\"\n\"\"\"\n        config_path = tmp_path / \"config.yaml\"\n        config_path.write_text(config_content)\n        with pytest.raises(Exception):\n            load_chronicler_config(str(config_path))\n\n    def test_empty_state_path(self, tmp_path):\n        config_content = \"\"\"\nsources:\n  - type: webhook\n    host: \"0.0.0.0\"\n    port: 8080\n    path: \"/events\"\n    source_label: \"x\"\nsinks:\n  - type: disk\n    events_path: \"/data/events.jsonl\"\n    stories_path: \"/data/stories.jsonl\"\ncorrelation_rules:\n  - name: ciPipeline\n    event_kinds: [\"ci.build.started\"]\n    group_by: [\"correlation_keys.repo\"]\n    chain_by: []\n    terminal_event: {}\n    timeout: 300.0\n    story_type: \"ci.pipeline\"\nmemory_limits:\n  max_open_stories: 10000\n  max_events_per_story: 1000\nstate_path: \"\"\n\"\"\"\n        config_path = tmp_path / \"config.yaml\"\n        config_path.write_text(config_content)\n        with pytest.raises(Exception):\n            load_chronicler_config(str(config_path))\n\n\n# ─── Test Enum Values ────────────────────────────────────────────────────────\n\n\nclass TestEnums:\n    \"\"\"Test enum types have the expected variants.\"\"\"\n\n    def test_source_type_variants(self):\n        assert SourceType.webhook\n        assert SourceType.otlp\n        assert SourceType.file\n        assert SourceType.sentinel\n\n    def test_sink_type_variants(self):\n        assert SinkType.stigmergy\n        assert SinkType.apprentice\n        assert SinkType.disk\n        assert SinkType.kindex\n\n    def test_story_status_variants(self):\n        assert StoryStatus.open\n        assert StoryStatus.closed\n\n    def test_close_reason_variants(self):\n        assert CloseReason.terminal\n        assert CloseReason.timeout\n        assert CloseReason.evicted\n\n\n# ─── Test Model Immutability ────────────────────────────────────────────────\n\n\nclass TestModelImmutability:\n    \"\"\"Test that frozen models reject attribute mutation.\"\"\"\n\n    def test_event_frozen(self):\n        event = make_valid_event()\n        with pytest.raises(Exception):\n            event.source = \"changed\"\n        with pytest.raises(Exception):\n            event.event_kind = \"changed\"\n        with pytest.raises(Exception):\n            event.id = \"0\" * 64\n\n    def test_story_frozen(self):\n        story = make_valid_open_story()\n        with pytest.raises(Exception):\n            story.status = StoryStatus.closed\n        with pytest.raises(Exception):\n            story.story_type = \"changed\"\n        with pytest.raises(Exception):\n            story.event_count = 99\n\n    def test_correlation_rule_frozen(self):\n        rule = CorrelationRule(\n            name=\"testRule\",\n            event_kinds=[\"ci.build.completed\"],\n            group_by=[\"correlation_keys.repo\"],\n            chain_by=[],\n            terminal_event={\"event_kind\": \"ci.build.completed\"},\n            timeout=300.0,\n            story_type=\"ci.pipeline\",\n        )\n        with pytest.raises(Exception):\n            rule.name = \"changed\"\n        with pytest.raises(Exception):\n            rule.timeout = 1.0\n\n    def test_webhook_source_config_frozen(self):\n        cfg = WebhookSourceConfig(\n            type=\"webhook\", host=\"0.0.0.0\", port=8080, path=\"/events\", source_label=\"x\"\n        )\n        with pytest.raises(Exception):\n            cfg.port = 9090\n\n    def test_memory_limits_config_frozen(self):\n        cfg = MemoryLimitsConfig(max_open_stories=10000, max_events_per_story=1000)\n        with pytest.raises(Exception):\n            cfg.max_open_stories = 5000\n\n\n# ─── Test Invariants ────────────────────────────────────────────────────────\n\n\nclass TestInvariants:\n    \"\"\"Test system-wide invariants from the contract.\"\"\"\n\n    def test_event_id_is_sha256_of_canonical_json(self):\n        \"\"\"Event.id matches SHA-256 of canonical JSON of identity fields.\"\"\"\n        event = make_valid_event()\n        # Manually compute the expected hash\n        identity = {\n            \"event_kind\": \"ci.build.completed\",\n            \"entity_kind\": \"repository\",\n            \"entity_id\": \"repo-123\",\n            \"actor\": \"user@example.com\",\n            \"timestamp\": NOW,\n            \"context\": {\"status\": \"success\", \"count\": 42},\n            \"correlation_keys\": {\"repo\": \"myrepo\", \"branch\": \"main\"},\n        }\n        canonical = json.dumps(\n            identity,\n            sort_keys=True,\n            separators=(\",\", \":\"),\n            ensure_ascii=True,\n            default=str,\n        )\n        expected_hash = hashlib.sha256(canonical.encode()).hexdigest()\n        assert event.id == expected_hash\n\n    def test_two_events_identical_identity_same_id(self):\n        \"\"\"Content-addressable: identical identity fields -> same id.\"\"\"\n        e1 = create_event(**make_valid_event_kwargs())\n        e2 = create_event(**make_valid_event_kwargs())\n        assert e1.id == e2.id\n\n    def test_source_excluded_from_hash(self):\n        \"\"\"source field is provenance metadata, excluded from hash.\"\"\"\n        kwargs1 = make_valid_event_kwargs()\n        kwargs1[\"source\"] = \"webhook\"\n        kwargs2 = make_valid_event_kwargs()\n        kwargs2[\"source\"] = \"file\"\n        e1 = create_event(**kwargs1)\n        e2 = create_event(**kwargs2)\n        assert e1.id == e2.id\n\n    def test_open_story_invariants(self):\n        \"\"\"Open story: status=open, end_ts=None, duration=None, close_reason=None.\"\"\"\n        story = make_valid_open_story()\n        assert story.status == StoryStatus.open\n        assert story.end_ts is None\n        assert story.duration is None\n        assert story.close_reason is None\n\n    def test_closed_story_invariants(self):\n        \"\"\"Closed story: status=closed, end_ts set, duration >=0, close_reason set.\"\"\"\n        story = make_valid_closed_story()\n        assert story.status == StoryStatus.closed\n        assert story.end_ts is not None\n        assert story.duration is not None\n        assert story.duration >= 0.0\n        assert story.close_reason is not None\n\n    def test_event_count_equals_len_events(self):\n        \"\"\"Story.event_count always equals len(Story.events).\"\"\"\n        story = make_valid_open_story()\n        assert story.event_count == len(story.events)\n        story2 = append_event_to_story(story, VALID_SHA256_B)\n        assert story2.event_count == len(story2.events)\n\n    def test_story_events_is_tuple(self):\n        \"\"\"Story.events is stored as a tuple.\"\"\"\n        story = make_valid_open_story()\n        assert isinstance(story.events, tuple)\n\n    def test_duration_matches_computation(self):\n        \"\"\"Story.duration equals (end_ts - start_ts).total_seconds().\"\"\"\n        story = make_valid_open_story()\n        closed = close_story(story, CloseReason.terminal, LATER)\n        expected = (LATER - NOW).total_seconds()\n        assert closed.duration == expected\n\n    def test_story_model_copy_produces_new_instance(self):\n        \"\"\"model_copy(update=...) produces a distinct Story instance.\"\"\"\n        story = make_valid_open_story()\n        new_story = append_event_to_story(story, VALID_SHA256_B)\n        assert story is not new_story\n        # Original is unchanged\n        assert story.event_count == 1\n        assert new_story.event_count == 2\n"
+}

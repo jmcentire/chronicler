@@ -1,0 +1,71 @@
+- id: C001
+  boundary: story correlation logic
+  condition: single event may only contribute to one active story per story type
+  violation: duplicate or fragmented story generation
+  severity: must
+  rationale: prevents correlation conflicts and ensures story integrity
+  classification_tier: null
+  affected_components: [chronicler_core]
+
+- id: C002
+  boundary: story timeout handling
+  condition: stories must be evicted or emitted before memory bounds exceeded
+  violation: memory leaks leading to service degradation
+  severity: must
+  rationale: prevents unbounded memory growth in long-running service
+  classification_tier: null
+  affected_components: [chronicler_core]
+
+- id: C003
+  boundary: event data authority
+  condition: conflicting event data resolved via component authority precedence
+  violation: data contamination across component boundaries
+  severity: must
+  rationale: maintains data integrity and component isolation
+  classification_tier: PUBLIC
+  affected_components: [chronicler_core, event_ingress]
+
+- id: C004
+  boundary: async event processing
+  condition: event ingestion must not block on story assembly or output
+  violation: degraded concurrent processing performance
+  severity: must
+  rationale: ensures system responsiveness under load
+  classification_tier: null
+  affected_components: [event_ingress, chronicler_core]
+
+- id: C005
+  boundary: story completeness
+  condition: eviction policies must not violate story timeout guarantees
+  violation: incomplete training data or pattern corruption
+  severity: must
+  rationale: ensures downstream consumers receive consistent story boundaries
+  classification_tier: null
+  affected_components: [chronicler_core]
+
+- id: C006
+  boundary: adapter protocol compliance
+  condition: output adapters must implement required protocols correctly
+  violation: failed story delivery to downstream consumers
+  severity: must
+  rationale: ensures integration with Stigmergy and Apprentice components
+  classification_tier: null
+  affected_components: [stigmergy_adapter, apprentice_adapter]
+
+- id: C007
+  boundary: data classification consistency
+  condition: all processed data must remain in PUBLIC tier
+  violation: unexpected sensitive data exposure
+  severity: should
+  rationale: maintains security posture by avoiding sensitive data collection
+  classification_tier: PUBLIC
+  affected_components: [event_ingress, chronicler_core, otlp_bridge]
+
+- id: C008
+  boundary: persistence format
+  condition: disk output must use JSONL format consistent with stack patterns
+  violation: format inconsistency affecting downstream processing
+  severity: should
+  rationale: ensures architectural consistency with FOSS stack
+  classification_tier: null
+  affected_components: [chronicler_core]

@@ -1,0 +1,2182 @@
+{
+  "component_id": "engine_cli_mcp",
+  "name": "Engine, CLI & MCP Server",
+  "description": "Three related orchestration modules: (1) engine.py — top-level async orchestrator that loads config, instantiates and starts all configured sources and sinks, wires source events through correlation engine into story manager, manages full lifecycle (start all → run → stop all). Uses asyncio.Queue as internal bus and asyncio.TaskGroup for structured concurrency. Runs until explicitly stopped via signal or programmatic call. No external broker. (2) cli.py — CLI entry points via argparse: `chronicler start` (launches engine), `chronicler status` (reads JSONL state), `chronicler stories list/show <id>` (open/closed stories from JSONL), `chronicler replay <file>` (replays JSONL events through engine with event-time clock). (3) mcp_server.py — MCP server using `mcp` Python SDK over stdio transport, runs as a task within engine's TaskGroup, exposes tools: chronicler_status, chronicler_stories_list, chronicler_stories_show, chronicler_events_replay. Covers AC10, AC11, AC13, AC14, AC15.",
+  "version": 1,
+  "types": [
+    {
+      "name": "EnginePhase",
+      "kind": "enum",
+      "fields": [],
+      "item_type": "",
+      "variants": [
+        "CREATED",
+        "STARTING",
+        "RUNNING",
+        "STOPPING",
+        "STOPPED",
+        "ERROR"
+      ],
+      "inner_types": [],
+      "description": "Lifecycle phase of the ChroniclerEngine. Transitions: CREATED → STARTING → RUNNING → STOPPING → STOPPED. Also CREATED → STARTING → ERROR if startup fails."
+    },
+    {
+      "name": "SourceHealth",
+      "kind": "enum",
+      "fields": [],
+      "item_type": "",
+      "variants": [
+        "HEALTHY",
+        "DEGRADED",
+        "FAILED",
+        "STOPPED"
+      ],
+      "inner_types": [],
+      "description": "Health status of an individual source connector."
+    },
+    {
+      "name": "SinkHealth",
+      "kind": "enum",
+      "fields": [],
+      "item_type": "",
+      "variants": [
+        "HEALTHY",
+        "DEGRADED",
+        "FAILED",
+        "STOPPED"
+      ],
+      "inner_types": [],
+      "description": "Health status of an individual sink connector."
+    },
+    {
+      "name": "SourceStatus",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "source_id",
+          "type_ref": "str",
+          "required": true,
+          "default": "",
+          "description": "Unique identifier of the source instance.",
+          "validators": []
+        },
+        {
+          "name": "source_type",
+          "type_ref": "str",
+          "required": true,
+          "default": "",
+          "description": "Type discriminator, e.g. 'webhook', 'otlp', 'file', 'sentinel'.",
+          "validators": []
+        },
+        {
+          "name": "health",
+          "type_ref": "SourceHealth",
+          "required": true,
+          "default": "",
+          "description": "Current health state.",
+          "validators": []
+        },
+        {
+          "name": "events_received",
+          "type_ref": "int",
+          "required": true,
+          "default": "",
+          "description": "Total events received from this source since engine start.",
+          "validators": [
+            {
+              "kind": "range",
+              "expression": ">=0",
+              "error_message": "events_received must be non-negative"
+            }
+          ]
+        },
+        {
+          "name": "last_event_at",
+          "type_ref": "OptionalDatetimeISO",
+          "required": true,
+          "default": "",
+          "description": "ISO-8601 timestamp of last event received, or null if none yet.",
+          "validators": []
+        }
+      ],
+      "item_type": "",
+      "variants": [],
+      "inner_types": [],
+      "description": "Runtime status of a single source, reported in EngineStatus. Frozen Pydantic model."
+    },
+    {
+      "name": "SinkStatus",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "sink_id",
+          "type_ref": "str",
+          "required": true,
+          "default": "",
+          "description": "Unique identifier of the sink instance.",
+          "validators": []
+        },
+        {
+          "name": "sink_type",
+          "type_ref": "str",
+          "required": true,
+          "default": "",
+          "description": "Type discriminator, e.g. 'stigmergy', 'apprentice', 'disk', 'kindex'.",
+          "validators": []
+        },
+        {
+          "name": "health",
+          "type_ref": "SinkHealth",
+          "required": true,
+          "default": "",
+          "description": "Current health state.",
+          "validators": []
+        },
+        {
+          "name": "events_emitted",
+          "type_ref": "int",
+          "required": true,
+          "default": "",
+          "description": "Total events successfully emitted to this sink.",
+          "validators": [
+            {
+              "kind": "range",
+              "expression": ">=0",
+              "error_message": "events_emitted must be non-negative"
+            }
+          ]
+        },
+        {
+          "name": "errors",
+          "type_ref": "int",
+          "required": true,
+          "default": "",
+          "description": "Total errors encountered emitting to this sink.",
+          "validators": [
+            {
+              "kind": "range",
+              "expression": ">=0",
+              "error_message": "errors must be non-negative"
+            }
+          ]
+        },
+        {
+          "name": "last_emit_at",
+          "type_ref": "OptionalDatetimeISO",
+          "required": true,
+          "default": "",
+          "description": "ISO-8601 timestamp of last successful emit, or null if none yet.",
+          "validators": []
+        }
+      ],
+      "item_type": "",
+      "variants": [],
+      "inner_types": [],
+      "description": "Runtime status of a single sink, reported in EngineStatus. Frozen Pydantic model."
+    },
+    {
+      "name": "EngineStatus",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "phase",
+          "type_ref": "EnginePhase",
+          "required": true,
+          "default": "",
+          "description": "Current lifecycle phase of the engine.",
+          "validators": []
+        },
+        {
+          "name": "uptime_seconds",
+          "type_ref": "float",
+          "required": true,
+          "default": "",
+          "description": "Seconds since engine entered RUNNING phase. 0.0 if not yet running.",
+          "validators": [
+            {
+              "kind": "range",
+              "expression": ">=0.0",
+              "error_message": "uptime cannot be negative"
+            }
+          ]
+        },
+        {
+          "name": "total_events_processed",
+          "type_ref": "int",
+          "required": true,
+          "default": "",
+          "description": "Total events consumed from the internal queue and processed.",
+          "validators": [
+            {
+              "kind": "range",
+              "expression": ">=0",
+              "error_message": "total_events_processed must be non-negative"
+            }
+          ]
+        },
+        {
+          "name": "open_stories_count",
+          "type_ref": "int",
+          "required": true,
+          "default": "",
+          "description": "Number of currently open stories.",
+          "validators": [
+            {
+              "kind": "range",
+              "expression": ">=0",
+              "error_message": "open_stories_count must be non-negative"
+            }
+          ]
+        },
+        {
+          "name": "closed_stories_count",
+          "type_ref": "int",
+          "required": true,
+          "default": "",
+          "description": "Number of closed (completed/timed-out) stories.",
+          "validators": [
+            {
+              "kind": "range",
+              "expression": ">=0",
+              "error_message": "closed_stories_count must be non-negative"
+            }
+          ]
+        },
+        {
+          "name": "sources",
+          "type_ref": "list[SourceStatus]",
+          "required": true,
+          "default": "",
+          "description": "Status of each configured source.",
+          "validators": []
+        },
+        {
+          "name": "sinks",
+          "type_ref": "list[SinkStatus]",
+          "required": true,
+          "default": "",
+          "description": "Status of each configured sink.",
+          "validators": []
+        },
+        {
+          "name": "queue_depth",
+          "type_ref": "int",
+          "required": true,
+          "default": "",
+          "description": "Current number of events buffered in the internal asyncio.Queue.",
+          "validators": [
+            {
+              "kind": "range",
+              "expression": ">=0",
+              "error_message": "queue_depth must be non-negative"
+            }
+          ]
+        },
+        {
+          "name": "started_at",
+          "type_ref": "OptionalDatetimeISO",
+          "required": true,
+          "default": "",
+          "description": "ISO-8601 timestamp when engine entered RUNNING, or null if not yet started.",
+          "validators": []
+        }
+      ],
+      "item_type": "",
+      "variants": [],
+      "inner_types": [],
+      "description": "Complete engine status snapshot. Frozen Pydantic model. Returned by engine.status() and exposed via CLI/MCP."
+    },
+    {
+      "name": "OptionalDatetimeISO",
+      "kind": "optional",
+      "fields": [],
+      "item_type": "",
+      "variants": [],
+      "inner_types": [
+        "str"
+      ],
+      "description": "An optional ISO-8601 datetime string. Null when no timestamp is available."
+    },
+    {
+      "name": "DatetimeISO",
+      "kind": "primitive",
+      "fields": [
+        {
+          "name": "value",
+          "type_ref": "str",
+          "required": true,
+          "default": "",
+          "description": "",
+          "validators": [
+            {
+              "kind": "regex",
+              "expression": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
+              "error_message": "Must be a valid ISO-8601 datetime with timezone"
+            }
+          ]
+        }
+      ],
+      "item_type": "",
+      "variants": [],
+      "inner_types": [],
+      "description": "An ISO-8601 formatted datetime string (UTC). Uses datetime.now(datetime.timezone.utc) internally — not the deprecated datetime.utcnow()."
+    },
+    {
+      "name": "QueueBound",
+      "kind": "primitive",
+      "fields": [
+        {
+          "name": "value",
+          "type_ref": "int",
+          "required": true,
+          "default": "",
+          "description": "",
+          "validators": [
+            {
+              "kind": "range",
+              "expression": "1..100000",
+              "error_message": "Queue bound must be between 1 and 100000"
+            }
+          ]
+        }
+      ],
+      "item_type": "",
+      "variants": [],
+      "inner_types": [],
+      "description": "Maximum size of the internal asyncio.Queue. Bounded to prevent memory exhaustion."
+    },
+    {
+      "name": "EngineConfig",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "queue_max_size",
+          "type_ref": "int",
+          "required": true,
+          "default": "10000",
+          "description": "Max events buffered in the internal asyncio.Queue before back-pressure.",
+          "validators": [
+            {
+              "kind": "range",
+              "expression": "1..100000",
+              "error_message": "queue_max_size must be between 1 and 100,000"
+            }
+          ]
+        },
+        {
+          "name": "drain_timeout_seconds",
+          "type_ref": "float",
+          "required": true,
+          "default": "5.0",
+          "description": "Max seconds to wait draining the queue during shutdown.",
+          "validators": [
+            {
+              "kind": "range",
+              "expression": "0.1..60.0",
+              "error_message": "drain_timeout_seconds must be between 0.1 and 60.0"
+            }
+          ]
+        },
+        {
+          "name": "mcp_enabled",
+          "type_ref": "bool",
+          "required": true,
+          "default": "false",
+          "description": "Whether to start the MCP server as a task within the engine.",
+          "validators": []
+        },
+        {
+          "name": "state_file",
+          "type_ref": "str",
+          "required": true,
+          "default": "chronicler_state.jsonl",
+          "description": "Path to the JSONL state file for persistence.",
+          "validators": [
+            {
+              "kind": "length",
+              "expression": "1..4096",
+              "error_message": "state_file path must be non-empty and under 4096 chars"
+            }
+          ]
+        },
+        {
+          "name": "source_restart_delay_seconds",
+          "type_ref": "float",
+          "required": true,
+          "default": "1.0",
+          "description": "Delay before restarting a failed source supervisor.",
+          "validators": [
+            {
+              "kind": "range",
+              "expression": "0.0..300.0",
+              "error_message": "source_restart_delay_seconds must be between 0 and 300"
+            }
+          ]
+        }
+      ],
+      "item_type": "",
+      "variants": [],
+      "inner_types": [],
+      "description": "Validated engine-specific configuration subset. Frozen Pydantic model. Extracted from the top-level ChroniclerConfig by the engine constructor."
+    },
+    {
+      "name": "StoryFilter",
+      "kind": "enum",
+      "fields": [],
+      "item_type": "",
+      "variants": [
+        "OPEN",
+        "CLOSED",
+        "ALL"
+      ],
+      "inner_types": [],
+      "description": "Filter for listing stories: OPEN, CLOSED, or ALL."
+    },
+    {
+      "name": "StoryId",
+      "kind": "primitive",
+      "fields": [
+        {
+          "name": "value",
+          "type_ref": "str",
+          "required": true,
+          "default": "",
+          "description": "",
+          "validators": [
+            {
+              "kind": "length",
+              "expression": "1..256",
+              "error_message": "StoryId must be between 1 and 256 characters"
+            }
+          ]
+        }
+      ],
+      "item_type": "",
+      "variants": [],
+      "inner_types": [],
+      "description": "A unique story identifier. Non-empty string."
+    },
+    {
+      "name": "StorySummary",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "story_id",
+          "type_ref": "str",
+          "required": true,
+          "default": "",
+          "description": "Unique story identifier.",
+          "validators": []
+        },
+        {
+          "name": "title",
+          "type_ref": "str",
+          "required": true,
+          "default": "",
+          "description": "Human-readable story title derived from correlation rule.",
+          "validators": []
+        },
+        {
+          "name": "status",
+          "type_ref": "str",
+          "required": true,
+          "default": "",
+          "description": "Current status: 'open' or 'closed'.",
+          "validators": []
+        },
+        {
+          "name": "event_count",
+          "type_ref": "int",
+          "required": true,
+          "default": "",
+          "description": "Number of events correlated into this story.",
+          "validators": [
+            {
+              "kind": "range",
+              "expression": ">=1",
+              "error_message": "A story must have at least one event"
+            }
+          ]
+        },
+        {
+          "name": "created_at",
+          "type_ref": "str",
+          "required": true,
+          "default": "",
+          "description": "ISO-8601 timestamp when story was created.",
+          "validators": []
+        },
+        {
+          "name": "updated_at",
+          "type_ref": "str",
+          "required": true,
+          "default": "",
+          "description": "ISO-8601 timestamp of last event added or status change.",
+          "validators": []
+        },
+        {
+          "name": "correlation_rule_id",
+          "type_ref": "str",
+          "required": true,
+          "default": "",
+          "description": "ID of the correlation rule that created this story.",
+          "validators": []
+        }
+      ],
+      "item_type": "",
+      "variants": [],
+      "inner_types": [],
+      "description": "Lightweight summary of a story for list views. Does not include full event payloads."
+    },
+    {
+      "name": "StoryListResult",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "total",
+          "type_ref": "int",
+          "required": true,
+          "default": "",
+          "description": "Total number of stories matching the filter.",
+          "validators": [
+            {
+              "kind": "range",
+              "expression": ">=0",
+              "error_message": "total must be non-negative"
+            }
+          ]
+        },
+        {
+          "name": "stories",
+          "type_ref": "list[StorySummary]",
+          "required": true,
+          "default": "",
+          "description": "List of story summaries.",
+          "validators": []
+        },
+        {
+          "name": "filter_applied",
+          "type_ref": "StoryFilter",
+          "required": true,
+          "default": "",
+          "description": "The filter that was applied.",
+          "validators": []
+        }
+      ],
+      "item_type": "",
+      "variants": [],
+      "inner_types": [],
+      "description": "Result of listing stories, with total count and summaries."
+    },
+    {
+      "name": "ReplayResult",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "file_path",
+          "type_ref": "str",
+          "required": true,
+          "default": "",
+          "description": "Path to the replayed JSONL file.",
+          "validators": []
+        },
+        {
+          "name": "total_lines",
+          "type_ref": "int",
+          "required": true,
+          "default": "",
+          "description": "Total lines read from the file.",
+          "validators": [
+            {
+              "kind": "range",
+              "expression": ">=0",
+              "error_message": "total_lines must be non-negative"
+            }
+          ]
+        },
+        {
+          "name": "events_processed",
+          "type_ref": "int",
+          "required": true,
+          "default": "",
+          "description": "Events successfully parsed and processed.",
+          "validators": [
+            {
+              "kind": "range",
+              "expression": ">=0",
+              "error_message": "events_processed must be non-negative"
+            }
+          ]
+        },
+        {
+          "name": "events_skipped",
+          "type_ref": "int",
+          "required": true,
+          "default": "",
+          "description": "Lines that failed to parse as valid events (logged and dropped).",
+          "validators": [
+            {
+              "kind": "range",
+              "expression": ">=0",
+              "error_message": "events_skipped must be non-negative"
+            }
+          ]
+        },
+        {
+          "name": "stories_created",
+          "type_ref": "int",
+          "required": true,
+          "default": "",
+          "description": "New stories created during replay.",
+          "validators": [
+            {
+              "kind": "range",
+              "expression": ">=0",
+              "error_message": "stories_created must be non-negative"
+            }
+          ]
+        },
+        {
+          "name": "stories_closed",
+          "type_ref": "int",
+          "required": true,
+          "default": "",
+          "description": "Stories that closed during replay.",
+          "validators": [
+            {
+              "kind": "range",
+              "expression": ">=0",
+              "error_message": "stories_closed must be non-negative"
+            }
+          ]
+        },
+        {
+          "name": "duration_seconds",
+          "type_ref": "float",
+          "required": true,
+          "default": "",
+          "description": "Wall-clock duration of the replay.",
+          "validators": [
+            {
+              "kind": "range",
+              "expression": ">=0.0",
+              "error_message": "duration cannot be negative"
+            }
+          ]
+        }
+      ],
+      "item_type": "",
+      "variants": [],
+      "inner_types": [],
+      "description": "Summary of a JSONL replay operation."
+    },
+    {
+      "name": "ReplayFileSpec",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "file_path",
+          "type_ref": "str",
+          "required": true,
+          "default": "",
+          "description": "Path to the JSONL file to replay.",
+          "validators": [
+            {
+              "kind": "length",
+              "expression": "1..4096",
+              "error_message": "file_path must be non-empty and under 4096 chars"
+            }
+          ]
+        },
+        {
+          "name": "suppress_sinks",
+          "type_ref": "bool",
+          "required": true,
+          "default": "false",
+          "description": "If true, suppress all sink emissions during replay (dry-run mode).",
+          "validators": []
+        }
+      ],
+      "item_type": "",
+      "variants": [],
+      "inner_types": [],
+      "description": "Specification for a replay operation input."
+    },
+    {
+      "name": "CliExitCode",
+      "kind": "enum",
+      "fields": [],
+      "item_type": "",
+      "variants": [
+        "SUCCESS_0",
+        "CONFIG_ERROR_1",
+        "RUNTIME_ERROR_2",
+        "FILE_NOT_FOUND_3",
+        "STATE_READ_ERROR_4"
+      ],
+      "inner_types": [],
+      "description": "Process exit codes returned by CLI commands."
+    },
+    {
+      "name": "McpToolName",
+      "kind": "enum",
+      "fields": [],
+      "item_type": "",
+      "variants": [
+        "chronicler_status",
+        "chronicler_stories_list",
+        "chronicler_stories_show",
+        "chronicler_events_replay"
+      ],
+      "inner_types": [],
+      "description": "Tool names exposed by the MCP server."
+    },
+    {
+      "name": "McpToolResult",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "tool_name",
+          "type_ref": "str",
+          "required": true,
+          "default": "",
+          "description": "Name of the tool that produced this result.",
+          "validators": []
+        },
+        {
+          "name": "success",
+          "type_ref": "bool",
+          "required": true,
+          "default": "",
+          "description": "Whether the tool invocation succeeded.",
+          "validators": []
+        },
+        {
+          "name": "data",
+          "type_ref": "dict",
+          "required": true,
+          "default": "",
+          "description": "Structured result data (tool-specific). Serialized as JSON.",
+          "validators": []
+        },
+        {
+          "name": "error_message",
+          "type_ref": "OptionalString",
+          "required": true,
+          "default": "",
+          "description": "Error message if success is false, null otherwise.",
+          "validators": []
+        }
+      ],
+      "item_type": "",
+      "variants": [],
+      "inner_types": [],
+      "description": "Structured result returned by MCP tool invocations, serialized as JSON content blocks."
+    },
+    {
+      "name": "OptionalString",
+      "kind": "optional",
+      "fields": [],
+      "item_type": "",
+      "variants": [],
+      "inner_types": [
+        "str"
+      ],
+      "description": "An optional string value."
+    }
+  ],
+  "functions": [
+    {
+      "name": "ChroniclerEngine.__init__",
+      "description": "Construct the engine with validated configuration. Optionally accepts pre-built sources, sinks, correlation engine, and story manager for testing. Accepts an optional clock callable for replay mode (default: datetime.now(timezone.utc)). Creates a bounded asyncio.Queue. Engine starts in CREATED phase.",
+      "inputs": [
+        {
+          "name": "config",
+          "type_ref": "EngineConfig",
+          "required": true,
+          "default": "",
+          "description": "Validated engine configuration.",
+          "validators": []
+        },
+        {
+          "name": "chronicler_config",
+          "type_ref": "any",
+          "required": true,
+          "default": "",
+          "description": "Full ChroniclerConfig from config module, used to instantiate sources/sinks if not provided explicitly.",
+          "validators": []
+        },
+        {
+          "name": "sources",
+          "type_ref": "list",
+          "required": false,
+          "default": "[]",
+          "description": "Optional pre-built list of SourceProtocol instances. If empty, sources are instantiated from chronicler_config.",
+          "validators": []
+        },
+        {
+          "name": "sinks",
+          "type_ref": "list",
+          "required": false,
+          "default": "[]",
+          "description": "Optional pre-built list of SinkProtocol instances. If empty, sinks are instantiated from chronicler_config.",
+          "validators": []
+        },
+        {
+          "name": "correlation_engine",
+          "type_ref": "any",
+          "required": false,
+          "default": "None",
+          "description": "Optional pre-built CorrelationEngine instance. If None, instantiated from chronicler_config.",
+          "validators": []
+        },
+        {
+          "name": "story_manager",
+          "type_ref": "any",
+          "required": false,
+          "default": "None",
+          "description": "Optional pre-built StoryManager instance. If None, instantiated from chronicler_config.",
+          "validators": []
+        },
+        {
+          "name": "clock",
+          "type_ref": "any",
+          "required": false,
+          "default": "None",
+          "description": "Callable[[], datetime] for current time. Default: datetime.now(timezone.utc). Override for replay with event-time semantics.",
+          "validators": []
+        }
+      ],
+      "output_type": "None",
+      "error_cases": [
+        {
+          "name": "invalid_config",
+          "condition": "config fails Pydantic validation",
+          "error_type": "ValidationError",
+          "error_data": {}
+        },
+        {
+          "name": "invalid_queue_size",
+          "condition": "queue_max_size is out of range",
+          "error_type": "ValidationError",
+          "error_data": {}
+        }
+      ],
+      "preconditions": [
+        "config is a valid EngineConfig instance",
+        "chronicler_config is a valid ChroniclerConfig instance",
+        "If sources/sinks are provided, they must implement SourceProtocol/SinkProtocol respectively"
+      ],
+      "postconditions": [
+        "Engine is in CREATED phase",
+        "Internal asyncio.Queue is created with maxsize=config.queue_max_size",
+        "No I/O has been performed",
+        "No tasks have been started"
+      ],
+      "idempotent": false,
+      "side_effects": [],
+      "structured_side_effects": [
+        {
+          "kind": "none",
+          "target": "",
+          "description": ""
+        }
+      ],
+      "performance_budget": null
+    },
+    {
+      "name": "ChroniclerEngine.start",
+      "description": "Async method that transitions engine from CREATED to RUNNING. Loads persisted state from JSONL, starts all source supervisor tasks in a TaskGroup, starts all sinks, optionally starts MCP server task if mcp_enabled. Registers SIGINT/SIGTERM handlers for graceful shutdown. Transitions to ERROR if any fatal startup failure occurs.",
+      "inputs": [],
+      "output_type": "None",
+      "error_cases": [
+        {
+          "name": "already_started",
+          "condition": "Engine phase is not CREATED",
+          "error_type": "RuntimeError",
+          "error_data": {
+            "message": "Engine can only be started from CREATED phase"
+          }
+        },
+        {
+          "name": "state_load_failure",
+          "condition": "Cannot read JSONL state file",
+          "error_type": "RuntimeError",
+          "error_data": {
+            "message": "Failed to load persisted state"
+          }
+        },
+        {
+          "name": "source_init_failure",
+          "condition": "A source fails to initialize (logged, source marked FAILED, engine continues)",
+          "error_type": "None",
+          "error_data": {}
+        },
+        {
+          "name": "sink_init_failure",
+          "condition": "A sink fails to initialize (logged, sink marked FAILED, engine continues)",
+          "error_type": "None",
+          "error_data": {}
+        }
+      ],
+      "preconditions": [
+        "Engine phase is CREATED",
+        "Called within an async context (running event loop)"
+      ],
+      "postconditions": [
+        "Engine phase is RUNNING (or ERROR on failure)",
+        "All configured sources have supervisor tasks running",
+        "All configured sinks are started",
+        "MCP server task is running if mcp_enabled=true",
+        "SIGINT/SIGTERM handlers are registered",
+        "started_at timestamp is set"
+      ],
+      "idempotent": false,
+      "side_effects": [
+        "Reads JSONL state file",
+        "Starts network listeners for webhook/OTLP sources",
+        "Registers OS signal handlers"
+      ],
+      "structured_side_effects": [
+        {
+          "kind": "reads_file",
+          "target": "JSONL state file at config.state_file",
+          "description": "Load persisted stories and correlation state from previous run"
+        },
+        {
+          "kind": "network_call",
+          "target": "Source listeners (webhook HTTP, OTLP gRPC)",
+          "description": "Sources may bind to network ports"
+        },
+        {
+          "kind": "mutates_state",
+          "target": "Engine internal state: phase, tasks, signal handlers",
+          "description": "Transition to RUNNING and register signal handlers"
+        },
+        {
+          "kind": "logging",
+          "target": "Application logger",
+          "description": "Log startup progress and any source/sink initialization failures"
+        }
+      ],
+      "performance_budget": null
+    },
+    {
+      "name": "ChroniclerEngine.run",
+      "description": "Async method that runs the main processing loop. Consumes events from the internal asyncio.Queue, passes each through CorrelationEngine.process(), feeds results to StoryManager.update(), then fans out to all sinks via asyncio.gather(return_exceptions=True). Runs until the shutdown event is set (by signal or stop()). Calls start() if not already started. This is the primary entry point for cli.py's `chronicler start`.",
+      "inputs": [],
+      "output_type": "None",
+      "error_cases": [
+        {
+          "name": "unrecoverable_error",
+          "condition": "Fatal error in processing loop that cannot be caught",
+          "error_type": "RuntimeError",
+          "error_data": {
+            "message": "Engine encountered an unrecoverable error in the main loop"
+          }
+        },
+        {
+          "name": "event_processing_error",
+          "condition": "Individual event fails correlation or story update (logged and dropped, never crashes)",
+          "error_type": "None",
+          "error_data": {}
+        }
+      ],
+      "preconditions": [
+        "Called within an async context (running event loop)"
+      ],
+      "postconditions": [
+        "Engine has processed all events until shutdown",
+        "Shutdown sequence has completed (stop() called internally)",
+        "Engine phase is STOPPED"
+      ],
+      "idempotent": false,
+      "side_effects": [
+        "Processes events through correlation and story manager",
+        "Emits to sinks",
+        "Persists state changes"
+      ],
+      "structured_side_effects": [
+        {
+          "kind": "mutates_state",
+          "target": "CorrelationEngine, StoryManager internal state",
+          "description": "Events are correlated and stories are updated"
+        },
+        {
+          "kind": "network_call",
+          "target": "Sink destinations (Stigmergy, Apprentice, Kindex)",
+          "description": "Fan-out emits to all configured sinks"
+        },
+        {
+          "kind": "writes_file",
+          "target": "JSONL state file and disk sink",
+          "description": "Persist state changes and emit events to disk sink"
+        },
+        {
+          "kind": "logging",
+          "target": "Application logger",
+          "description": "Log event processing, errors, and lifecycle events"
+        }
+      ],
+      "performance_budget": {
+        "p95_latency_ms": 50,
+        "max_memory_mb": null,
+        "complexity": "O(S) per event where S = number of sinks"
+      }
+    },
+    {
+      "name": "ChroniclerEngine.stop",
+      "description": "Async method that initiates graceful shutdown. Transitions to STOPPING phase. Stops all sources (no new events). Drains remaining events from the queue with a timeout (config.drain_timeout_seconds). Flushes the story manager. Stops all sinks. Persists final state to JSONL. Transitions to STOPPED.",
+      "inputs": [],
+      "output_type": "None",
+      "error_cases": [
+        {
+          "name": "already_stopped",
+          "condition": "Engine phase is STOPPED or CREATED",
+          "error_type": "RuntimeError",
+          "error_data": {
+            "message": "Engine is not in a stoppable phase"
+          }
+        },
+        {
+          "name": "drain_timeout",
+          "condition": "Queue did not drain within drain_timeout_seconds (remaining events logged and dropped)",
+          "error_type": "None",
+          "error_data": {}
+        },
+        {
+          "name": "state_persist_failure",
+          "condition": "Cannot write final state to JSONL (logged, not fatal)",
+          "error_type": "None",
+          "error_data": {}
+        }
+      ],
+      "preconditions": [
+        "Engine phase is RUNNING or STARTING"
+      ],
+      "postconditions": [
+        "Engine phase is STOPPED",
+        "All source tasks are cancelled and awaited",
+        "Queue is drained (or timed out)",
+        "Story manager has been flushed",
+        "All sinks are stopped",
+        "Final state is persisted to JSONL",
+        "Signal handlers are deregistered"
+      ],
+      "idempotent": true,
+      "side_effects": [
+        "Cancels source tasks",
+        "Drains queue",
+        "Flushes story manager",
+        "Stops sinks",
+        "Persists state"
+      ],
+      "structured_side_effects": [
+        {
+          "kind": "writes_file",
+          "target": "JSONL state file at config.state_file",
+          "description": "Persist final engine state, open stories, and correlation state"
+        },
+        {
+          "kind": "mutates_state",
+          "target": "Engine internal state: phase, tasks",
+          "description": "Transition through STOPPING to STOPPED"
+        },
+        {
+          "kind": "logging",
+          "target": "Application logger",
+          "description": "Log shutdown progress, drain status, and any errors"
+        }
+      ],
+      "performance_budget": null
+    },
+    {
+      "name": "ChroniclerEngine.status",
+      "description": "Returns a snapshot of the engine's current status as an EngineStatus struct. Thread-safe and lock-free (reads atomic counters). Can be called from any phase.",
+      "inputs": [],
+      "output_type": "EngineStatus",
+      "error_cases": [],
+      "preconditions": [],
+      "postconditions": [
+        "Returned EngineStatus reflects the engine state at the time of the call",
+        "No state mutation occurs"
+      ],
+      "idempotent": true,
+      "side_effects": [],
+      "structured_side_effects": [
+        {
+          "kind": "none",
+          "target": "",
+          "description": ""
+        }
+      ],
+      "performance_budget": {
+        "p95_latency_ms": 1,
+        "max_memory_mb": null,
+        "complexity": "O(S+K) where S=sources, K=sinks"
+      }
+    },
+    {
+      "name": "ChroniclerEngine.submit_event",
+      "description": "Async method to programmatically submit an event to the engine's internal queue. Used by sources and by replay. Applies back-pressure if queue is full (blocks until space is available or timeout).",
+      "inputs": [
+        {
+          "name": "event",
+          "type_ref": "any",
+          "required": true,
+          "default": "",
+          "description": "An Event instance (from schemas module) to submit for processing.",
+          "validators": []
+        }
+      ],
+      "output_type": "bool",
+      "error_cases": [
+        {
+          "name": "engine_not_running",
+          "condition": "Engine phase is not RUNNING",
+          "error_type": "RuntimeError",
+          "error_data": {
+            "message": "Cannot submit events when engine is not running"
+          }
+        },
+        {
+          "name": "invalid_event",
+          "condition": "Event fails validation",
+          "error_type": "ValidationError",
+          "error_data": {}
+        }
+      ],
+      "preconditions": [
+        "Engine phase is RUNNING",
+        "event is a valid Event instance"
+      ],
+      "postconditions": [
+        "Event is enqueued in the internal asyncio.Queue (returns true)",
+        "Or queue was full and timeout expired (returns false, event is dropped)"
+      ],
+      "idempotent": false,
+      "side_effects": [],
+      "structured_side_effects": [
+        {
+          "kind": "mutates_state",
+          "target": "Internal asyncio.Queue",
+          "description": "Enqueue event for processing by the main loop"
+        }
+      ],
+      "performance_budget": {
+        "p95_latency_ms": 5,
+        "max_memory_mb": null,
+        "complexity": "O(1)"
+      }
+    },
+    {
+      "name": "ChroniclerEngine.__aenter__",
+      "description": "Async context manager entry. Calls start() and returns self. Enables `async with ChroniclerEngine(...) as engine:` usage pattern.",
+      "inputs": [],
+      "output_type": "any",
+      "error_cases": [
+        {
+          "name": "start_failure",
+          "condition": "start() raises an error",
+          "error_type": "RuntimeError",
+          "error_data": {}
+        }
+      ],
+      "preconditions": [
+        "Engine phase is CREATED"
+      ],
+      "postconditions": [
+        "Engine phase is RUNNING",
+        "Returns self"
+      ],
+      "idempotent": false,
+      "side_effects": [],
+      "structured_side_effects": [
+        {
+          "kind": "reads_file",
+          "target": "JSONL state file",
+          "description": "Delegated to start()"
+        },
+        {
+          "kind": "mutates_state",
+          "target": "Engine lifecycle",
+          "description": "Delegated to start()"
+        }
+      ],
+      "performance_budget": null
+    },
+    {
+      "name": "ChroniclerEngine.__aexit__",
+      "description": "Async context manager exit. Calls stop() to perform graceful shutdown regardless of exception state.",
+      "inputs": [
+        {
+          "name": "exc_type",
+          "type_ref": "any",
+          "required": false,
+          "default": "None",
+          "description": "Exception type if context exited with exception, else None.",
+          "validators": []
+        },
+        {
+          "name": "exc_val",
+          "type_ref": "any",
+          "required": false,
+          "default": "None",
+          "description": "Exception value if context exited with exception, else None.",
+          "validators": []
+        },
+        {
+          "name": "exc_tb",
+          "type_ref": "any",
+          "required": false,
+          "default": "None",
+          "description": "Exception traceback if context exited with exception, else None.",
+          "validators": []
+        }
+      ],
+      "output_type": "bool",
+      "error_cases": [],
+      "preconditions": [],
+      "postconditions": [
+        "Engine phase is STOPPED",
+        "Returns False (exceptions are not suppressed)"
+      ],
+      "idempotent": true,
+      "side_effects": [],
+      "structured_side_effects": [
+        {
+          "kind": "writes_file",
+          "target": "JSONL state file",
+          "description": "Delegated to stop()"
+        },
+        {
+          "kind": "mutates_state",
+          "target": "Engine lifecycle",
+          "description": "Delegated to stop()"
+        }
+      ],
+      "performance_budget": null
+    },
+    {
+      "name": "cli_main",
+      "description": "CLI entry point registered as `chronicler` in pyproject.toml. Parses argv via argparse, dispatches to the appropriate subcommand handler. Returns an integer exit code. Subcommands: start, status, stories (list|show), replay.",
+      "inputs": [
+        {
+          "name": "argv",
+          "type_ref": "list",
+          "required": false,
+          "default": "None",
+          "description": "Command-line argument list (sys.argv[1:]). If empty/None, argparse reads sys.argv.",
+          "validators": []
+        }
+      ],
+      "output_type": "int",
+      "error_cases": [
+        {
+          "name": "config_not_found",
+          "condition": "Config YAML file does not exist or is unreadable",
+          "error_type": "SystemExit",
+          "error_data": {
+            "exit_code": "1"
+          }
+        },
+        {
+          "name": "invalid_config",
+          "condition": "Config YAML fails validation",
+          "error_type": "SystemExit",
+          "error_data": {
+            "exit_code": "1"
+          }
+        },
+        {
+          "name": "unknown_subcommand",
+          "condition": "Unrecognized subcommand",
+          "error_type": "SystemExit",
+          "error_data": {
+            "exit_code": "2"
+          }
+        },
+        {
+          "name": "replay_file_not_found",
+          "condition": "Replay JSONL file does not exist",
+          "error_type": "SystemExit",
+          "error_data": {
+            "exit_code": "3"
+          }
+        },
+        {
+          "name": "state_read_error",
+          "condition": "Cannot read JSONL state file for status/stories commands",
+          "error_type": "SystemExit",
+          "error_data": {
+            "exit_code": "4"
+          }
+        }
+      ],
+      "preconditions": [],
+      "postconditions": [
+        "Returns 0 on success, non-zero on error",
+        "For 'start': engine has run and stopped",
+        "For 'status'/'stories': output printed to stdout",
+        "For 'replay': replay completed and summary printed"
+      ],
+      "idempotent": false,
+      "side_effects": [
+        "Reads config file",
+        "May start engine",
+        "Reads/writes state files",
+        "Prints to stdout/stderr"
+      ],
+      "structured_side_effects": [
+        {
+          "kind": "reads_file",
+          "target": "chronicler.yaml config file",
+          "description": "Load and validate configuration"
+        },
+        {
+          "kind": "reads_file",
+          "target": "JSONL state file for status/stories commands",
+          "description": "Reconstruct state for offline queries"
+        },
+        {
+          "kind": "writes_file",
+          "target": "JSONL state file during start/replay",
+          "description": "Engine persists state during operation"
+        },
+        {
+          "kind": "logging",
+          "target": "stderr",
+          "description": "Error messages and progress output"
+        }
+      ],
+      "performance_budget": null
+    },
+    {
+      "name": "cli_cmd_start",
+      "description": "Handler for `chronicler start`. Loads config from YAML (default: chronicler.yaml, overridable via --config), constructs ChroniclerEngine, calls asyncio.run(engine.run()). Blocks until engine stops (via signal or error).",
+      "inputs": [
+        {
+          "name": "config_path",
+          "type_ref": "str",
+          "required": true,
+          "default": "chronicler.yaml",
+          "description": "Path to the YAML config file.",
+          "validators": []
+        }
+      ],
+      "output_type": "int",
+      "error_cases": [
+        {
+          "name": "config_load_error",
+          "condition": "Config file missing or invalid",
+          "error_type": "SystemExit",
+          "error_data": {
+            "exit_code": "1"
+          }
+        },
+        {
+          "name": "engine_runtime_error",
+          "condition": "Engine encounters unrecoverable error",
+          "error_type": "SystemExit",
+          "error_data": {
+            "exit_code": "2"
+          }
+        }
+      ],
+      "preconditions": [
+        "config_path points to a readable YAML file"
+      ],
+      "postconditions": [
+        "Engine has completed its full lifecycle (start → run → stop)",
+        "Returns 0 on clean shutdown, non-zero on error"
+      ],
+      "idempotent": false,
+      "side_effects": [
+        "Full engine lifecycle"
+      ],
+      "structured_side_effects": [
+        {
+          "kind": "reads_file",
+          "target": "YAML config file",
+          "description": "Load configuration"
+        },
+        {
+          "kind": "reads_file",
+          "target": "JSONL state file",
+          "description": "Engine loads persisted state"
+        },
+        {
+          "kind": "writes_file",
+          "target": "JSONL state file",
+          "description": "Engine persists state during and after operation"
+        },
+        {
+          "kind": "network_call",
+          "target": "Source listeners and sink destinations",
+          "description": "Engine binds source ports and emits to sinks"
+        },
+        {
+          "kind": "logging",
+          "target": "Application logger",
+          "description": "Full engine logging"
+        }
+      ],
+      "performance_budget": null
+    },
+    {
+      "name": "cli_cmd_status",
+      "description": "Handler for `chronicler status`. Reads the JSONL state file directly (no running engine required) using the state module. Reconstructs and prints the engine status including last-known phase, event counts, and story counts. Outputs JSON to stdout.",
+      "inputs": [
+        {
+          "name": "state_file",
+          "type_ref": "str",
+          "required": true,
+          "default": "chronicler_state.jsonl",
+          "description": "Path to the JSONL state file to read.",
+          "validators": []
+        }
+      ],
+      "output_type": "int",
+      "error_cases": [
+        {
+          "name": "state_file_missing",
+          "condition": "State file does not exist (prints empty/default status)",
+          "error_type": "None",
+          "error_data": {}
+        },
+        {
+          "name": "state_file_corrupt",
+          "condition": "State file contains unparseable lines",
+          "error_type": "SystemExit",
+          "error_data": {
+            "exit_code": "4"
+          }
+        }
+      ],
+      "preconditions": [],
+      "postconditions": [
+        "Status JSON printed to stdout",
+        "Returns 0 on success, 4 on state read error"
+      ],
+      "idempotent": true,
+      "side_effects": [
+        "Reads JSONL state file",
+        "Prints to stdout"
+      ],
+      "structured_side_effects": [
+        {
+          "kind": "reads_file",
+          "target": "JSONL state file",
+          "description": "Reconstruct last-known engine state from append-only log"
+        },
+        {
+          "kind": "logging",
+          "target": "stdout",
+          "description": "Print status as JSON"
+        }
+      ],
+      "performance_budget": null
+    },
+    {
+      "name": "cli_cmd_stories_list",
+      "description": "Handler for `chronicler stories list`. Reads the JSONL state file, reconstructs stories, and prints a filtered list. Supports --filter (open/closed/all) flag. Outputs JSON array to stdout.",
+      "inputs": [
+        {
+          "name": "state_file",
+          "type_ref": "str",
+          "required": true,
+          "default": "chronicler_state.jsonl",
+          "description": "Path to the JSONL state file.",
+          "validators": []
+        },
+        {
+          "name": "filter",
+          "type_ref": "StoryFilter",
+          "required": true,
+          "default": "ALL",
+          "description": "Filter stories by status.",
+          "validators": []
+        }
+      ],
+      "output_type": "int",
+      "error_cases": [
+        {
+          "name": "state_file_missing",
+          "condition": "State file does not exist (prints empty list)",
+          "error_type": "None",
+          "error_data": {}
+        },
+        {
+          "name": "state_file_corrupt",
+          "condition": "State file contains unparseable lines",
+          "error_type": "SystemExit",
+          "error_data": {
+            "exit_code": "4"
+          }
+        }
+      ],
+      "preconditions": [],
+      "postconditions": [
+        "StoryListResult JSON printed to stdout",
+        "Returns 0 on success"
+      ],
+      "idempotent": true,
+      "side_effects": [
+        "Reads JSONL state file",
+        "Prints to stdout"
+      ],
+      "structured_side_effects": [
+        {
+          "kind": "reads_file",
+          "target": "JSONL state file",
+          "description": "Reconstruct stories from append-only log"
+        },
+        {
+          "kind": "logging",
+          "target": "stdout",
+          "description": "Print story list as JSON"
+        }
+      ],
+      "performance_budget": null
+    },
+    {
+      "name": "cli_cmd_stories_show",
+      "description": "Handler for `chronicler stories show <id>`. Reads the JSONL state file, finds the story by ID, prints full story detail including all correlated events. Outputs JSON to stdout.",
+      "inputs": [
+        {
+          "name": "story_id",
+          "type_ref": "str",
+          "required": true,
+          "default": "",
+          "description": "ID of the story to display.",
+          "validators": [
+            {
+              "kind": "length",
+              "expression": "1..256",
+              "error_message": "story_id must be non-empty"
+            }
+          ]
+        },
+        {
+          "name": "state_file",
+          "type_ref": "str",
+          "required": true,
+          "default": "chronicler_state.jsonl",
+          "description": "Path to the JSONL state file.",
+          "validators": []
+        }
+      ],
+      "output_type": "int",
+      "error_cases": [
+        {
+          "name": "story_not_found",
+          "condition": "No story with the given ID exists in state",
+          "error_type": "SystemExit",
+          "error_data": {
+            "exit_code": "2"
+          }
+        },
+        {
+          "name": "state_file_missing",
+          "condition": "State file does not exist",
+          "error_type": "SystemExit",
+          "error_data": {
+            "exit_code": "4"
+          }
+        },
+        {
+          "name": "state_file_corrupt",
+          "condition": "State file contains unparseable lines",
+          "error_type": "SystemExit",
+          "error_data": {
+            "exit_code": "4"
+          }
+        }
+      ],
+      "preconditions": [
+        "story_id is a non-empty string"
+      ],
+      "postconditions": [
+        "Full Story JSON printed to stdout if found",
+        "Error message printed to stderr if not found",
+        "Returns 0 on success, 2 if story not found"
+      ],
+      "idempotent": true,
+      "side_effects": [
+        "Reads JSONL state file",
+        "Prints to stdout/stderr"
+      ],
+      "structured_side_effects": [
+        {
+          "kind": "reads_file",
+          "target": "JSONL state file",
+          "description": "Reconstruct stories and find the requested one"
+        },
+        {
+          "kind": "logging",
+          "target": "stdout/stderr",
+          "description": "Print story detail or error message"
+        }
+      ],
+      "performance_budget": null
+    },
+    {
+      "name": "cli_cmd_replay",
+      "description": "Handler for `chronicler replay <file>`. Constructs engine in replay mode with clock=event_time and optionally suppressed sinks. Reads the JSONL file line by line, parses each as an Event, submits to the engine. Uses event timestamps as the clock source for deterministic replay. Returns a ReplayResult summary.",
+      "inputs": [
+        {
+          "name": "file_path",
+          "type_ref": "str",
+          "required": true,
+          "default": "",
+          "description": "Path to the JSONL file to replay.",
+          "validators": [
+            {
+              "kind": "length",
+              "expression": "1..4096",
+              "error_message": "file_path must be non-empty"
+            }
+          ]
+        },
+        {
+          "name": "config_path",
+          "type_ref": "str",
+          "required": true,
+          "default": "chronicler.yaml",
+          "description": "Path to YAML config for engine construction.",
+          "validators": []
+        },
+        {
+          "name": "suppress_sinks",
+          "type_ref": "bool",
+          "required": true,
+          "default": "false",
+          "description": "If true, suppress all sink emissions (dry-run mode).",
+          "validators": []
+        }
+      ],
+      "output_type": "int",
+      "error_cases": [
+        {
+          "name": "file_not_found",
+          "condition": "JSONL replay file does not exist",
+          "error_type": "SystemExit",
+          "error_data": {
+            "exit_code": "3"
+          }
+        },
+        {
+          "name": "config_error",
+          "condition": "Config file missing or invalid",
+          "error_type": "SystemExit",
+          "error_data": {
+            "exit_code": "1"
+          }
+        },
+        {
+          "name": "parse_errors",
+          "condition": "Individual lines fail to parse as Events (logged and skipped, counted in events_skipped)",
+          "error_type": "None",
+          "error_data": {}
+        }
+      ],
+      "preconditions": [
+        "file_path points to a readable JSONL file",
+        "config_path points to a valid YAML config"
+      ],
+      "postconditions": [
+        "All parseable events from file have been processed through the engine",
+        "ReplayResult JSON printed to stdout",
+        "Engine has been stopped",
+        "Returns 0 on success"
+      ],
+      "idempotent": true,
+      "side_effects": [
+        "Reads JSONL replay file",
+        "Runs engine in replay mode",
+        "Persists state"
+      ],
+      "structured_side_effects": [
+        {
+          "kind": "reads_file",
+          "target": "JSONL replay input file",
+          "description": "Read events line by line for replay"
+        },
+        {
+          "kind": "reads_file",
+          "target": "YAML config file",
+          "description": "Load engine configuration"
+        },
+        {
+          "kind": "writes_file",
+          "target": "JSONL state file",
+          "description": "Engine persists story state during replay"
+        },
+        {
+          "kind": "logging",
+          "target": "stdout/stderr",
+          "description": "Print replay summary and any parse errors"
+        }
+      ],
+      "performance_budget": null
+    },
+    {
+      "name": "mcp_server_create",
+      "description": "Create and configure the MCP server instance. Registers all four tools (chronicler_status, chronicler_stories_list, chronicler_stories_show, chronicler_events_replay) with the mcp SDK. Binds tool handlers to engine methods. Returns the configured server ready to run over stdio transport.",
+      "inputs": [
+        {
+          "name": "engine",
+          "type_ref": "any",
+          "required": true,
+          "default": "",
+          "description": "Reference to the running ChroniclerEngine instance for tool delegation.",
+          "validators": []
+        }
+      ],
+      "output_type": "any",
+      "error_cases": [
+        {
+          "name": "mcp_sdk_unavailable",
+          "condition": "The mcp Python package is not installed",
+          "error_type": "ImportError",
+          "error_data": {}
+        },
+        {
+          "name": "tool_registration_error",
+          "condition": "Tool registration fails due to schema conflict",
+          "error_type": "RuntimeError",
+          "error_data": {}
+        }
+      ],
+      "preconditions": [
+        "engine is a valid ChroniclerEngine instance",
+        "Engine phase is RUNNING or STARTING"
+      ],
+      "postconditions": [
+        "MCP server is configured with all four tools registered",
+        "Server is ready to run but not yet started"
+      ],
+      "idempotent": true,
+      "side_effects": [],
+      "structured_side_effects": [
+        {
+          "kind": "mutates_state",
+          "target": "MCP server tool registry",
+          "description": "Register four tools with their input schemas and handlers"
+        }
+      ],
+      "performance_budget": null
+    },
+    {
+      "name": "mcp_server_run",
+      "description": "Async coroutine that runs the MCP server over stdio transport. Blocks until the engine shuts down or the stdio connection is closed. Designed to be run as a task within the engine's TaskGroup.",
+      "inputs": [
+        {
+          "name": "server",
+          "type_ref": "any",
+          "required": true,
+          "default": "",
+          "description": "Configured MCP server instance from mcp_server_create.",
+          "validators": []
+        }
+      ],
+      "output_type": "None",
+      "error_cases": [
+        {
+          "name": "transport_error",
+          "condition": "Stdio transport encounters an I/O error (logged, task exits)",
+          "error_type": "None",
+          "error_data": {}
+        },
+        {
+          "name": "cancelled",
+          "condition": "Task is cancelled during engine shutdown",
+          "error_type": "CancelledError",
+          "error_data": {}
+        }
+      ],
+      "preconditions": [
+        "server is a configured MCP server instance",
+        "Called within an async context"
+      ],
+      "postconditions": [
+        "MCP server has stopped",
+        "Stdio transport is closed"
+      ],
+      "idempotent": false,
+      "side_effects": [
+        "Reads/writes stdio",
+        "Delegates to engine methods"
+      ],
+      "structured_side_effects": [
+        {
+          "kind": "reads_file",
+          "target": "stdin",
+          "description": "Read MCP JSON-RPC requests from stdin"
+        },
+        {
+          "kind": "writes_file",
+          "target": "stdout",
+          "description": "Write MCP JSON-RPC responses to stdout"
+        },
+        {
+          "kind": "logging",
+          "target": "Application logger",
+          "description": "Log tool invocations and errors"
+        }
+      ],
+      "performance_budget": null
+    },
+    {
+      "name": "mcp_tool_chronicler_status",
+      "description": "MCP tool handler for chronicler_status. Delegates to engine.status() and returns the result as a McpToolResult with EngineStatus serialized in the data field.",
+      "inputs": [],
+      "output_type": "McpToolResult",
+      "error_cases": [
+        {
+          "name": "engine_unavailable",
+          "condition": "Engine reference is invalid or engine is in ERROR phase",
+          "error_type": "None",
+          "error_data": {}
+        }
+      ],
+      "preconditions": [
+        "Engine is accessible and not in ERROR phase"
+      ],
+      "postconditions": [
+        "Returns McpToolResult with success=true and EngineStatus data",
+        "No state mutation"
+      ],
+      "idempotent": true,
+      "side_effects": [],
+      "structured_side_effects": [
+        {
+          "kind": "none",
+          "target": "",
+          "description": ""
+        }
+      ],
+      "performance_budget": {
+        "p95_latency_ms": 5,
+        "max_memory_mb": null,
+        "complexity": null
+      }
+    },
+    {
+      "name": "mcp_tool_chronicler_stories_list",
+      "description": "MCP tool handler for chronicler_stories_list. Accepts an optional filter parameter. Delegates to story_manager.list_stories() and returns results as McpToolResult with StoryListResult serialized in the data field.",
+      "inputs": [
+        {
+          "name": "filter",
+          "type_ref": "StoryFilter",
+          "required": false,
+          "default": "ALL",
+          "description": "Filter stories by status.",
+          "validators": []
+        }
+      ],
+      "output_type": "McpToolResult",
+      "error_cases": [
+        {
+          "name": "engine_unavailable",
+          "condition": "Engine reference is invalid",
+          "error_type": "None",
+          "error_data": {}
+        }
+      ],
+      "preconditions": [
+        "Engine is accessible and in RUNNING phase"
+      ],
+      "postconditions": [
+        "Returns McpToolResult with success=true and StoryListResult data"
+      ],
+      "idempotent": true,
+      "side_effects": [],
+      "structured_side_effects": [
+        {
+          "kind": "none",
+          "target": "",
+          "description": ""
+        }
+      ],
+      "performance_budget": {
+        "p95_latency_ms": 50,
+        "max_memory_mb": null,
+        "complexity": null
+      }
+    },
+    {
+      "name": "mcp_tool_chronicler_stories_show",
+      "description": "MCP tool handler for chronicler_stories_show. Accepts a story_id parameter. Delegates to story_manager.get_story() and returns the full Story as McpToolResult with Story serialized in the data field.",
+      "inputs": [
+        {
+          "name": "story_id",
+          "type_ref": "str",
+          "required": true,
+          "default": "",
+          "description": "ID of the story to retrieve.",
+          "validators": [
+            {
+              "kind": "length",
+              "expression": "1..256",
+              "error_message": "story_id must be non-empty"
+            }
+          ]
+        }
+      ],
+      "output_type": "McpToolResult",
+      "error_cases": [
+        {
+          "name": "story_not_found",
+          "condition": "No story with the given ID exists",
+          "error_type": "None",
+          "error_data": {}
+        },
+        {
+          "name": "engine_unavailable",
+          "condition": "Engine reference is invalid",
+          "error_type": "None",
+          "error_data": {}
+        }
+      ],
+      "preconditions": [
+        "Engine is accessible and in RUNNING phase"
+      ],
+      "postconditions": [
+        "Returns McpToolResult with success=true and Story data if found",
+        "Returns McpToolResult with success=false and error_message if not found"
+      ],
+      "idempotent": true,
+      "side_effects": [],
+      "structured_side_effects": [
+        {
+          "kind": "none",
+          "target": "",
+          "description": ""
+        }
+      ],
+      "performance_budget": {
+        "p95_latency_ms": 20,
+        "max_memory_mb": null,
+        "complexity": null
+      }
+    },
+    {
+      "name": "mcp_tool_chronicler_events_replay",
+      "description": "MCP tool handler for chronicler_events_replay. Accepts file_path and optional suppress_sinks parameters. Constructs a replay pipeline and processes the file through the running engine. Returns ReplayResult as McpToolResult. Note: replay through MCP runs within the live engine, using event timestamps for clock but processing through the existing correlation/story pipeline.",
+      "inputs": [
+        {
+          "name": "file_path",
+          "type_ref": "str",
+          "required": true,
+          "default": "",
+          "description": "Path to the JSONL file to replay.",
+          "validators": [
+            {
+              "kind": "length",
+              "expression": "1..4096",
+              "error_message": "file_path must be non-empty"
+            }
+          ]
+        },
+        {
+          "name": "suppress_sinks",
+          "type_ref": "bool",
+          "required": false,
+          "default": "false",
+          "description": "If true, suppress sink emissions during replay.",
+          "validators": []
+        }
+      ],
+      "output_type": "McpToolResult",
+      "error_cases": [
+        {
+          "name": "file_not_found",
+          "condition": "JSONL file does not exist at file_path",
+          "error_type": "None",
+          "error_data": {}
+        },
+        {
+          "name": "file_read_error",
+          "condition": "Cannot read the JSONL file",
+          "error_type": "None",
+          "error_data": {}
+        },
+        {
+          "name": "engine_unavailable",
+          "condition": "Engine is not in RUNNING phase",
+          "error_type": "None",
+          "error_data": {}
+        }
+      ],
+      "preconditions": [
+        "Engine is accessible and in RUNNING phase",
+        "file_path points to a readable JSONL file"
+      ],
+      "postconditions": [
+        "Returns McpToolResult with success=true and ReplayResult data on success",
+        "Returns McpToolResult with success=false and error_message on failure",
+        "All parseable events from the file have been submitted to the engine"
+      ],
+      "idempotent": false,
+      "side_effects": [
+        "Reads JSONL file",
+        "Submits events to engine"
+      ],
+      "structured_side_effects": [
+        {
+          "kind": "reads_file",
+          "target": "JSONL replay input file",
+          "description": "Read events line by line for replay"
+        },
+        {
+          "kind": "mutates_state",
+          "target": "Engine internal queue and story state",
+          "description": "Events are submitted to the running engine's processing pipeline"
+        }
+      ],
+      "performance_budget": {
+        "p95_latency_ms": 5000,
+        "max_memory_mb": null,
+        "complexity": "O(N) where N = number of lines in the file"
+      }
+    }
+  ],
+  "dependencies": [
+    "schemas",
+    "correlation",
+    "story_manager",
+    "config",
+    "state"
+  ],
+  "dependency_contracts": {
+    "schemas": [
+      "Event",
+      "Story",
+      "CorrelationRule"
+    ],
+    "correlation": [
+      "CorrelationEngine.process"
+    ],
+    "story_manager": [
+      "StoryManager.update",
+      "StoryManager.list_stories",
+      "StoryManager.get_story",
+      "StoryManager.flush"
+    ],
+    "config": [
+      "load_config",
+      "ChroniclerConfig"
+    ],
+    "state": [
+      "read_state",
+      "append_state"
+    ]
+  },
+  "invariants": [
+    "Engine phase transitions are strictly ordered: CREATED → STARTING → RUNNING → STOPPING → STOPPED, with CREATED → STARTING → ERROR as the only alternative path",
+    "The internal asyncio.Queue is bounded by config.queue_max_size; back-pressure is applied when full",
+    "Sources never crash the engine: all source exceptions are caught by supervisor coroutines, logged, and optionally restarted after source_restart_delay_seconds",
+    "Sinks are fire-and-forget: sink errors are logged but never block the processing pipeline or crash the engine",
+    "Invalid events are logged and dropped during correlation — they never crash the engine or corrupt story state",
+    "Shutdown always follows the order: stop sources → drain queue (with timeout) → flush story manager → stop sinks → persist final state",
+    "The engine's clock is injected and deterministic in replay mode — event timestamps drive time-dependent logic",
+    "JSONL state file is append-only during normal operation; full state can be reconstructed by replaying the log",
+    "CLI status and stories commands read JSONL state files directly without requiring a running engine",
+    "MCP server lifecycle is tied to the engine: it starts with the engine and stops when the engine stops",
+    "All I/O operations use async/await (asyncio); no blocking I/O on the event loop",
+    "Config validation fails fast at startup — invalid configuration is a fatal error that prevents engine creation"
+  ],
+  "requires": [
+    "schemas",
+    "correlation",
+    "story_manager",
+    "config",
+    "state"
+  ],
+  "processing_register": "rigorous-analytical",
+  "data_access": {
+    "reads": [
+      "INTERNAL",
+      "PUBLIC"
+    ],
+    "writes": [
+      "INTERNAL"
+    ],
+    "rationale": "The engine reads INTERNAL-tier data from JSONL state files to reconstruct persisted story and correlation state on startup and for CLI offline queries. It reads PUBLIC-tier data from configured sources (webhook payloads, OTLP spans, file tails, Sentinel incidents). It writes INTERNAL-tier data to JSONL state files to persist engine state, open/closed stories, and event correlation mappings. The engine does not directly handle PII — any PII in event payloads passes through opaquely and is the responsibility of source/sink components and correlation rules to classify.",
+    "side_effects": [
+      {
+        "type": "reads_file",
+        "classification": "INTERNAL",
+        "fields": [
+          "state_file",
+          "stories",
+          "correlation_state",
+          "event_counters"
+        ],
+        "rationale": "Read JSONL state file on startup to restore persisted stories, correlation state, and event counters from previous engine run"
+      },
+      {
+        "type": "writes_file",
+        "classification": "INTERNAL",
+        "fields": [
+          "state_file",
+          "stories",
+          "correlation_state",
+          "event_counters",
+          "engine_phase"
+        ],
+        "rationale": "Append to JSONL state file during operation and on shutdown to persist stories, correlation state, event counters, and final engine phase for recovery"
+      },
+      {
+        "type": "reads_file",
+        "classification": "INTERNAL",
+        "fields": [
+          "config"
+        ],
+        "rationale": "Read YAML configuration file at startup and for CLI commands to load source/sink/correlation/engine settings"
+      },
+      {
+        "type": "reads_file",
+        "classification": "PUBLIC",
+        "fields": [
+          "replay_events"
+        ],
+        "rationale": "Read JSONL replay input files containing event records for the replay command"
+      },
+      {
+        "type": "network_io",
+        "classification": "PUBLIC",
+        "fields": [
+          "source_events"
+        ],
+        "rationale": "Sources bind to network ports (webhook HTTP, OTLP gRPC) to receive incoming events from external systems"
+      },
+      {
+        "type": "network_io",
+        "classification": "INTERNAL",
+        "fields": [
+          "sink_payloads"
+        ],
+        "rationale": "Sinks emit processed events and stories to external systems (Stigmergy, Apprentice, Kindex) over HTTP"
+      },
+      {
+        "type": "stdio",
+        "classification": "INTERNAL",
+        "fields": [
+          "mcp_requests",
+          "mcp_responses"
+        ],
+        "rationale": "MCP server reads JSON-RPC requests from stdin and writes responses to stdout for tool invocations"
+      }
+    ]
+  },
+  "authority": {
+    "domains": [
+      "engine.lifecycle",
+      "engine.status",
+      "engine.processing_pipeline"
+    ],
+    "rationale": "This component is the authoritative owner of engine lifecycle state (phase transitions, start/stop), engine status reporting (uptime, counters, source/sink health), and the event processing pipeline (queue → correlation → story manager → sink fan-out). It is the composition root that orchestrates all other Chronicler components. CLI and MCP server are thin interfaces that delegate to engine methods or read from the state files that the engine owns."
+  }
+}

@@ -1,0 +1,957 @@
+{
+  "component_id": "config",
+  "name": "Configuration Loading",
+  "description": "Load and validate chronicler.yaml using Pydantic v2. Parses correlation rules, source configs, sink configs, memory limits (max_open_stories), timeout settings, and kindex noteworthiness filters. Fails fast with clear error messages on invalid config. Produces frozen typed config objects. Pure function: explicit Path in, typed ChroniclerConfig out. Covers AC9.",
+  "version": 1,
+  "types": [
+    {
+      "name": "FilePath",
+      "kind": "primitive",
+      "fields": [
+        {
+          "name": "value",
+          "type_ref": "str",
+          "required": true,
+          "default": "",
+          "description": "The filesystem path as a string.",
+          "validators": [
+            {
+              "kind": "length",
+              "expression": "min=1",
+              "error_message": "File path must not be empty."
+            }
+          ]
+        }
+      ],
+      "item_type": "",
+      "variants": [],
+      "inner_types": [],
+      "description": "A validated filesystem path string pointing to an existing readable file."
+    },
+    {
+      "name": "SourceType",
+      "kind": "enum",
+      "fields": [],
+      "item_type": "",
+      "variants": [
+        "webhook",
+        "otlp",
+        "file",
+        "sentinel"
+      ],
+      "inner_types": [],
+      "description": "Discriminator enum for source configuration types."
+    },
+    {
+      "name": "SinkType",
+      "kind": "enum",
+      "fields": [],
+      "item_type": "",
+      "variants": [
+        "stigmergy",
+        "apprentice",
+        "disk",
+        "kindex"
+      ],
+      "inner_types": [],
+      "description": "Discriminator enum for sink configuration types."
+    },
+    {
+      "name": "WebhookSourceConfig",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "type",
+          "type_ref": "SourceType",
+          "required": true,
+          "default": "",
+          "description": "Discriminator literal, always 'webhook'.",
+          "validators": []
+        },
+        {
+          "name": "bind_address",
+          "type_ref": "str",
+          "required": false,
+          "default": "0.0.0.0",
+          "description": "IP address or hostname to bind the webhook HTTP server.",
+          "validators": [
+            {
+              "kind": "length",
+              "expression": "min=1,max=253",
+              "error_message": "bind_address must be a non-empty hostname or IP."
+            }
+          ]
+        },
+        {
+          "name": "port",
+          "type_ref": "int",
+          "required": false,
+          "default": "8080",
+          "description": "TCP port for the webhook HTTP server.",
+          "validators": [
+            {
+              "kind": "range",
+              "expression": "min=1,max=65535",
+              "error_message": "Port must be between 1 and 65535."
+            }
+          ]
+        },
+        {
+          "name": "path",
+          "type_ref": "str",
+          "required": false,
+          "default": "/events",
+          "description": "URL path to listen on for incoming webhooks.",
+          "validators": [
+            {
+              "kind": "regex",
+              "expression": "^/.*",
+              "error_message": "Webhook path must start with '/'."
+            }
+          ]
+        }
+      ],
+      "item_type": "",
+      "variants": [],
+      "inner_types": [],
+      "description": "Configuration for the HTTP POST webhook event source. Frozen Pydantic model."
+    },
+    {
+      "name": "OtlpSourceConfig",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "type",
+          "type_ref": "SourceType",
+          "required": true,
+          "default": "",
+          "description": "Discriminator literal, always 'otlp'.",
+          "validators": []
+        },
+        {
+          "name": "bind_address",
+          "type_ref": "str",
+          "required": false,
+          "default": "0.0.0.0",
+          "description": "IP address or hostname to bind the OTLP gRPC server.",
+          "validators": [
+            {
+              "kind": "length",
+              "expression": "min=1,max=253",
+              "error_message": "bind_address must be a non-empty hostname or IP."
+            }
+          ]
+        },
+        {
+          "name": "port",
+          "type_ref": "int",
+          "required": false,
+          "default": "4317",
+          "description": "TCP port for the OTLP gRPC server.",
+          "validators": [
+            {
+              "kind": "range",
+              "expression": "min=1,max=65535",
+              "error_message": "Port must be between 1 and 65535."
+            }
+          ]
+        }
+      ],
+      "item_type": "",
+      "variants": [],
+      "inner_types": [],
+      "description": "Configuration for the OTLP gRPC collector source. Frozen Pydantic model."
+    },
+    {
+      "name": "FileSourceConfig",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "type",
+          "type_ref": "SourceType",
+          "required": true,
+          "default": "",
+          "description": "Discriminator literal, always 'file'.",
+          "validators": []
+        },
+        {
+          "name": "path",
+          "type_ref": "str",
+          "required": true,
+          "default": "",
+          "description": "Filesystem path to the JSONL file to tail.",
+          "validators": [
+            {
+              "kind": "length",
+              "expression": "min=1",
+              "error_message": "File source path must not be empty."
+            }
+          ]
+        },
+        {
+          "name": "poll_interval_seconds",
+          "type_ref": "float",
+          "required": false,
+          "default": "1.0",
+          "description": "Interval in seconds between file polls for new lines.",
+          "validators": [
+            {
+              "kind": "range",
+              "expression": "min=0.1,max=3600.0",
+              "error_message": "Poll interval must be between 0.1 and 3600 seconds."
+            }
+          ]
+        }
+      ],
+      "item_type": "",
+      "variants": [],
+      "inner_types": [],
+      "description": "Configuration for the JSONL file tailer source. Frozen Pydantic model."
+    },
+    {
+      "name": "SentinelSourceConfig",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "type",
+          "type_ref": "SourceType",
+          "required": true,
+          "default": "",
+          "description": "Discriminator literal, always 'sentinel'.",
+          "validators": []
+        },
+        {
+          "name": "bind_address",
+          "type_ref": "str",
+          "required": false,
+          "default": "0.0.0.0",
+          "description": "IP address or hostname to bind the Sentinel receiver.",
+          "validators": [
+            {
+              "kind": "length",
+              "expression": "min=1,max=253",
+              "error_message": "bind_address must be a non-empty hostname or IP."
+            }
+          ]
+        },
+        {
+          "name": "port",
+          "type_ref": "int",
+          "required": false,
+          "default": "8081",
+          "description": "TCP port for the Sentinel incident receiver.",
+          "validators": [
+            {
+              "kind": "range",
+              "expression": "min=1,max=65535",
+              "error_message": "Port must be between 1 and 65535."
+            }
+          ]
+        }
+      ],
+      "item_type": "",
+      "variants": [],
+      "inner_types": [],
+      "description": "Configuration for the Sentinel incident receiver source. Frozen Pydantic model."
+    },
+    {
+      "name": "SourceConfig",
+      "kind": "union",
+      "fields": [],
+      "item_type": "",
+      "variants": [],
+      "inner_types": [
+        "WebhookSourceConfig",
+        "OtlpSourceConfig",
+        "FileSourceConfig",
+        "SentinelSourceConfig"
+      ],
+      "description": "Discriminated union of all source configurations, discriminated by the 'type' field."
+    },
+    {
+      "name": "StigmergySinkConfig",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "type",
+          "type_ref": "SinkType",
+          "required": true,
+          "default": "",
+          "description": "Discriminator literal, always 'stigmergy'.",
+          "validators": []
+        },
+        {
+          "name": "url",
+          "type_ref": "str",
+          "required": true,
+          "default": "",
+          "description": "Base URL of the Stigmergy API endpoint.",
+          "validators": [
+            {
+              "kind": "regex",
+              "expression": "^https?://.+",
+              "error_message": "Stigmergy URL must be a valid HTTP(S) URL."
+            }
+          ]
+        }
+      ],
+      "item_type": "",
+      "variants": [],
+      "inner_types": [],
+      "description": "Configuration for the Stigmergy emit sink. Frozen Pydantic model."
+    },
+    {
+      "name": "ApprenticeSinkConfig",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "type",
+          "type_ref": "SinkType",
+          "required": true,
+          "default": "",
+          "description": "Discriminator literal, always 'apprentice'.",
+          "validators": []
+        },
+        {
+          "name": "url",
+          "type_ref": "str",
+          "required": true,
+          "default": "",
+          "description": "Base URL of the Apprentice API endpoint.",
+          "validators": [
+            {
+              "kind": "regex",
+              "expression": "^https?://.+",
+              "error_message": "Apprentice URL must be a valid HTTP(S) URL."
+            }
+          ]
+        }
+      ],
+      "item_type": "",
+      "variants": [],
+      "inner_types": [],
+      "description": "Configuration for the Apprentice emit sink. Frozen Pydantic model."
+    },
+    {
+      "name": "DiskSinkConfig",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "type",
+          "type_ref": "SinkType",
+          "required": true,
+          "default": "",
+          "description": "Discriminator literal, always 'disk'.",
+          "validators": []
+        },
+        {
+          "name": "output_dir",
+          "type_ref": "str",
+          "required": false,
+          "default": "./stories",
+          "description": "Directory path where JSONL story files are written.",
+          "validators": [
+            {
+              "kind": "length",
+              "expression": "min=1",
+              "error_message": "Output directory path must not be empty."
+            }
+          ]
+        }
+      ],
+      "item_type": "",
+      "variants": [],
+      "inner_types": [],
+      "description": "Configuration for the JSONL disk persistence sink. Frozen Pydantic model."
+    },
+    {
+      "name": "KindexSinkConfig",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "type",
+          "type_ref": "SinkType",
+          "required": true,
+          "default": "",
+          "description": "Discriminator literal, always 'kindex'.",
+          "validators": []
+        },
+        {
+          "name": "url",
+          "type_ref": "str",
+          "required": true,
+          "default": "",
+          "description": "Base URL of the Kindex API endpoint.",
+          "validators": [
+            {
+              "kind": "regex",
+              "expression": "^https?://.+",
+              "error_message": "Kindex URL must be a valid HTTP(S) URL."
+            }
+          ]
+        }
+      ],
+      "item_type": "",
+      "variants": [],
+      "inner_types": [],
+      "description": "Configuration for the Kindex knowledge capture sink. Frozen Pydantic model."
+    },
+    {
+      "name": "SinkConfig",
+      "kind": "union",
+      "fields": [],
+      "item_type": "",
+      "variants": [],
+      "inner_types": [
+        "StigmergySinkConfig",
+        "ApprenticeSinkConfig",
+        "DiskSinkConfig",
+        "KindexSinkConfig"
+      ],
+      "description": "Discriminated union of all sink configurations, discriminated by the 'type' field."
+    },
+    {
+      "name": "MatchCondition",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "field",
+          "type_ref": "str",
+          "required": true,
+          "default": "",
+          "description": "Dot-notated path to the event field to match (e.g. 'event_type', 'metadata.service').",
+          "validators": [
+            {
+              "kind": "length",
+              "expression": "min=1,max=256",
+              "error_message": "Match field path must be between 1 and 256 characters."
+            }
+          ]
+        },
+        {
+          "name": "pattern",
+          "type_ref": "str",
+          "required": true,
+          "default": "",
+          "description": "Exact string value or regex pattern to match against the field value.",
+          "validators": [
+            {
+              "kind": "length",
+              "expression": "min=1",
+              "error_message": "Match pattern must not be empty."
+            }
+          ]
+        },
+        {
+          "name": "is_regex",
+          "type_ref": "bool",
+          "required": false,
+          "default": "false",
+          "description": "If true, 'pattern' is interpreted as a regex. If false, exact match.",
+          "validators": []
+        }
+      ],
+      "item_type": "",
+      "variants": [],
+      "inner_types": [],
+      "description": "A single field-level match condition for a correlation rule. Specifies a field name and a pattern (exact string or regex) to match against incoming event values."
+    },
+    {
+      "name": "CorrelationRuleConfig",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "name",
+          "type_ref": "str",
+          "required": true,
+          "default": "",
+          "description": "Unique human-readable name for this correlation rule.",
+          "validators": [
+            {
+              "kind": "length",
+              "expression": "min=1,max=128",
+              "error_message": "Rule name must be between 1 and 128 characters."
+            },
+            {
+              "kind": "regex",
+              "expression": "^[a-zA-Z0-9_.-]+$",
+              "error_message": "Rule name must contain only alphanumeric characters, underscores, dots, and hyphens."
+            }
+          ]
+        },
+        {
+          "name": "match_conditions",
+          "type_ref": "list",
+          "required": true,
+          "default": "",
+          "description": "List of conditions that an event must satisfy to be captured by this rule. All conditions must match (AND logic).",
+          "validators": [
+            {
+              "kind": "length",
+              "expression": "min=1",
+              "error_message": "A correlation rule must have at least one match condition."
+            }
+          ]
+        },
+        {
+          "name": "group_by",
+          "type_ref": "list",
+          "required": true,
+          "default": "",
+          "description": "List of event field paths whose values form the story grouping key. Events with the same group_by values are correlated into the same story.",
+          "validators": [
+            {
+              "kind": "length",
+              "expression": "min=1",
+              "error_message": "A correlation rule must specify at least one group_by field."
+            }
+          ]
+        },
+        {
+          "name": "window_seconds",
+          "type_ref": "int",
+          "required": false,
+          "default": "300",
+          "description": "Maximum time window in seconds within which events can be correlated into the same story under this rule.",
+          "validators": [
+            {
+              "kind": "range",
+              "expression": "min=1,max=86400",
+              "error_message": "Correlation window must be between 1 second and 86400 seconds (24 hours)."
+            }
+          ]
+        }
+      ],
+      "item_type": "",
+      "variants": [],
+      "inner_types": [],
+      "description": "Definition of a correlation rule that groups matching events into stories. Frozen Pydantic model."
+    },
+    {
+      "name": "NoteworthinessThreshold",
+      "kind": "primitive",
+      "fields": [
+        {
+          "name": "value",
+          "type_ref": "float",
+          "required": true,
+          "default": "",
+          "description": "",
+          "validators": [
+            {
+              "kind": "range",
+              "expression": "min=0.0,max=1.0",
+              "error_message": "Noteworthiness threshold must be between 0.0 and 1.0."
+            }
+          ]
+        }
+      ],
+      "item_type": "",
+      "variants": [],
+      "inner_types": [],
+      "description": "A float value between 0.0 and 1.0 representing the minimum noteworthiness score for kindex capture."
+    },
+    {
+      "name": "KindexConfig",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "noteworthiness_threshold",
+          "type_ref": "float",
+          "required": false,
+          "default": "0.5",
+          "description": "Minimum noteworthiness score (0.0–1.0) a completed story must meet to be captured by Kindex.",
+          "validators": [
+            {
+              "kind": "range",
+              "expression": "min=0.0,max=1.0",
+              "error_message": "Noteworthiness threshold must be between 0.0 and 1.0."
+            }
+          ]
+        },
+        {
+          "name": "event_type_filters",
+          "type_ref": "list",
+          "required": false,
+          "default": "[]",
+          "description": "If non-empty, only stories containing at least one event of these types are considered for Kindex capture. Empty list means no event type filtering.",
+          "validators": []
+        },
+        {
+          "name": "tag_patterns",
+          "type_ref": "list",
+          "required": false,
+          "default": "[]",
+          "description": "If non-empty, only stories with at least one tag matching these patterns (glob or regex) are considered for Kindex capture. Empty list means no tag filtering.",
+          "validators": []
+        }
+      ],
+      "item_type": "",
+      "variants": [],
+      "inner_types": [],
+      "description": "Configuration for Kindex noteworthiness filtering. Controls which completed stories are forwarded to the Kindex knowledge capture sink. Frozen Pydantic model."
+    },
+    {
+      "name": "ChroniclerConfig",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "sources",
+          "type_ref": "list",
+          "required": true,
+          "default": "",
+          "description": "List of event source configurations. At least one source must be defined.",
+          "validators": [
+            {
+              "kind": "length",
+              "expression": "min=1",
+              "error_message": "At least one source must be configured."
+            }
+          ]
+        },
+        {
+          "name": "sinks",
+          "type_ref": "list",
+          "required": true,
+          "default": "",
+          "description": "List of sink configurations for story output. At least one sink must be defined.",
+          "validators": [
+            {
+              "kind": "length",
+              "expression": "min=1",
+              "error_message": "At least one sink must be configured."
+            }
+          ]
+        },
+        {
+          "name": "rules",
+          "type_ref": "list",
+          "required": true,
+          "default": "",
+          "description": "List of correlation rule definitions that govern how events are grouped into stories.",
+          "validators": [
+            {
+              "kind": "length",
+              "expression": "min=1",
+              "error_message": "At least one correlation rule must be configured."
+            }
+          ]
+        },
+        {
+          "name": "max_open_stories",
+          "type_ref": "int",
+          "required": false,
+          "default": "10000",
+          "description": "Maximum number of stories that may be open (in-progress) simultaneously. Oldest stories are evicted when this limit is exceeded.",
+          "validators": [
+            {
+              "kind": "range",
+              "expression": "min=1,max=1000000",
+              "error_message": "max_open_stories must be between 1 and 1,000,000."
+            }
+          ]
+        },
+        {
+          "name": "story_timeout_seconds",
+          "type_ref": "int",
+          "required": false,
+          "default": "300",
+          "description": "Number of seconds of inactivity after which an open story is considered timed out and finalized.",
+          "validators": [
+            {
+              "kind": "range",
+              "expression": "min=1,max=604800",
+              "error_message": "story_timeout_seconds must be between 1 second and 604800 seconds (7 days)."
+            }
+          ]
+        },
+        {
+          "name": "kindex",
+          "type_ref": "KindexConfig",
+          "required": false,
+          "default": "null",
+          "description": "Optional Kindex noteworthiness filter configuration. Required if a kindex sink is configured; ignored otherwise.",
+          "validators": []
+        }
+      ],
+      "item_type": "",
+      "variants": [],
+      "inner_types": [],
+      "description": "Top-level Chronicler configuration. Root frozen Pydantic model parsed from chronicler.yaml. Contains all sources, sinks, correlation rules, operational limits, and optional kindex settings."
+    },
+    {
+      "name": "ConfigError",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "file_path",
+          "type_ref": "str",
+          "required": true,
+          "default": "",
+          "description": "The filesystem path of the config file that caused the error.",
+          "validators": []
+        },
+        {
+          "name": "message",
+          "type_ref": "str",
+          "required": true,
+          "default": "",
+          "description": "Human-readable error message describing what went wrong.",
+          "validators": []
+        },
+        {
+          "name": "line_number",
+          "type_ref": "int",
+          "required": false,
+          "default": "-1",
+          "description": "Line number in the YAML file where the error occurred, if available. -1 if not applicable.",
+          "validators": []
+        },
+        {
+          "name": "validation_errors",
+          "type_ref": "list",
+          "required": false,
+          "default": "[]",
+          "description": "List of individual validation error messages from Pydantic, if the error was a validation failure. Empty list for YAML parse errors.",
+          "validators": []
+        }
+      ],
+      "item_type": "",
+      "variants": [],
+      "inner_types": [],
+      "description": "Custom exception wrapping YAML parse errors or Pydantic validation errors with file path context for clear fail-fast error messages at startup."
+    }
+  ],
+  "functions": [
+    {
+      "name": "load_config",
+      "description": "Load and validate a Chronicler configuration from a YAML file. Reads the file at the given path, parses it with yaml.safe_load(), validates the resulting dict against the ChroniclerConfig Pydantic model, runs cross-field validators (e.g., kindex sink requires kindex config section), and returns a frozen typed config object. Fails fast with ConfigError on any failure: file not found, YAML syntax error, or Pydantic validation error.",
+      "inputs": [
+        {
+          "name": "path",
+          "type_ref": "FilePath",
+          "required": true,
+          "default": "",
+          "description": "Filesystem path to the chronicler.yaml configuration file.",
+          "validators": []
+        }
+      ],
+      "output_type": "ChroniclerConfig",
+      "error_cases": [
+        {
+          "name": "file_not_found",
+          "condition": "The specified config file path does not exist on disk.",
+          "error_type": "ConfigError",
+          "error_data": {
+            "message": "Configuration file not found: {path}"
+          }
+        },
+        {
+          "name": "file_not_readable",
+          "condition": "The config file exists but cannot be read due to permission errors.",
+          "error_type": "ConfigError",
+          "error_data": {
+            "message": "Configuration file not readable: {path}"
+          }
+        },
+        {
+          "name": "yaml_parse_error",
+          "condition": "The file contains invalid YAML syntax that yaml.safe_load() cannot parse.",
+          "error_type": "ConfigError",
+          "error_data": {
+            "message": "YAML parse error in {path} at line {line_number}: {detail}"
+          }
+        },
+        {
+          "name": "empty_config",
+          "condition": "The YAML file is empty or parses to None/null.",
+          "error_type": "ConfigError",
+          "error_data": {
+            "message": "Configuration file is empty: {path}"
+          }
+        },
+        {
+          "name": "validation_error",
+          "condition": "The parsed YAML structure does not conform to ChroniclerConfig schema: missing required fields, wrong types, constraint violations.",
+          "error_type": "ConfigError",
+          "error_data": {
+            "message": "Configuration validation failed for {path}: {error_count} error(s)"
+          }
+        },
+        {
+          "name": "kindex_sink_without_kindex_config",
+          "condition": "A kindex sink is configured in the sinks list but the top-level kindex config section is missing or null.",
+          "error_type": "ConfigError",
+          "error_data": {
+            "message": "Kindex sink requires a 'kindex' configuration section in {path}"
+          }
+        },
+        {
+          "name": "duplicate_rule_names",
+          "condition": "Two or more correlation rules share the same name.",
+          "error_type": "ConfigError",
+          "error_data": {
+            "message": "Duplicate correlation rule name '{name}' in {path}"
+          }
+        },
+        {
+          "name": "invalid_regex_pattern",
+          "condition": "A match condition with is_regex=true contains a pattern that is not a valid regular expression.",
+          "error_type": "ConfigError",
+          "error_data": {
+            "message": "Invalid regex pattern in rule '{rule_name}', condition field '{field}': {detail}"
+          }
+        }
+      ],
+      "preconditions": [
+        "path must point to an existing, readable file on disk.",
+        "The file must contain valid YAML syntax.",
+        "The YAML content must conform to the ChroniclerConfig schema."
+      ],
+      "postconditions": [
+        "The returned ChroniclerConfig is fully validated and frozen (immutable).",
+        "All field-level constraints (ranges, lengths, patterns) have been verified.",
+        "Cross-field consistency checks have passed (e.g., kindex sink implies kindex config section is present).",
+        "All correlation rule names within the config are unique.",
+        "No source or sink port conflicts exist within the same bind_address.",
+        "All regex patterns in match_conditions with is_regex=true are valid compiled regexes."
+      ],
+      "idempotent": true,
+      "side_effects": [],
+      "structured_side_effects": [
+        {
+          "kind": "reads_file",
+          "target": "chronicler.yaml configuration file",
+          "description": "Reads the YAML configuration file at the given path using yaml.safe_load(). The file is read once, fully, and then closed."
+        }
+      ],
+      "performance_budget": {
+        "p95_latency_ms": 100,
+        "max_memory_mb": 10,
+        "complexity": "O(n) where n is the size of the config file in bytes plus the number of rules/sources/sinks"
+      }
+    },
+    {
+      "name": "validate_config_dict",
+      "description": "Validate a pre-parsed configuration dictionary against the ChroniclerConfig Pydantic model without reading from disk. Useful for testing and programmatic config construction. Pure function with no I/O side effects.",
+      "inputs": [
+        {
+          "name": "data",
+          "type_ref": "dict",
+          "required": true,
+          "default": "",
+          "description": "A dictionary representing the parsed YAML content, ready for Pydantic validation.",
+          "validators": []
+        },
+        {
+          "name": "source_label",
+          "type_ref": "str",
+          "required": false,
+          "default": "in-memory",
+          "description": "A label identifying the source of this config dict (e.g., file path or 'in-memory') used in error messages.",
+          "validators": []
+        }
+      ],
+      "output_type": "ChroniclerConfig",
+      "error_cases": [
+        {
+          "name": "validation_error",
+          "condition": "The dictionary does not conform to ChroniclerConfig schema.",
+          "error_type": "ConfigError",
+          "error_data": {
+            "message": "Configuration validation failed for {source_label}: {error_count} error(s)"
+          }
+        },
+        {
+          "name": "kindex_sink_without_kindex_config",
+          "condition": "A kindex sink is configured but the kindex config section is missing.",
+          "error_type": "ConfigError",
+          "error_data": {
+            "message": "Kindex sink requires a 'kindex' configuration section in {source_label}"
+          }
+        },
+        {
+          "name": "duplicate_rule_names",
+          "condition": "Two or more correlation rules share the same name.",
+          "error_type": "ConfigError",
+          "error_data": {
+            "message": "Duplicate correlation rule name '{name}' in {source_label}"
+          }
+        },
+        {
+          "name": "invalid_regex_pattern",
+          "condition": "A match condition with is_regex=true has an invalid regex pattern.",
+          "error_type": "ConfigError",
+          "error_data": {
+            "message": "Invalid regex pattern in rule '{rule_name}', condition field '{field}': {detail}"
+          }
+        }
+      ],
+      "preconditions": [
+        "data must be a non-null dictionary."
+      ],
+      "postconditions": [
+        "The returned ChroniclerConfig is fully validated and frozen (immutable).",
+        "All field-level and cross-field validations have passed.",
+        "All correlation rule names are unique.",
+        "All regex patterns in match_conditions with is_regex=true are valid compiled regexes."
+      ],
+      "idempotent": true,
+      "side_effects": [],
+      "structured_side_effects": [
+        {
+          "kind": "none",
+          "target": "",
+          "description": "Pure validation function with no I/O side effects."
+        }
+      ],
+      "performance_budget": {
+        "p95_latency_ms": 50,
+        "max_memory_mb": 10,
+        "complexity": "O(n) where n is the number of fields, rules, sources, and sinks in the config"
+      }
+    }
+  ],
+  "dependencies": [],
+  "dependency_contracts": {},
+  "invariants": [
+    "All config model classes use Pydantic v2 with frozen=True (immutable after construction).",
+    "YAML is parsed exclusively with yaml.safe_load(); yaml.load() is never used.",
+    "ConfigError is raised for all failure modes — no other exception type escapes load_config.",
+    "The config module performs no network I/O, no state mutation, and no writes to disk.",
+    "A kindex sink in the sinks list requires a non-null kindex section at the top level (cross-field invariant).",
+    "All correlation rule names within a single config must be unique.",
+    "All regex patterns in CorrelationRuleConfig match conditions (where is_regex=true) must be valid Python re-compatible regular expressions.",
+    "Default values for max_open_stories (10000) and story_timeout_seconds (300) are applied when omitted from YAML.",
+    "Source and sink config types are discriminated unions keyed on the 'type' field.",
+    "The load_config function is deterministic and idempotent: same file content always yields the same ChroniclerConfig or the same ConfigError."
+  ],
+  "requires": [
+    "pyyaml",
+    "pydantic>=2.0"
+  ],
+  "processing_register": "rigorous-analytical",
+  "data_access": {
+    "reads": [
+      "INTERNAL"
+    ],
+    "writes": [],
+    "rationale": "Reads a YAML configuration file from the local filesystem containing internal operational settings: source/sink endpoint URLs, correlation rule definitions, memory limits, timeout values, and kindex noteworthiness filters. No PII is expected in config files. The file path is provided explicitly by the caller. No data is written.",
+    "side_effects": [
+      {
+        "type": "filesystem_read",
+        "classification": "INTERNAL",
+        "fields": [
+          "config_file_path"
+        ],
+        "rationale": "Reads the chronicler.yaml configuration file from disk using yaml.safe_load() to parse operational settings into typed Pydantic models."
+      }
+    ]
+  },
+  "authority": {
+    "domains": [
+      "chronicler.configuration"
+    ],
+    "rationale": "This component is the single authoritative owner of all Chronicler configuration schema definitions, YAML parsing, and config validation logic. No other component may define or modify configuration structure."
+  }
+}

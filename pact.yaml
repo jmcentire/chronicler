@@ -1,0 +1,4 @@
+budget: 50.0
+plan_only: true
+build_mode: hierarchy
+shaping: false

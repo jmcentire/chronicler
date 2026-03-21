@@ -1,0 +1,49 @@
+version: "1.0"
+generated_by: constrain
+session_id: chronicler_001
+system: Chronicler
+
+trust:
+  floor: 0.10
+  authority_override_floor: 0.40
+  decay_lambda: 0.05
+  taint_lock_tiers: []
+  conflict_trust_delta_threshold: 0.20
+
+classifications:
+  - field_pattern: "event.*"
+    tier: PUBLIC
+    authoritative_component: chronicler_core
+    canary_eligible: true
+    canary_pattern: "event_type:test_*"
+    rationale: "events are operational telemetry without sensitive data"
+  - field_pattern: "story.*"
+    tier: PUBLIC
+    authoritative_component: chronicler_core
+    canary_eligible: true
+    canary_pattern: "story_type:test_*"
+    rationale: "assembled stories contain only PUBLIC event correlations"
+  - field_pattern: "correlation_*"
+    tier: PUBLIC
+    authoritative_component: chronicler_core
+    canary_eligible: false
+    canary_pattern: null
+    rationale: "correlation metadata for story assembly logic"
+
+soak:
+  base_durations:
+    PUBLIC: 1h
+  target_requests: 1000
+
+authority_map:
+  - component: chronicler_core
+    domains: ["story_assembly", "correlation_logic", "timeout_management"]
+    rationale: "owns story correlation and lifecycle management"
+  - component: event_ingress
+    domains: ["webhook_validation", "file_monitoring"]
+    rationale: "owns event collection and initial validation"
+
+human_gates:
+  always: []
+  on_low_trust_authoritative: false
+  on_unresolvable_conflict: true

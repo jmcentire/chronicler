@@ -1,0 +1,1568 @@
+{
+  "component_id": "sources",
+  "name": "Event Sources",
+  "description": "Four SourceProtocol implementations for ingesting events into Chronicler. (1) webhook.py — aiohttp HTTP POST receiver accepting JSON events, validates against Event schema. (2) otlp.py — OTLP/HTTP JSON receiver at /v1/traces, flattens ExportTraceServiceRequest into individual Events. (3) file.py — JSONL file tailer using asyncio polling with aiofiles for non-blocking reads. (4) sentinel.py — Sentinel incident lifecycle webhook with sentinel-prefixed event_kind. All sources implement start/stop/subscribe, catch exceptions internally, log and continue. Covers AC6 (multiple source types), AC13 (error resilience).",
+  "version": 1,
+  "types": [
+    {
+      "name": "Event",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "event_id",
+          "type_ref": "str",
+          "required": true,
+          "default": "",
+          "description": "Unique event identifier (UUID4)",
+          "validators": [
+            {
+              "kind": "regex",
+              "expression": "^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$",
+              "error_message": "Must be a valid UUID4"
+            }
+          ]
+        },
+        {
+          "name": "event_kind",
+          "type_ref": "EventKind",
+          "required": true,
+          "default": "",
+          "description": "Dot-delimited event kind classifier",
+          "validators": []
+        },
+        {
+          "name": "timestamp",
+          "type_ref": "str",
+          "required": true,
+          "default": "",
+          "description": "ISO 8601 UTC timestamp",
+          "validators": [
+            {
+              "kind": "regex",
+              "expression": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?Z$",
+              "error_message": "Must be ISO 8601 UTC (ending in Z)"
+            }
+          ]
+        },
+        {
+          "name": "source",
+          "type_ref": "str",
+          "required": true,
+          "default": "",
+          "description": "Originating source identifier",
+          "validators": []
+        },
+        {
+          "name": "payload",
+          "type_ref": "dict",
+          "required": false,
+          "default": "{}",
+          "description": "Arbitrary event payload",
+          "validators": []
+        },
+        {
+          "name": "correlation_keys",
+          "type_ref": "list",
+          "required": false,
+          "default": "[]",
+          "description": "Keys for story correlation",
+          "validators": []
+        }
+      ],
+      "item_type": "",
+      "variants": [],
+      "inner_types": [],
+      "description": "Immutable event envelope — imported from schemas component. Referenced here for type completeness."
+    },
+    {
+      "name": "EventKind",
+      "kind": "primitive",
+      "fields": [
+        {
+          "name": "value",
+          "type_ref": "str",
+          "required": true,
+          "default": "",
+          "description": "",
+          "validators": [
+            {
+              "kind": "regex",
+              "expression": "^[a-z][a-z0-9_]*(\\.[a-z][a-z0-9_]*)+$",
+              "error_message": "Must be dot-delimited lowercase segments with at least two segments"
+            }
+          ]
+        }
+      ],
+      "item_type": "",
+      "variants": [],
+      "inner_types": [],
+      "description": "Dot-delimited event kind string (e.g. 'webhook.push', 'sentinel.incident.created'). Minimum two segments."
+    },
+    {
+      "name": "EventCallback",
+      "kind": "primitive",
+      "fields": [
+        {
+          "name": "value",
+          "type_ref": "Callable[[Event], Awaitable[None]]",
+          "required": true,
+          "default": "",
+          "description": "",
+          "validators": []
+        }
+      ],
+      "item_type": "",
+      "variants": [],
+      "inner_types": [],
+      "description": "Async callable that receives an Event. Type signature: Callable[[Event], Awaitable[None]]."
+    },
+    {
+      "name": "SourceProtocol",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "start",
+          "type_ref": "Callable[[], Awaitable[None]]",
+          "required": true,
+          "default": "",
+          "description": "Initialize resources and begin accepting/polling events",
+          "validators": []
+        },
+        {
+          "name": "stop",
+          "type_ref": "Callable[[], Awaitable[None]]",
+          "required": true,
+          "default": "",
+          "description": "Graceful shutdown, cleanup resources, idempotent",
+          "validators": []
+        },
+        {
+          "name": "subscribe",
+          "type_ref": "Callable[[EventCallback], None]",
+          "required": true,
+          "default": "",
+          "description": "Register async event handler callback, synchronous registration",
+          "validators": []
+        }
+      ],
+      "item_type": "",
+      "variants": [],
+      "inner_types": [],
+      "description": "Runtime-checkable typing.Protocol defining the source interface. All sources must implement start(), stop(), and subscribe(). Decorated with @runtime_checkable."
+    },
+    {
+      "name": "BindAddress",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "host",
+          "type_ref": "str",
+          "required": false,
+          "default": "127.0.0.1",
+          "description": "Bind host address",
+          "validators": [
+            {
+              "kind": "regex",
+              "expression": "^(\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}|localhost|0\\.0\\.0\\.0|::1|::)$",
+              "error_message": "Must be a valid IPv4 address, localhost, or IPv6 shorthand"
+            }
+          ]
+        },
+        {
+          "name": "port",
+          "type_ref": "int",
+          "required": true,
+          "default": "",
+          "description": "Bind port number",
+          "validators": [
+            {
+              "kind": "range",
+              "expression": "1..65535",
+              "error_message": "Port must be between 1 and 65535"
+            }
+          ]
+        }
+      ],
+      "item_type": "",
+      "variants": [],
+      "inner_types": [],
+      "description": "Network bind configuration for HTTP-based sources."
+    },
+    {
+      "name": "WebhookSourceConfig",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "bind",
+          "type_ref": "BindAddress",
+          "required": true,
+          "default": "",
+          "description": "Network bind address and port",
+          "validators": []
+        },
+        {
+          "name": "client_max_size_bytes",
+          "type_ref": "int",
+          "required": false,
+          "default": "1048576",
+          "description": "Maximum request body size in bytes",
+          "validators": [
+            {
+              "kind": "range",
+              "expression": "1024..10485760",
+              "error_message": "Max body size must be between 1KB and 10MB"
+            }
+          ]
+        },
+        {
+          "name": "source_name",
+          "type_ref": "str",
+          "required": false,
+          "default": "webhook",
+          "description": "Source identifier stamped on emitted events",
+          "validators": [
+            {
+              "kind": "length",
+              "expression": "1..128",
+              "error_message": "Source name must be 1-128 characters"
+            }
+          ]
+        }
+      ],
+      "item_type": "",
+      "variants": [],
+      "inner_types": [],
+      "description": "Configuration for the webhook HTTP POST source."
+    },
+    {
+      "name": "OtlpSourceConfig",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "bind",
+          "type_ref": "BindAddress",
+          "required": true,
+          "default": "",
+          "description": "Network bind address and port",
+          "validators": []
+        },
+        {
+          "name": "client_max_size_bytes",
+          "type_ref": "int",
+          "required": false,
+          "default": "4194304",
+          "description": "Maximum request body size in bytes",
+          "validators": [
+            {
+              "kind": "range",
+              "expression": "1024..52428800",
+              "error_message": "Max body size must be between 1KB and 50MB"
+            }
+          ]
+        },
+        {
+          "name": "source_name",
+          "type_ref": "str",
+          "required": false,
+          "default": "otlp",
+          "description": "Source identifier stamped on emitted events",
+          "validators": [
+            {
+              "kind": "length",
+              "expression": "1..128",
+              "error_message": "Source name must be 1-128 characters"
+            }
+          ]
+        }
+      ],
+      "item_type": "",
+      "variants": [],
+      "inner_types": [],
+      "description": "Configuration for the OTLP/HTTP JSON trace receiver source."
+    },
+    {
+      "name": "FileSourceConfig",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "path",
+          "type_ref": "FilePath",
+          "required": true,
+          "default": "",
+          "description": "Path to the JSONL file to tail",
+          "validators": []
+        },
+        {
+          "name": "poll_interval_seconds",
+          "type_ref": "float",
+          "required": false,
+          "default": "1.0",
+          "description": "Polling interval in seconds",
+          "validators": [
+            {
+              "kind": "range",
+              "expression": "0.1..300.0",
+              "error_message": "Poll interval must be between 0.1 and 300 seconds"
+            }
+          ]
+        },
+        {
+          "name": "source_name",
+          "type_ref": "str",
+          "required": false,
+          "default": "file",
+          "description": "Source identifier stamped on emitted events",
+          "validators": [
+            {
+              "kind": "length",
+              "expression": "1..128",
+              "error_message": "Source name must be 1-128 characters"
+            }
+          ]
+        }
+      ],
+      "item_type": "",
+      "variants": [],
+      "inner_types": [],
+      "description": "Configuration for the JSONL file tailer source."
+    },
+    {
+      "name": "FilePath",
+      "kind": "primitive",
+      "fields": [
+        {
+          "name": "value",
+          "type_ref": "str",
+          "required": true,
+          "default": "",
+          "description": "",
+          "validators": [
+            {
+              "kind": "length",
+              "expression": "1..4096",
+              "error_message": "File path must be 1-4096 characters"
+            },
+            {
+              "kind": "regex",
+              "expression": "^[^\\x00]+$",
+              "error_message": "File path must not contain null bytes"
+            }
+          ]
+        }
+      ],
+      "item_type": "",
+      "variants": [],
+      "inner_types": [],
+      "description": "A validated filesystem path string. Must be non-empty and not contain null bytes."
+    },
+    {
+      "name": "SentinelSourceConfig",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "bind",
+          "type_ref": "BindAddress",
+          "required": true,
+          "default": "",
+          "description": "Network bind address and port",
+          "validators": []
+        },
+        {
+          "name": "client_max_size_bytes",
+          "type_ref": "int",
+          "required": false,
+          "default": "1048576",
+          "description": "Maximum request body size in bytes",
+          "validators": [
+            {
+              "kind": "range",
+              "expression": "1024..10485760",
+              "error_message": "Max body size must be between 1KB and 10MB"
+            }
+          ]
+        },
+        {
+          "name": "event_kind_prefix",
+          "type_ref": "str",
+          "required": false,
+          "default": "sentinel",
+          "description": "Prefix for event_kind (per AS9)",
+          "validators": [
+            {
+              "kind": "regex",
+              "expression": "^[a-z][a-z0-9_]*$",
+              "error_message": "Event kind prefix must be lowercase alphanumeric with underscores"
+            }
+          ]
+        },
+        {
+          "name": "source_name",
+          "type_ref": "str",
+          "required": false,
+          "default": "sentinel",
+          "description": "Source identifier stamped on emitted events",
+          "validators": [
+            {
+              "kind": "length",
+              "expression": "1..128",
+              "error_message": "Source name must be 1-128 characters"
+            }
+          ]
+        }
+      ],
+      "item_type": "",
+      "variants": [],
+      "inner_types": [],
+      "description": "Configuration for the Sentinel incident lifecycle webhook source. Reuses HTTP transport from webhook, adds Sentinel-specific parsing."
+    },
+    {
+      "name": "OtlpSpan",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "trace_id",
+          "type_ref": "str",
+          "required": true,
+          "default": "",
+          "description": "Hex-encoded 16-byte trace ID",
+          "validators": []
+        },
+        {
+          "name": "span_id",
+          "type_ref": "str",
+          "required": true,
+          "default": "",
+          "description": "Hex-encoded 8-byte span ID",
+          "validators": []
+        },
+        {
+          "name": "name",
+          "type_ref": "str",
+          "required": true,
+          "default": "",
+          "description": "Span operation name",
+          "validators": []
+        },
+        {
+          "name": "start_time_unix_nano",
+          "type_ref": "int",
+          "required": true,
+          "default": "",
+          "description": "Span start time in Unix nanoseconds",
+          "validators": []
+        },
+        {
+          "name": "end_time_unix_nano",
+          "type_ref": "int",
+          "required": true,
+          "default": "",
+          "description": "Span end time in Unix nanoseconds",
+          "validators": []
+        },
+        {
+          "name": "attributes",
+          "type_ref": "dict",
+          "required": false,
+          "default": "{}",
+          "description": "Span attributes as key-value pairs",
+          "validators": []
+        },
+        {
+          "name": "resource_attributes",
+          "type_ref": "dict",
+          "required": false,
+          "default": "{}",
+          "description": "Resource attributes from parent resourceSpan",
+          "validators": []
+        },
+        {
+          "name": "status_code",
+          "type_ref": "int",
+          "required": false,
+          "default": "0",
+          "description": "OTLP status code (0=UNSET, 1=OK, 2=ERROR)",
+          "validators": []
+        }
+      ],
+      "item_type": "",
+      "variants": [],
+      "inner_types": [],
+      "description": "Intermediate representation of a single OTLP span extracted from ExportTraceServiceRequest, before conversion to Event."
+    },
+    {
+      "name": "HttpResponse",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "status",
+          "type_ref": "int",
+          "required": true,
+          "default": "",
+          "description": "HTTP status code",
+          "validators": [
+            {
+              "kind": "range",
+              "expression": "100..599",
+              "error_message": "HTTP status must be 100-599"
+            }
+          ]
+        },
+        {
+          "name": "body",
+          "type_ref": "str",
+          "required": false,
+          "default": "",
+          "description": "Response body (JSON string)",
+          "validators": []
+        }
+      ],
+      "item_type": "",
+      "variants": [],
+      "inner_types": [],
+      "description": "Simplified HTTP response representation for webhook/OTLP handler return values."
+    },
+    {
+      "name": "SourceState",
+      "kind": "enum",
+      "fields": [],
+      "item_type": "",
+      "variants": [
+        "CREATED",
+        "RUNNING",
+        "STOPPED"
+      ],
+      "inner_types": [],
+      "description": "Lifecycle state of a source instance."
+    },
+    {
+      "name": "FilePosition",
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "offset",
+          "type_ref": "int",
+          "required": true,
+          "default": "",
+          "description": "Byte offset of last read position",
+          "validators": [
+            {
+              "kind": "range",
+              "expression": "0..9223372036854775807",
+              "error_message": "Offset must be non-negative"
+            }
+          ]
+        },
+        {
+          "name": "inode",
+          "type_ref": "int",
+          "required": false,
+          "default": "0",
+          "description": "File inode for rotation detection",
+          "validators": []
+        },
+        {
+          "name": "line_buffer",
+          "type_ref": "str",
+          "required": false,
+          "default": "",
+          "description": "Partial line buffer for incomplete reads",
+          "validators": []
+        }
+      ],
+      "item_type": "",
+      "variants": [],
+      "inner_types": [],
+      "description": "Tracks current read position in a tailed file for resumption and truncation detection."
+    }
+  ],
+  "functions": [
+    {
+      "name": "emit",
+      "description": "Shared async utility in base.py. Iterates all registered subscriber callbacks and invokes each with the given Event. Each callback is wrapped in try/except Exception so one failing subscriber does not block others. Errors are logged with structured context (event_id, subscriber index).",
+      "inputs": [
+        {
+          "name": "subscribers",
+          "type_ref": "list",
+          "required": true,
+          "default": "",
+          "description": "List of registered EventCallback subscribers",
+          "validators": []
+        },
+        {
+          "name": "event",
+          "type_ref": "Event",
+          "required": true,
+          "default": "",
+          "description": "The event to fan out to all subscribers",
+          "validators": []
+        }
+      ],
+      "output_type": "None",
+      "error_cases": [],
+      "preconditions": [
+        "event is a valid Event instance"
+      ],
+      "postconditions": [
+        "Every subscriber in the list has been called exactly once with the event",
+        "Exceptions from individual subscribers are caught, logged, and do not propagate",
+        "All subscribers are called regardless of failures in earlier subscribers"
+      ],
+      "idempotent": false,
+      "side_effects": [],
+      "structured_side_effects": [
+        {
+          "kind": "logging",
+          "target": "chronicler.sources",
+          "description": "Logs errors for any subscriber callback that raises an exception"
+        }
+      ],
+      "performance_budget": null
+    },
+    {
+      "name": "WebhookSource.subscribe",
+      "description": "Register an async event handler callback. Synchronous operation — appends callback to internal subscriber list. May be called before or after start(). No unsubscribe mechanism.",
+      "inputs": [
+        {
+          "name": "callback",
+          "type_ref": "EventCallback",
+          "required": true,
+          "default": "",
+          "description": "Async callable to receive events",
+          "validators": []
+        }
+      ],
+      "output_type": "None",
+      "error_cases": [],
+      "preconditions": [
+        "callback is a non-null async callable"
+      ],
+      "postconditions": [
+        "callback is appended to internal subscriber list",
+        "callback will receive all subsequent events emitted by this source"
+      ],
+      "idempotent": false,
+      "side_effects": [],
+      "structured_side_effects": [
+        {
+          "kind": "mutates_state",
+          "target": "WebhookSource._subscribers",
+          "description": "Appends callback to internal subscriber list"
+        }
+      ],
+      "performance_budget": null
+    },
+    {
+      "name": "WebhookSource.start",
+      "description": "Initialize aiohttp AppRunner and TCPSite, bind to configured host:port, begin accepting HTTP POST requests. Registers a single POST endpoint that validates JSON body against Event schema via model_validate_json(), returns 200 on success, 400 on validation failure, 415 on wrong Content-Type. Sets client_max_size on the aiohttp app.",
+      "inputs": [],
+      "output_type": "None",
+      "error_cases": [
+        {
+          "name": "already_started",
+          "condition": "Source state is RUNNING",
+          "error_type": "RuntimeError",
+          "error_data": {
+            "message": "WebhookSource is already started"
+          }
+        },
+        {
+          "name": "bind_failed",
+          "condition": "Configured host:port is unavailable or in use",
+          "error_type": "OSError",
+          "error_data": {
+            "message": "Failed to bind to {host}:{port}"
+          }
+        }
+      ],
+      "preconditions": [
+        "Source is in CREATED state (not already started)"
+      ],
+      "postconditions": [
+        "HTTP server is listening on configured bind address and port",
+        "Source state transitions to RUNNING",
+        "Incoming valid POST requests will be parsed and emitted to subscribers"
+      ],
+      "idempotent": false,
+      "side_effects": [],
+      "structured_side_effects": [
+        {
+          "kind": "network_call",
+          "target": "TCP bind on configured host:port",
+          "description": "Creates aiohttp AppRunner and TCPSite listening for HTTP connections"
+        },
+        {
+          "kind": "mutates_state",
+          "target": "WebhookSource._state",
+          "description": "Transitions source state from CREATED to RUNNING"
+        },
+        {
+          "kind": "logging",
+          "target": "chronicler.sources.webhook",
+          "description": "Logs successful bind address and port"
+        }
+      ],
+      "performance_budget": null
+    },
+    {
+      "name": "WebhookSource.stop",
+      "description": "Gracefully shut down the aiohttp HTTP server. Cleans up AppRunner and TCPSite. Idempotent — safe to call multiple times or on a source that was never started.",
+      "inputs": [],
+      "output_type": "None",
+      "error_cases": [],
+      "preconditions": [],
+      "postconditions": [
+        "HTTP server is no longer accepting connections",
+        "All aiohttp resources (AppRunner, TCPSite) are cleaned up",
+        "Source state transitions to STOPPED"
+      ],
+      "idempotent": true,
+      "side_effects": [],
+      "structured_side_effects": [
+        {
+          "kind": "network_call",
+          "target": "TCP unbind",
+          "description": "Shuts down aiohttp AppRunner and TCPSite"
+        },
+        {
+          "kind": "mutates_state",
+          "target": "WebhookSource._state",
+          "description": "Transitions source state to STOPPED"
+        },
+        {
+          "kind": "logging",
+          "target": "chronicler.sources.webhook",
+          "description": "Logs shutdown"
+        }
+      ],
+      "performance_budget": null
+    },
+    {
+      "name": "WebhookSource._handle_post",
+      "description": "Internal HTTP POST handler. Validates Content-Type is application/json, reads body, parses via Event.model_validate_json(), emits to subscribers via _emit, returns HttpResponse. All exceptions caught — invalid JSON or schema returns 400, other errors return 500.",
+      "inputs": [
+        {
+          "name": "request_body",
+          "type_ref": "bytes",
+          "required": true,
+          "default": "",
+          "description": "Raw HTTP request body",
+          "validators": []
+        },
+        {
+          "name": "content_type",
+          "type_ref": "str",
+          "required": true,
+          "default": "",
+          "description": "Content-Type header value",
+          "validators": []
+        }
+      ],
+      "output_type": "HttpResponse",
+      "error_cases": [
+        {
+          "name": "invalid_content_type",
+          "condition": "Content-Type header is not application/json",
+          "error_type": "HttpResponse",
+          "error_data": {
+            "status": "415",
+            "body": "Unsupported Content-Type"
+          }
+        },
+        {
+          "name": "invalid_json",
+          "condition": "Body is not valid JSON",
+          "error_type": "HttpResponse",
+          "error_data": {
+            "status": "400",
+            "body": "Invalid JSON"
+          }
+        },
+        {
+          "name": "validation_error",
+          "condition": "JSON does not match Event schema",
+          "error_type": "HttpResponse",
+          "error_data": {
+            "status": "400",
+            "body": "Event validation failed: {detail}"
+          }
+        },
+        {
+          "name": "body_too_large",
+          "condition": "Request body exceeds client_max_size_bytes",
+          "error_type": "HttpResponse",
+          "error_data": {
+            "status": "413",
+            "body": "Request body too large"
+          }
+        },
+        {
+          "name": "internal_error",
+          "condition": "Unexpected exception during processing",
+          "error_type": "HttpResponse",
+          "error_data": {
+            "status": "500",
+            "body": "Internal server error"
+          }
+        }
+      ],
+      "preconditions": [],
+      "postconditions": [
+        "Returns status 200 with event_id in body on success",
+        "Returns status 400 with error detail on validation failure",
+        "Returns status 415 if Content-Type is not application/json",
+        "Returns status 500 on unexpected internal error",
+        "Valid events are emitted to all subscribers before response is returned"
+      ],
+      "idempotent": false,
+      "side_effects": [],
+      "structured_side_effects": [
+        {
+          "kind": "logging",
+          "target": "chronicler.sources.webhook",
+          "description": "Logs validation errors and internal errors with request context"
+        }
+      ],
+      "performance_budget": {
+        "p95_latency_ms": 50,
+        "max_memory_mb": null,
+        "complexity": null
+      }
+    },
+    {
+      "name": "OtlpSource.subscribe",
+      "description": "Register an async event handler callback for OTLP-derived events. Synchronous operation.",
+      "inputs": [
+        {
+          "name": "callback",
+          "type_ref": "EventCallback",
+          "required": true,
+          "default": "",
+          "description": "Async callable to receive events",
+          "validators": []
+        }
+      ],
+      "output_type": "None",
+      "error_cases": [],
+      "preconditions": [
+        "callback is a non-null async callable"
+      ],
+      "postconditions": [
+        "callback is appended to internal subscriber list"
+      ],
+      "idempotent": false,
+      "side_effects": [],
+      "structured_side_effects": [
+        {
+          "kind": "mutates_state",
+          "target": "OtlpSource._subscribers",
+          "description": "Appends callback to internal subscriber list"
+        }
+      ],
+      "performance_budget": null
+    },
+    {
+      "name": "OtlpSource.start",
+      "description": "Initialize aiohttp AppRunner and TCPSite, bind to configured host:port, begin accepting OTLP/HTTP JSON requests at POST /v1/traces. Sets client_max_size on the aiohttp app.",
+      "inputs": [],
+      "output_type": "None",
+      "error_cases": [
+        {
+          "name": "already_started",
+          "condition": "Source state is RUNNING",
+          "error_type": "RuntimeError",
+          "error_data": {
+            "message": "OtlpSource is already started"
+          }
+        },
+        {
+          "name": "bind_failed",
+          "condition": "Configured host:port is unavailable or in use",
+          "error_type": "OSError",
+          "error_data": {
+            "message": "Failed to bind to {host}:{port}"
+          }
+        }
+      ],
+      "preconditions": [
+        "Source is in CREATED state (not already started)"
+      ],
+      "postconditions": [
+        "HTTP server is listening on configured bind address and port at /v1/traces",
+        "Source state transitions to RUNNING"
+      ],
+      "idempotent": false,
+      "side_effects": [],
+      "structured_side_effects": [
+        {
+          "kind": "network_call",
+          "target": "TCP bind on configured host:port",
+          "description": "Creates aiohttp AppRunner and TCPSite at /v1/traces"
+        },
+        {
+          "kind": "mutates_state",
+          "target": "OtlpSource._state",
+          "description": "Transitions source state from CREATED to RUNNING"
+        },
+        {
+          "kind": "logging",
+          "target": "chronicler.sources.otlp",
+          "description": "Logs successful bind"
+        }
+      ],
+      "performance_budget": null
+    },
+    {
+      "name": "OtlpSource.stop",
+      "description": "Gracefully shut down the OTLP HTTP server. Idempotent.",
+      "inputs": [],
+      "output_type": "None",
+      "error_cases": [],
+      "preconditions": [],
+      "postconditions": [
+        "HTTP server is no longer accepting connections",
+        "Source state transitions to STOPPED"
+      ],
+      "idempotent": true,
+      "side_effects": [],
+      "structured_side_effects": [
+        {
+          "kind": "network_call",
+          "target": "TCP unbind",
+          "description": "Shuts down aiohttp AppRunner and TCPSite"
+        },
+        {
+          "kind": "mutates_state",
+          "target": "OtlpSource._state",
+          "description": "Transitions source state to STOPPED"
+        },
+        {
+          "kind": "logging",
+          "target": "chronicler.sources.otlp",
+          "description": "Logs shutdown"
+        }
+      ],
+      "performance_budget": null
+    },
+    {
+      "name": "OtlpSource._handle_traces",
+      "description": "Internal POST /v1/traces handler. Parses OTLP JSON ExportTraceServiceRequest, flattens resourceSpans→scopeSpans→spans into individual OtlpSpan structs, converts each to an Event with event_kind 'otlp.trace.{span.name}', emits to subscribers. Returns empty JSON object '{}' per OTLP HTTP spec. All exceptions caught internally.",
+      "inputs": [
+        {
+          "name": "request_body",
+          "type_ref": "bytes",
+          "required": true,
+          "default": "",
+          "description": "Raw HTTP request body containing OTLP JSON",
+          "validators": []
+        },
+        {
+          "name": "content_type",
+          "type_ref": "str",
+          "required": true,
+          "default": "",
+          "description": "Content-Type header value",
+          "validators": []
+        }
+      ],
+      "output_type": "HttpResponse",
+      "error_cases": [
+        {
+          "name": "invalid_content_type",
+          "condition": "Content-Type is not application/json",
+          "error_type": "HttpResponse",
+          "error_data": {
+            "status": "415",
+            "body": "Unsupported Content-Type"
+          }
+        },
+        {
+          "name": "invalid_json",
+          "condition": "Body is not valid JSON",
+          "error_type": "HttpResponse",
+          "error_data": {
+            "status": "400",
+            "body": "Invalid JSON"
+          }
+        },
+        {
+          "name": "malformed_otlp",
+          "condition": "JSON does not contain expected resourceSpans structure",
+          "error_type": "HttpResponse",
+          "error_data": {
+            "status": "400",
+            "body": "Malformed OTLP trace request"
+          }
+        },
+        {
+          "name": "internal_error",
+          "condition": "Unexpected exception",
+          "error_type": "HttpResponse",
+          "error_data": {
+            "status": "500",
+            "body": "Internal server error"
+          }
+        }
+      ],
+      "preconditions": [],
+      "postconditions": [
+        "Returns status 200 with body '{}' on success (per OTLP spec)",
+        "Returns status 400 on malformed OTLP JSON",
+        "Returns status 415 if Content-Type is not application/json",
+        "Each span in the request is converted to an individual Event and emitted",
+        "Partial failures (some spans invalid) still process remaining valid spans"
+      ],
+      "idempotent": false,
+      "side_effects": [],
+      "structured_side_effects": [
+        {
+          "kind": "logging",
+          "target": "chronicler.sources.otlp",
+          "description": "Logs per-span parse errors and unexpected exceptions"
+        }
+      ],
+      "performance_budget": {
+        "p95_latency_ms": 100,
+        "max_memory_mb": null,
+        "complexity": "O(n) where n = total spans across all resourceSpans"
+      }
+    },
+    {
+      "name": "OtlpSource._flatten_spans",
+      "description": "Pure function that extracts individual OtlpSpan structs from a parsed OTLP ExportTraceServiceRequest dict by iterating resourceSpans→scopeSpans→spans and merging resource attributes down.",
+      "inputs": [
+        {
+          "name": "otlp_request",
+          "type_ref": "dict",
+          "required": true,
+          "default": "",
+          "description": "Parsed JSON dict of ExportTraceServiceRequest",
+          "validators": []
+        }
+      ],
+      "output_type": "list",
+      "error_cases": [
+        {
+          "name": "missing_resource_spans",
+          "condition": "otlp_request has no 'resourceSpans' key",
+          "error_type": "ValueError",
+          "error_data": {
+            "message": "Missing resourceSpans in OTLP request"
+          }
+        }
+      ],
+      "preconditions": [
+        "otlp_request is a valid parsed JSON dict"
+      ],
+      "postconditions": [
+        "Returns a list of OtlpSpan, one per span found in the request",
+        "Each OtlpSpan inherits resource_attributes from its parent resourceSpan",
+        "Invalid individual spans are skipped with a logged warning"
+      ],
+      "idempotent": true,
+      "side_effects": [],
+      "structured_side_effects": [
+        {
+          "kind": "logging",
+          "target": "chronicler.sources.otlp",
+          "description": "Logs warnings for malformed individual spans that are skipped"
+        }
+      ],
+      "performance_budget": {
+        "p95_latency_ms": null,
+        "max_memory_mb": null,
+        "complexity": "O(n) where n = total spans"
+      }
+    },
+    {
+      "name": "OtlpSource._span_to_event",
+      "description": "Pure conversion function: transforms an OtlpSpan into an Event. Generates a UUID4 event_id, converts start_time_unix_nano to ISO 8601 UTC timestamp, sets event_kind to 'otlp.trace.{normalized_span_name}', and packs span attributes into payload. Sets trace_id and span_id as correlation_keys.",
+      "inputs": [
+        {
+          "name": "span",
+          "type_ref": "OtlpSpan",
+          "required": true,
+          "default": "",
+          "description": "The OTLP span to convert",
+          "validators": []
+        },
+        {
+          "name": "source_name",
+          "type_ref": "str",
+          "required": true,
+          "default": "",
+          "description": "Source identifier for the Event.source field",
+          "validators": []
+        }
+      ],
+      "output_type": "Event",
+      "error_cases": [],
+      "preconditions": [
+        "span is a valid OtlpSpan"
+      ],
+      "postconditions": [
+        "Returned Event has a fresh UUID4 event_id",
+        "Event.event_kind starts with 'otlp.trace.'",
+        "Event.timestamp is derived from span.start_time_unix_nano in ISO 8601 UTC",
+        "Event.correlation_keys contains trace_id and span_id",
+        "Event.source equals source_name parameter"
+      ],
+      "idempotent": true,
+      "side_effects": [],
+      "structured_side_effects": [
+        {
+          "kind": "none",
+          "target": "",
+          "description": ""
+        }
+      ],
+      "performance_budget": null
+    },
+    {
+      "name": "FileSource.subscribe",
+      "description": "Register an async event handler callback for file-tailed events. Synchronous operation.",
+      "inputs": [
+        {
+          "name": "callback",
+          "type_ref": "EventCallback",
+          "required": true,
+          "default": "",
+          "description": "Async callable to receive events",
+          "validators": []
+        }
+      ],
+      "output_type": "None",
+      "error_cases": [],
+      "preconditions": [
+        "callback is a non-null async callable"
+      ],
+      "postconditions": [
+        "callback is appended to internal subscriber list"
+      ],
+      "idempotent": false,
+      "side_effects": [],
+      "structured_side_effects": [
+        {
+          "kind": "mutates_state",
+          "target": "FileSource._subscribers",
+          "description": "Appends callback to internal subscriber list"
+        }
+      ],
+      "performance_budget": null
+    },
+    {
+      "name": "FileSource.start",
+      "description": "Begin the asyncio polling loop. Records initial file offset (end of file if file exists, 0 if not yet created). Uses asyncio.Event for shutdown signaling. The polling loop runs as an asyncio Task.",
+      "inputs": [],
+      "output_type": "None",
+      "error_cases": [
+        {
+          "name": "already_started",
+          "condition": "Source state is RUNNING",
+          "error_type": "RuntimeError",
+          "error_data": {
+            "message": "FileSource is already started"
+          }
+        }
+      ],
+      "preconditions": [
+        "Source is in CREATED state (not already started)"
+      ],
+      "postconditions": [
+        "Polling asyncio.Task is created and running",
+        "Source state transitions to RUNNING",
+        "If file exists, initial offset is set to end of file (tail mode)",
+        "If file does not exist, polling waits for file creation"
+      ],
+      "idempotent": false,
+      "side_effects": [],
+      "structured_side_effects": [
+        {
+          "kind": "reads_file",
+          "target": "Configured JSONL file path",
+          "description": "Stats file to determine initial offset"
+        },
+        {
+          "kind": "mutates_state",
+          "target": "FileSource._state",
+          "description": "Transitions source state from CREATED to RUNNING"
+        },
+        {
+          "kind": "logging",
+          "target": "chronicler.sources.file",
+          "description": "Logs file path and initial offset"
+        }
+      ],
+      "performance_budget": null
+    },
+    {
+      "name": "FileSource.stop",
+      "description": "Signal the polling loop to stop via asyncio.Event, await task completion. Idempotent.",
+      "inputs": [],
+      "output_type": "None",
+      "error_cases": [],
+      "preconditions": [],
+      "postconditions": [
+        "Polling task has completed",
+        "Source state transitions to STOPPED",
+        "asyncio.Event is set (shutdown signal)"
+      ],
+      "idempotent": true,
+      "side_effects": [],
+      "structured_side_effects": [
+        {
+          "kind": "mutates_state",
+          "target": "FileSource._state",
+          "description": "Transitions source state to STOPPED"
+        },
+        {
+          "kind": "logging",
+          "target": "chronicler.sources.file",
+          "description": "Logs shutdown"
+        }
+      ],
+      "performance_budget": null
+    },
+    {
+      "name": "FileSource._poll_loop",
+      "description": "Internal async polling loop. On each iteration: stat file to detect truncation or rotation (inode change), seek to tracked offset, read new data via aiofiles, split into lines buffering partial lines, parse each complete line as JSON then validate against Event schema, emit valid events. Sleeps for poll_interval_seconds between iterations. Loop exits when shutdown asyncio.Event is set.",
+      "inputs": [],
+      "output_type": "None",
+      "error_cases": [
+        {
+          "name": "file_not_found",
+          "condition": "File does not exist on poll iteration",
+          "error_type": "None",
+          "error_data": {
+            "message": "File not found, will retry next poll"
+          }
+        },
+        {
+          "name": "permission_denied",
+          "condition": "File exists but is not readable",
+          "error_type": "None",
+          "error_data": {
+            "message": "Permission denied reading file, will retry"
+          }
+        },
+        {
+          "name": "invalid_json_line",
+          "condition": "A line is not valid JSON",
+          "error_type": "None",
+          "error_data": {
+            "message": "Skipping invalid JSON line at offset {offset}"
+          }
+        },
+        {
+          "name": "invalid_event_line",
+          "condition": "JSON is valid but does not match Event schema",
+          "error_type": "None",
+          "error_data": {
+            "message": "Skipping invalid Event at offset {offset}"
+          }
+        }
+      ],
+      "preconditions": [
+        "Called internally by start(), shutdown_event is not set"
+      ],
+      "postconditions": [
+        "All complete JSONL lines since last poll are parsed and emitted as Events",
+        "FilePosition.offset is updated to current read position",
+        "Partial lines are buffered in FilePosition.line_buffer",
+        "File truncation resets offset to 0",
+        "File rotation (inode change) resets offset to 0 and clears line_buffer"
+      ],
+      "idempotent": false,
+      "side_effects": [],
+      "structured_side_effects": [
+        {
+          "kind": "reads_file",
+          "target": "Configured JSONL file path",
+          "description": "Reads new lines from tracked offset via aiofiles"
+        },
+        {
+          "kind": "mutates_state",
+          "target": "FileSource._position",
+          "description": "Updates file offset, inode, and line buffer"
+        },
+        {
+          "kind": "logging",
+          "target": "chronicler.sources.file",
+          "description": "Logs per-line parse errors, file not found, permission errors, truncation/rotation detection"
+        }
+      ],
+      "performance_budget": {
+        "p95_latency_ms": 10,
+        "max_memory_mb": null,
+        "complexity": "O(n) where n = new lines since last poll"
+      }
+    },
+    {
+      "name": "SentinelSource.subscribe",
+      "description": "Register an async event handler callback for Sentinel-derived events. Synchronous operation.",
+      "inputs": [
+        {
+          "name": "callback",
+          "type_ref": "EventCallback",
+          "required": true,
+          "default": "",
+          "description": "Async callable to receive events",
+          "validators": []
+        }
+      ],
+      "output_type": "None",
+      "error_cases": [],
+      "preconditions": [
+        "callback is a non-null async callable"
+      ],
+      "postconditions": [
+        "callback is appended to internal subscriber list"
+      ],
+      "idempotent": false,
+      "side_effects": [],
+      "structured_side_effects": [
+        {
+          "kind": "mutates_state",
+          "target": "SentinelSource._subscribers",
+          "description": "Appends callback to internal subscriber list"
+        }
+      ],
+      "performance_budget": null
+    },
+    {
+      "name": "SentinelSource.start",
+      "description": "Initialize aiohttp AppRunner and TCPSite (reusing webhook HTTP transport pattern), bind to configured host:port, begin accepting Sentinel incident lifecycle webhook POSTs. Sentinel-specific JSON parsing extracts incident fields and applies event_kind_prefix per AS9.",
+      "inputs": [],
+      "output_type": "None",
+      "error_cases": [
+        {
+          "name": "already_started",
+          "condition": "Source state is RUNNING",
+          "error_type": "RuntimeError",
+          "error_data": {
+            "message": "SentinelSource is already started"
+          }
+        },
+        {
+          "name": "bind_failed",
+          "condition": "Configured host:port is unavailable or in use",
+          "error_type": "OSError",
+          "error_data": {
+            "message": "Failed to bind to {host}:{port}"
+          }
+        }
+      ],
+      "preconditions": [
+        "Source is in CREATED state (not already started)"
+      ],
+      "postconditions": [
+        "HTTP server is listening on configured bind address and port",
+        "Source state transitions to RUNNING"
+      ],
+      "idempotent": false,
+      "side_effects": [],
+      "structured_side_effects": [
+        {
+          "kind": "network_call",
+          "target": "TCP bind on configured host:port",
+          "description": "Creates aiohttp AppRunner and TCPSite for Sentinel webhooks"
+        },
+        {
+          "kind": "mutates_state",
+          "target": "SentinelSource._state",
+          "description": "Transitions source state from CREATED to RUNNING"
+        },
+        {
+          "kind": "logging",
+          "target": "chronicler.sources.sentinel",
+          "description": "Logs successful bind"
+        }
+      ],
+      "performance_budget": null
+    },
+    {
+      "name": "SentinelSource.stop",
+      "description": "Gracefully shut down the Sentinel HTTP server. Idempotent.",
+      "inputs": [],
+      "output_type": "None",
+      "error_cases": [],
+      "preconditions": [],
+      "postconditions": [
+        "HTTP server is no longer accepting connections",
+        "Source state transitions to STOPPED"
+      ],
+      "idempotent": true,
+      "side_effects": [],
+      "structured_side_effects": [
+        {
+          "kind": "network_call",
+          "target": "TCP unbind",
+          "description": "Shuts down aiohttp AppRunner and TCPSite"
+        },
+        {
+          "kind": "mutates_state",
+          "target": "SentinelSource._state",
+          "description": "Transitions source state to STOPPED"
+        },
+        {
+          "kind": "logging",
+          "target": "chronicler.sources.sentinel",
+          "description": "Logs shutdown"
+        }
+      ],
+      "performance_budget": null
+    },
+    {
+      "name": "SentinelSource._handle_post",
+      "description": "Internal HTTP POST handler for Sentinel webhooks. Parses Sentinel-specific JSON structure (incident properties, severity, status, etc.), constructs Event with event_kind = '{event_kind_prefix}.incident.{action}' (e.g. 'sentinel.incident.created'), generates UUID4 event_id, extracts incident_id and incident_number as correlation_keys. All exceptions caught internally.",
+      "inputs": [
+        {
+          "name": "request_body",
+          "type_ref": "bytes",
+          "required": true,
+          "default": "",
+          "description": "Raw HTTP request body containing Sentinel webhook JSON",
+          "validators": []
+        },
+        {
+          "name": "content_type",
+          "type_ref": "str",
+          "required": true,
+          "default": "",
+          "description": "Content-Type header value",
+          "validators": []
+        }
+      ],
+      "output_type": "HttpResponse",
+      "error_cases": [
+        {
+          "name": "invalid_content_type",
+          "condition": "Content-Type is not application/json",
+          "error_type": "HttpResponse",
+          "error_data": {
+            "status": "415",
+            "body": "Unsupported Content-Type"
+          }
+        },
+        {
+          "name": "invalid_json",
+          "condition": "Body is not valid JSON",
+          "error_type": "HttpResponse",
+          "error_data": {
+            "status": "400",
+            "body": "Invalid JSON"
+          }
+        },
+        {
+          "name": "unrecognized_payload",
+          "condition": "JSON does not contain expected Sentinel incident structure",
+          "error_type": "HttpResponse",
+          "error_data": {
+            "status": "400",
+            "body": "Unrecognized Sentinel payload"
+          }
+        },
+        {
+          "name": "internal_error",
+          "condition": "Unexpected exception",
+          "error_type": "HttpResponse",
+          "error_data": {
+            "status": "500",
+            "body": "Internal server error"
+          }
+        }
+      ],
+      "preconditions": [],
+      "postconditions": [
+        "Returns status 200 on successful parse and emit",
+        "Returns status 400 on invalid JSON or unrecognized Sentinel payload",
+        "Returns status 415 if Content-Type is not application/json",
+        "Event.event_kind starts with configured event_kind_prefix followed by '.incident.'",
+        "Event.correlation_keys includes Sentinel incident_id if present"
+      ],
+      "idempotent": false,
+      "side_effects": [],
+      "structured_side_effects": [
+        {
+          "kind": "logging",
+          "target": "chronicler.sources.sentinel",
+          "description": "Logs parse errors and unexpected exceptions with request context"
+        }
+      ],
+      "performance_budget": {
+        "p95_latency_ms": 50,
+        "max_memory_mb": null,
+        "complexity": null
+      }
+    }
+  ],
+  "dependencies": [
+    "schemas"
+  ],
+  "dependency_contracts": {
+    "schemas": [
+      "Event"
+    ]
+  },
+  "invariants": [
+    "All sources implement SourceProtocol (start, stop, subscribe) and are runtime_checkable",
+    "Sources never raise exceptions to callers during event processing — all exceptions are caught, logged, and processing continues (AC13)",
+    "HTTP sources (webhook, otlp, sentinel) validate Content-Type header before parsing body",
+    "HTTP sources enforce client_max_size_bytes on request bodies",
+    "The emit() utility calls every subscriber even if earlier subscribers raise exceptions",
+    "FileSource handles file truncation by resetting offset to 0",
+    "FileSource handles file rotation (inode change) by resetting offset to 0 and clearing line buffer",
+    "FileSource buffers partial lines and only emits complete JSONL lines",
+    "SentinelSource prefixes all event_kind values with the configured event_kind_prefix (AS9)",
+    "OtlpSource flattens resourceSpans→scopeSpans→spans into individual Events",
+    "OtlpSource returns empty JSON object '{}' per OTLP HTTP specification",
+    "start() raises RuntimeError if source is already in RUNNING state",
+    "stop() is idempotent — safe to call multiple times or on never-started sources",
+    "subscribe() may be called before or after start()",
+    "All Events emitted by sources have a valid UUID4 event_id and ISO 8601 UTC timestamp",
+    "Source state transitions follow CREATED→RUNNING→STOPPED (no reverse transitions)"
+  ],
+  "requires": [
+    "schemas.Event"
+  ],
+  "processing_register": "rigorous-analytical",
+  "data_access": {
+    "reads": [
+      "INTERNAL"
+    ],
+    "writes": [],
+    "rationale": "Sources read INTERNAL-tier data: webhook and sentinel sources receive event payloads via HTTP POST from internal services within the governance stack; OTLP source receives trace spans from instrumented applications; file source reads JSONL event files from the local filesystem written by other components. No PII is expected in the event envelope fields (event_id, event_kind, timestamp, source, correlation_keys), though payload dicts may contain arbitrary INTERNAL operational data. Sources do not write to any persistent store — they only emit events to in-memory subscriber callbacks.",
+    "side_effects": [
+      {
+        "type": "network_listen",
+        "classification": "INTERNAL",
+        "fields": [
+          "request_body",
+          "content_type"
+        ],
+        "rationale": "Webhook, OTLP, and Sentinel sources bind TCP ports and accept HTTP POST requests containing event data from internal governance stack services"
+      },
+      {
+        "type": "file_read",
+        "classification": "INTERNAL",
+        "fields": [
+          "path",
+          "offset",
+          "line_buffer"
+        ],
+        "rationale": "File source reads JSONL lines from local filesystem using aiofiles, tracking read position for resumption"
+      },
+      {
+        "type": "emit_callback",
+        "classification": "INTERNAL",
+        "fields": [
+          "event"
+        ],
+        "rationale": "All sources invoke registered subscriber callbacks with parsed Event objects for downstream processing by the correlation engine"
+      }
+    ]
+  },
+  "authority": {
+    "domains": [],
+    "rationale": null
+  }
+}

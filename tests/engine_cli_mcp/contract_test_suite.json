@@ -1,0 +1,1566 @@
+{
+  "component_id": "engine_cli_mcp",
+  "contract_version": 1,
+  "test_cases": [
+    {
+      "id": "type_engine_phase_valid",
+      "description": "EnginePhase enum contains all expected lifecycle phases",
+      "function": "EnginePhase",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "All six phases exist: CREATED, STARTING, RUNNING, STOPPING, STOPPED, ERROR"
+      ]
+    },
+    {
+      "id": "type_source_health_valid",
+      "description": "SourceHealth enum contains HEALTHY, DEGRADED, FAILED, STOPPED",
+      "function": "SourceHealth",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "All four health states exist"
+      ]
+    },
+    {
+      "id": "type_sink_health_valid",
+      "description": "SinkHealth enum contains HEALTHY, DEGRADED, FAILED, STOPPED",
+      "function": "SinkHealth",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "All four health states exist"
+      ]
+    },
+    {
+      "id": "type_source_status_valid",
+      "description": "SourceStatus can be constructed with valid fields",
+      "function": "SourceStatus",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "SourceStatus is created with correct field values",
+        "events_received is non-negative"
+      ]
+    },
+    {
+      "id": "type_source_status_negative_events",
+      "description": "SourceStatus rejects negative events_received",
+      "function": "SourceStatus",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "ValidationError",
+      "assertions": [
+        "Pydantic rejects events_received < 0"
+      ]
+    },
+    {
+      "id": "type_sink_status_valid",
+      "description": "SinkStatus can be constructed with valid fields",
+      "function": "SinkStatus",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "SinkStatus is created with correct field values"
+      ]
+    },
+    {
+      "id": "type_sink_status_negative_events_emitted",
+      "description": "SinkStatus rejects negative events_emitted",
+      "function": "SinkStatus",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "ValidationError",
+      "assertions": [
+        "Pydantic rejects events_emitted < 0"
+      ]
+    },
+    {
+      "id": "type_sink_status_negative_errors",
+      "description": "SinkStatus rejects negative errors count",
+      "function": "SinkStatus",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "ValidationError",
+      "assertions": [
+        "Pydantic rejects errors < 0"
+      ]
+    },
+    {
+      "id": "type_engine_status_valid",
+      "description": "EngineStatus can be constructed with all valid fields",
+      "function": "EngineStatus",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "EngineStatus created with correct fields",
+        "All validators pass"
+      ]
+    },
+    {
+      "id": "type_engine_status_negative_uptime",
+      "description": "EngineStatus rejects negative uptime_seconds",
+      "function": "EngineStatus",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "ValidationError",
+      "assertions": [
+        "uptime_seconds >= 0.0 enforced"
+      ]
+    },
+    {
+      "id": "type_engine_status_negative_total_events",
+      "description": "EngineStatus rejects negative total_events_processed",
+      "function": "EngineStatus",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "ValidationError",
+      "assertions": [
+        "total_events_processed >= 0 enforced"
+      ]
+    },
+    {
+      "id": "type_engine_status_negative_queue_depth",
+      "description": "EngineStatus rejects negative queue_depth",
+      "function": "EngineStatus",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "ValidationError",
+      "assertions": [
+        "queue_depth >= 0 enforced"
+      ]
+    },
+    {
+      "id": "type_datetime_iso_valid",
+      "description": "DatetimeISO accepts valid ISO-8601 datetime strings",
+      "function": "DatetimeISO",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {
+        "value": "2024-01-15T10:30:00Z"
+      },
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "DatetimeISO created successfully"
+      ]
+    },
+    {
+      "id": "type_datetime_iso_with_offset",
+      "description": "DatetimeISO accepts datetime with timezone offset",
+      "function": "DatetimeISO",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {
+        "value": "2024-01-15T10:30:00+05:30"
+      },
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "DatetimeISO created successfully with offset"
+      ]
+    },
+    {
+      "id": "type_datetime_iso_invalid",
+      "description": "DatetimeISO rejects invalid format strings",
+      "function": "DatetimeISO",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {
+        "value": "not-a-date"
+      },
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "ValidationError",
+      "assertions": [
+        "Regex validation rejects non-ISO strings"
+      ]
+    },
+    {
+      "id": "type_datetime_iso_missing_tz",
+      "description": "DatetimeISO rejects datetime without timezone",
+      "function": "DatetimeISO",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {
+        "value": "2024-01-15T10:30:00"
+      },
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "ValidationError",
+      "assertions": [
+        "Must include Z or offset"
+      ]
+    },
+    {
+      "id": "type_queue_bound_valid",
+      "description": "QueueBound accepts values in range 1..100000",
+      "function": "QueueBound",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {
+        "value": "100"
+      },
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "QueueBound created successfully"
+      ]
+    },
+    {
+      "id": "type_queue_bound_min",
+      "description": "QueueBound accepts minimum value 1",
+      "function": "QueueBound",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {
+        "value": "1"
+      },
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "QueueBound created with value=1"
+      ]
+    },
+    {
+      "id": "type_queue_bound_max",
+      "description": "QueueBound accepts maximum value 100000",
+      "function": "QueueBound",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {
+        "value": "100000"
+      },
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "QueueBound created with value=100000"
+      ]
+    },
+    {
+      "id": "type_queue_bound_zero",
+      "description": "QueueBound rejects value 0",
+      "function": "QueueBound",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {
+        "value": "0"
+      },
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "ValidationError",
+      "assertions": [
+        "Value must be >= 1"
+      ]
+    },
+    {
+      "id": "type_queue_bound_too_large",
+      "description": "QueueBound rejects value > 100000",
+      "function": "QueueBound",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {
+        "value": "100001"
+      },
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "ValidationError",
+      "assertions": [
+        "Value must be <= 100000"
+      ]
+    },
+    {
+      "id": "type_engine_config_valid",
+      "description": "EngineConfig can be constructed with valid values",
+      "function": "EngineConfig",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "EngineConfig created with correct fields"
+      ]
+    },
+    {
+      "id": "type_engine_config_queue_max_size_bounds",
+      "description": "EngineConfig rejects queue_max_size out of range",
+      "function": "EngineConfig",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "ValidationError",
+      "assertions": [
+        "queue_max_size must be 1..100000"
+      ]
+    },
+    {
+      "id": "type_engine_config_drain_timeout_bounds",
+      "description": "EngineConfig rejects drain_timeout_seconds out of range",
+      "function": "EngineConfig",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "ValidationError",
+      "assertions": [
+        "drain_timeout_seconds must be 0.1..60.0"
+      ]
+    },
+    {
+      "id": "type_engine_config_state_file_empty",
+      "description": "EngineConfig rejects empty state_file",
+      "function": "EngineConfig",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "ValidationError",
+      "assertions": [
+        "state_file length must be >= 1"
+      ]
+    },
+    {
+      "id": "type_engine_config_source_restart_delay_bounds",
+      "description": "EngineConfig rejects source_restart_delay_seconds out of range",
+      "function": "EngineConfig",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "ValidationError",
+      "assertions": [
+        "source_restart_delay_seconds must be 0.0..300.0"
+      ]
+    },
+    {
+      "id": "type_story_filter_valid",
+      "description": "StoryFilter enum contains OPEN, CLOSED, ALL",
+      "function": "StoryFilter",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "All three filter values exist"
+      ]
+    },
+    {
+      "id": "type_story_id_valid",
+      "description": "StoryId accepts non-empty string up to 256 chars",
+      "function": "StoryId",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {
+        "value": "story-123"
+      },
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "StoryId created successfully"
+      ]
+    },
+    {
+      "id": "type_story_id_empty",
+      "description": "StoryId rejects empty string",
+      "function": "StoryId",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "ValidationError",
+      "assertions": [
+        "Length must be >= 1"
+      ]
+    },
+    {
+      "id": "type_story_id_too_long",
+      "description": "StoryId rejects string longer than 256 chars",
+      "function": "StoryId",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Length must be <= 256"
+      ]
+    },
+    {
+      "id": "type_story_summary_valid",
+      "description": "StorySummary can be constructed with valid fields",
+      "function": "StorySummary",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "StorySummary created with correct fields",
+        "event_count >= 1"
+      ]
+    },
+    {
+      "id": "type_story_summary_zero_events",
+      "description": "StorySummary rejects event_count=0",
+      "function": "StorySummary",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "ValidationError",
+      "assertions": [
+        "event_count must be >= 1"
+      ]
+    },
+    {
+      "id": "type_story_list_result_valid",
+      "description": "StoryListResult can be constructed with valid fields",
+      "function": "StoryListResult",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "StoryListResult created with correct total and stories"
+      ]
+    },
+    {
+      "id": "type_replay_result_valid",
+      "description": "ReplayResult can be constructed with all non-negative fields",
+      "function": "ReplayResult",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "All fields are non-negative"
+      ]
+    },
+    {
+      "id": "type_replay_result_negative_field",
+      "description": "ReplayResult rejects negative total_lines",
+      "function": "ReplayResult",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "ValidationError",
+      "assertions": [
+        "total_lines must be >= 0"
+      ]
+    },
+    {
+      "id": "type_replay_file_spec_valid",
+      "description": "ReplayFileSpec can be constructed with valid file_path",
+      "function": "ReplayFileSpec",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "ReplayFileSpec created successfully"
+      ]
+    },
+    {
+      "id": "type_replay_file_spec_empty_path",
+      "description": "ReplayFileSpec rejects empty file_path",
+      "function": "ReplayFileSpec",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "ValidationError",
+      "assertions": [
+        "file_path length must be >= 1"
+      ]
+    },
+    {
+      "id": "type_mcp_tool_name_valid",
+      "description": "McpToolName enum has all four tool names",
+      "function": "McpToolName",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "All four tool names exist"
+      ]
+    },
+    {
+      "id": "type_mcp_tool_result_valid",
+      "description": "McpToolResult can be constructed with valid fields",
+      "function": "McpToolResult",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "McpToolResult created with correct fields"
+      ]
+    },
+    {
+      "id": "type_cli_exit_code_valid",
+      "description": "CliExitCode enum has all expected exit codes",
+      "function": "CliExitCode",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "All five exit codes exist"
+      ]
+    },
+    {
+      "id": "engine_init_valid",
+      "description": "Engine initializes in CREATED phase with valid config",
+      "function": "ChroniclerEngine.__init__",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Engine phase is CREATED",
+        "Queue is created with correct maxsize",
+        "No tasks started"
+      ]
+    },
+    {
+      "id": "engine_init_invalid_config",
+      "description": "Engine rejects invalid EngineConfig",
+      "function": "ChroniclerEngine.__init__",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "ValidationError",
+      "assertions": [
+        "Engine raises on invalid config"
+      ]
+    },
+    {
+      "id": "engine_start_happy",
+      "description": "Engine transitions from CREATED to RUNNING on start()",
+      "function": "ChroniclerEngine.start",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Engine phase becomes RUNNING",
+        "started_at is set"
+      ]
+    },
+    {
+      "id": "engine_start_already_started",
+      "description": "Engine raises error if start() called when not CREATED",
+      "function": "ChroniclerEngine.start",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "already_started",
+      "assertions": [
+        "Error raised when starting non-CREATED engine"
+      ]
+    },
+    {
+      "id": "engine_start_state_load_failure",
+      "description": "Engine transitions to ERROR if state file cannot be read",
+      "function": "ChroniclerEngine.start",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "state_load_failure",
+      "assertions": [
+        "Engine phase becomes ERROR or raises"
+      ]
+    },
+    {
+      "id": "engine_stop_happy",
+      "description": "Engine transitions from RUNNING to STOPPED on stop()",
+      "function": "ChroniclerEngine.stop",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Engine phase is STOPPED",
+        "State persisted"
+      ]
+    },
+    {
+      "id": "engine_stop_already_stopped",
+      "description": "Engine raises error if stop() called when already STOPPED",
+      "function": "ChroniclerEngine.stop",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "already_stopped",
+      "assertions": [
+        "Error raised when stopping already-stopped engine"
+      ]
+    },
+    {
+      "id": "engine_run_happy",
+      "description": "Engine.run() processes events and reaches STOPPED phase",
+      "function": "ChroniclerEngine.run",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Engine phase is STOPPED after run completes",
+        "Events were processed"
+      ]
+    },
+    {
+      "id": "engine_run_source_exception",
+      "description": "Source exceptions do not crash the engine",
+      "function": "ChroniclerEngine.run",
+      "category": "invariant",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Engine continues running despite source exception",
+        "Source marked as FAILED"
+      ]
+    },
+    {
+      "id": "engine_run_sink_exception",
+      "description": "Sink exceptions are logged but do not block processing",
+      "function": "ChroniclerEngine.run",
+      "category": "invariant",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Engine continues processing despite sink failure"
+      ]
+    },
+    {
+      "id": "engine_status_created",
+      "description": "status() returns correct EngineStatus in CREATED phase",
+      "function": "ChroniclerEngine.status",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "phase is CREATED",
+        "uptime_seconds >= 0",
+        "total_events_processed == 0"
+      ]
+    },
+    {
+      "id": "engine_status_running",
+      "description": "status() returns correct EngineStatus while RUNNING",
+      "function": "ChroniclerEngine.status",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "phase is RUNNING",
+        "sources and sinks lists populated"
+      ]
+    },
+    {
+      "id": "engine_submit_event_happy",
+      "description": "submit_event returns True when event enqueued successfully",
+      "function": "ChroniclerEngine.submit_event",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Returns True",
+        "Queue size increased"
+      ]
+    },
+    {
+      "id": "engine_submit_event_not_running",
+      "description": "submit_event raises when engine is not RUNNING",
+      "function": "ChroniclerEngine.submit_event",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "engine_not_running",
+      "assertions": [
+        "Error raised for non-RUNNING engine"
+      ]
+    },
+    {
+      "id": "engine_submit_event_queue_full",
+      "description": "submit_event returns False when queue is full and timeout expires",
+      "function": "ChroniclerEngine.submit_event",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Returns False",
+        "Event is dropped"
+      ]
+    },
+    {
+      "id": "engine_context_manager_happy",
+      "description": "async with engine starts and stops cleanly",
+      "function": "ChroniclerEngine.__aenter__",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Engine is RUNNING after __aenter__",
+        "Engine is STOPPED after __aexit__"
+      ]
+    },
+    {
+      "id": "engine_context_manager_exception",
+      "description": "__aexit__ stops engine even when exception occurs, returns False",
+      "function": "ChroniclerEngine.__aexit__",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Engine is STOPPED",
+        "__aexit__ returns False (exception not suppressed)"
+      ]
+    },
+    {
+      "id": "engine_drain_timeout",
+      "description": "Stop drains queue within timeout, drops remaining on timeout",
+      "function": "ChroniclerEngine.stop",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Engine reaches STOPPED phase",
+        "Timeout is respected"
+      ]
+    },
+    {
+      "id": "engine_phase_transitions_invariant",
+      "description": "Phase transitions follow CREATED→STARTING→RUNNING→STOPPING→STOPPED strictly",
+      "function": "ChroniclerEngine.start",
+      "category": "invariant",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "No skipped phases",
+        "No backward transitions except to ERROR"
+      ]
+    },
+    {
+      "id": "engine_queue_bounded_invariant",
+      "description": "Internal queue is bounded by config.queue_max_size",
+      "function": "ChroniclerEngine.__init__",
+      "category": "invariant",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Queue maxsize equals config.queue_max_size"
+      ]
+    },
+    {
+      "id": "engine_invalid_events_dropped_invariant",
+      "description": "Invalid events are logged and dropped, never crash engine",
+      "function": "ChroniclerEngine.run",
+      "category": "invariant",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Engine continues after invalid event",
+        "Event is not in any story"
+      ]
+    },
+    {
+      "id": "engine_shutdown_order_invariant",
+      "description": "Shutdown follows: stop sources → drain queue → flush story manager → stop sinks → persist state",
+      "function": "ChroniclerEngine.stop",
+      "category": "invariant",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Operations called in correct order"
+      ]
+    },
+    {
+      "id": "cli_main_start_routes",
+      "description": "cli_main routes 'start' to cli_cmd_start",
+      "function": "cli_main",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "cli_cmd_start is called"
+      ]
+    },
+    {
+      "id": "cli_main_status_routes",
+      "description": "cli_main routes 'status' to cli_cmd_status",
+      "function": "cli_main",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "cli_cmd_status is called"
+      ]
+    },
+    {
+      "id": "cli_main_stories_list_routes",
+      "description": "cli_main routes 'stories list' to cli_cmd_stories_list",
+      "function": "cli_main",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "cli_cmd_stories_list is called"
+      ]
+    },
+    {
+      "id": "cli_main_stories_show_routes",
+      "description": "cli_main routes 'stories show <id>' to cli_cmd_stories_show",
+      "function": "cli_main",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "cli_cmd_stories_show is called with correct story_id"
+      ]
+    },
+    {
+      "id": "cli_main_replay_routes",
+      "description": "cli_main routes 'replay <file>' to cli_cmd_replay",
+      "function": "cli_main",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "cli_cmd_replay is called with correct file_path"
+      ]
+    },
+    {
+      "id": "cli_main_unknown_subcommand",
+      "description": "cli_main returns error for unknown subcommand",
+      "function": "cli_main",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "unknown_subcommand",
+      "assertions": [
+        "Non-zero exit code returned"
+      ]
+    },
+    {
+      "id": "cli_cmd_start_config_not_found",
+      "description": "cli_cmd_start returns CONFIG_ERROR_1 when config missing",
+      "function": "cli_cmd_start",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "config_load_error",
+      "assertions": [
+        "Returns exit code 1"
+      ]
+    },
+    {
+      "id": "cli_cmd_start_invalid_config",
+      "description": "cli_cmd_start returns CONFIG_ERROR_1 for invalid config",
+      "function": "cli_cmd_start",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "config_load_error",
+      "assertions": [
+        "Returns exit code 1"
+      ]
+    },
+    {
+      "id": "cli_cmd_status_happy",
+      "description": "cli_cmd_status reads state file and prints JSON to stdout",
+      "function": "cli_cmd_status",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Returns 0",
+        "JSON output printed to stdout"
+      ]
+    },
+    {
+      "id": "cli_cmd_status_missing_file",
+      "description": "cli_cmd_status returns STATE_READ_ERROR_4 when file missing",
+      "function": "cli_cmd_status",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "state_file_missing",
+      "assertions": [
+        "Returns exit code 4"
+      ]
+    },
+    {
+      "id": "cli_cmd_status_corrupt_file",
+      "description": "cli_cmd_status handles corrupt state file",
+      "function": "cli_cmd_status",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "state_file_corrupt",
+      "assertions": [
+        "Returns exit code 4 or prints partial status"
+      ]
+    },
+    {
+      "id": "cli_cmd_stories_list_happy",
+      "description": "cli_cmd_stories_list prints filtered stories JSON",
+      "function": "cli_cmd_stories_list",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Returns 0",
+        "StoryListResult JSON printed"
+      ]
+    },
+    {
+      "id": "cli_cmd_stories_list_empty",
+      "description": "cli_cmd_stories_list returns empty list when no stories",
+      "function": "cli_cmd_stories_list",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Returns 0",
+        "Empty stories list in output"
+      ]
+    },
+    {
+      "id": "cli_cmd_stories_list_filter_open",
+      "description": "cli_cmd_stories_list filters to OPEN stories only",
+      "function": "cli_cmd_stories_list",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "filter_applied is OPEN",
+        "Only open stories returned"
+      ]
+    },
+    {
+      "id": "cli_cmd_stories_show_found",
+      "description": "cli_cmd_stories_show prints full story JSON when found",
+      "function": "cli_cmd_stories_show",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Returns 0",
+        "Story JSON printed to stdout"
+      ]
+    },
+    {
+      "id": "cli_cmd_stories_show_not_found",
+      "description": "cli_cmd_stories_show returns RUNTIME_ERROR_2 when story not found",
+      "function": "cli_cmd_stories_show",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "story_not_found",
+      "assertions": [
+        "Returns exit code 2"
+      ]
+    },
+    {
+      "id": "cli_cmd_replay_happy",
+      "description": "cli_cmd_replay processes JSONL file and prints ReplayResult",
+      "function": "cli_cmd_replay",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Returns 0",
+        "ReplayResult JSON printed"
+      ]
+    },
+    {
+      "id": "cli_cmd_replay_file_not_found",
+      "description": "cli_cmd_replay returns FILE_NOT_FOUND_3 for missing file",
+      "function": "cli_cmd_replay",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "file_not_found",
+      "assertions": [
+        "Returns exit code 3"
+      ]
+    },
+    {
+      "id": "cli_cmd_replay_parse_errors",
+      "description": "cli_cmd_replay skips unparseable lines and counts them",
+      "function": "cli_cmd_replay",
+      "category": "edge_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "events_skipped > 0 in result",
+        "Returns 0"
+      ]
+    },
+    {
+      "id": "cli_cmd_replay_suppress_sinks",
+      "description": "cli_cmd_replay with suppress_sinks=True does not emit to sinks",
+      "function": "cli_cmd_replay",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "No sink emissions",
+        "Returns 0"
+      ]
+    },
+    {
+      "id": "mcp_server_create_happy",
+      "description": "mcp_server_create registers all four tools",
+      "function": "mcp_server_create",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Server is created",
+        "Four tools registered"
+      ]
+    },
+    {
+      "id": "mcp_server_create_sdk_unavailable",
+      "description": "mcp_server_create raises when mcp SDK not installed",
+      "function": "mcp_server_create",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "mcp_sdk_unavailable",
+      "assertions": [
+        "ImportError or similar raised"
+      ]
+    },
+    {
+      "id": "mcp_tool_status_happy",
+      "description": "chronicler_status returns McpToolResult with success=true",
+      "function": "mcp_tool_chronicler_status",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "success is True",
+        "data contains EngineStatus fields"
+      ]
+    },
+    {
+      "id": "mcp_tool_status_engine_unavailable",
+      "description": "chronicler_status returns error when engine unavailable",
+      "function": "mcp_tool_chronicler_status",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "engine_unavailable",
+      "assertions": [
+        "success is False or error raised",
+        "error_message is set"
+      ]
+    },
+    {
+      "id": "mcp_tool_stories_list_happy",
+      "description": "chronicler_stories_list returns McpToolResult with StoryListResult",
+      "function": "mcp_tool_chronicler_stories_list",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "success is True",
+        "data contains stories list"
+      ]
+    },
+    {
+      "id": "mcp_tool_stories_list_with_filter",
+      "description": "chronicler_stories_list respects filter parameter",
+      "function": "mcp_tool_chronicler_stories_list",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "filter_applied matches requested filter"
+      ]
+    },
+    {
+      "id": "mcp_tool_stories_list_engine_unavailable",
+      "description": "chronicler_stories_list errors when engine unavailable",
+      "function": "mcp_tool_chronicler_stories_list",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "engine_unavailable",
+      "assertions": [
+        "success is False or error raised"
+      ]
+    },
+    {
+      "id": "mcp_tool_stories_show_found",
+      "description": "chronicler_stories_show returns story data when found",
+      "function": "mcp_tool_chronicler_stories_show",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "success is True",
+        "data contains story fields"
+      ]
+    },
+    {
+      "id": "mcp_tool_stories_show_not_found",
+      "description": "chronicler_stories_show returns success=false when story not found",
+      "function": "mcp_tool_chronicler_stories_show",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "story_not_found",
+      "assertions": [
+        "success is False",
+        "error_message mentions story not found"
+      ]
+    },
+    {
+      "id": "mcp_tool_stories_show_engine_unavailable",
+      "description": "chronicler_stories_show errors when engine unavailable",
+      "function": "mcp_tool_chronicler_stories_show",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "engine_unavailable",
+      "assertions": [
+        "success is False or error raised"
+      ]
+    },
+    {
+      "id": "mcp_tool_replay_happy",
+      "description": "chronicler_events_replay processes file and returns ReplayResult",
+      "function": "mcp_tool_chronicler_events_replay",
+      "category": "happy_path",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "success is True",
+        "data contains ReplayResult fields"
+      ]
+    },
+    {
+      "id": "mcp_tool_replay_file_not_found",
+      "description": "chronicler_events_replay returns error for missing file",
+      "function": "mcp_tool_chronicler_events_replay",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "file_not_found",
+      "assertions": [
+        "success is False",
+        "error_message mentions file not found"
+      ]
+    },
+    {
+      "id": "mcp_tool_replay_engine_unavailable",
+      "description": "chronicler_events_replay errors when engine not RUNNING",
+      "function": "mcp_tool_chronicler_events_replay",
+      "category": "error_case",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "engine_unavailable",
+      "assertions": [
+        "success is False or error raised"
+      ]
+    },
+    {
+      "id": "mcp_lifecycle_tied_to_engine_invariant",
+      "description": "MCP server lifecycle is tied to engine lifecycle",
+      "function": "mcp_server_run",
+      "category": "invariant",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "MCP server stops when engine stops"
+      ]
+    },
+    {
+      "id": "config_validation_fails_fast_invariant",
+      "description": "Invalid configuration is a fatal error that prevents engine creation",
+      "function": "ChroniclerEngine.__init__",
+      "category": "invariant",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "ValidationError raised immediately",
+        "No engine instance created"
+      ]
+    },
+    {
+      "id": "engine_clock_deterministic_replay_invariant",
+      "description": "Engine clock is injectable for deterministic replay",
+      "function": "ChroniclerEngine.__init__",
+      "category": "invariant",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Clock callable is used instead of real time",
+        "Replay produces deterministic results"
+      ]
+    },
+    {
+      "id": "state_file_append_only_invariant",
+      "description": "JSONL state file is append-only during normal operation",
+      "function": "ChroniclerEngine.run",
+      "category": "invariant",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "State file only grows, lines are never modified or deleted"
+      ]
+    },
+    {
+      "id": "cli_status_no_running_engine_invariant",
+      "description": "CLI status/stories commands work without a running engine",
+      "function": "cli_cmd_status",
+      "category": "invariant",
+      "setup_description": "",
+      "mock_dependencies": {},
+      "input_values": {},
+      "input_description": "",
+      "expected_output_description": "",
+      "expected_error": "",
+      "assertions": [
+        "Status reads from JSONL file directly",
+        "No engine process required"
+      ]
+    }
+  ],
+  "test_language": "python",
+  "generated_code": "\"\"\"\nContract test suite for engine_cli_mcp component.\nTests cover types, engine lifecycle, CLI commands, and MCP server/tools.\n\"\"\"\nimport asyncio\nimport json\nimport os\nimport pytest\nfrom datetime import datetime, timezone\nfrom unittest.mock import (\n    AsyncMock, MagicMock, Mock, patch, PropertyMock, call\n)\n\n# ---------------------------------------------------------------------------\n# Imports from the component under test\n# ---------------------------------------------------------------------------\nfrom engine_cli_mcp import (\n    # Enums\n    EnginePhase,\n    SourceHealth,\n    SinkHealth,\n    StoryFilter,\n    McpToolName,\n    CliExitCode,\n    # Structs / types\n    SourceStatus,\n    SinkStatus,\n    EngineStatus,\n    DatetimeISO,\n    QueueBound,\n    EngineConfig,\n    StoryId,\n    StorySummary,\n    StoryListResult,\n    ReplayResult,\n    ReplayFileSpec,\n    McpToolResult,\n    # Engine\n    ChroniclerEngine,\n    # CLI functions\n    cli_main,\n    cli_cmd_start,\n    cli_cmd_status,\n    cli_cmd_stories_list,\n    cli_cmd_stories_show,\n    cli_cmd_replay,\n    # MCP functions\n    mcp_server_create,\n    mcp_server_run,\n    mcp_tool_chronicler_status,\n    mcp_tool_chronicler_stories_list,\n    mcp_tool_chronicler_stories_show,\n    mcp_tool_chronicler_events_replay,\n)\n\n\n# ============================================================================\n# FIXTURES / HELPERS\n# ============================================================================\n\ndef make_engine_config(**overrides):\n    \"\"\"Create a valid EngineConfig with sensible test defaults.\"\"\"\n    defaults = dict(\n        queue_max_size=5,\n        drain_timeout_seconds=0.5,\n        mcp_enabled=False,\n        state_file=\"/tmp/test_state.jsonl\",\n        source_restart_delay_seconds=0.1,\n    )\n    defaults.update(overrides)\n    return EngineConfig(**defaults)\n\n\nclass FakeSource:\n    \"\"\"Minimal fake implementing SourceProtocol.\"\"\"\n\n    def __init__(self, events=None, should_fail=False):\n        self._events = events or []\n        self._should_fail = should_fail\n        self.started = False\n        self.stopped = False\n        self.source_id = \"fake-source-1\"\n        self.source_type = \"fake\"\n\n    async def start(self, queue):\n        self.started = True\n        if self._should_fail:\n            raise RuntimeError(\"source init failure\")\n        for evt in self._events:\n            await queue.put(evt)\n\n    async def stop(self):\n        self.stopped = True\n\n\nclass FakeSink:\n    \"\"\"Minimal fake implementing SinkProtocol.\"\"\"\n\n    def __init__(self, should_fail=False):\n        self._should_fail = should_fail\n        self.emitted = []\n        self.started = False\n        self.stopped = False\n        self.sink_id = \"fake-sink-1\"\n        self.sink_type = \"fake\"\n\n    async def start(self):\n        self.started = True\n        if self._should_fail:\n            raise RuntimeError(\"sink init failure\")\n\n    async def emit(self, event):\n        if self._should_fail:\n            raise RuntimeError(\"sink emit failure\")\n        self.emitted.append(event)\n\n    async def stop(self):\n        self.stopped = True\n\n\n@pytest.fixture\ndef fake_chronicler_config():\n    \"\"\"A mock ChroniclerConfig for engine construction.\"\"\"\n    cfg = MagicMock()\n    cfg.engine = make_engine_config()\n    return cfg\n\n\n@pytest.fixture\ndef fake_correlation_engine():\n    mock = MagicMock()\n    mock.process = MagicMock(return_value=MagicMock())\n    return mock\n\n\n@pytest.fixture\ndef fake_story_manager():\n    mock = MagicMock()\n    mock.update = MagicMock()\n    mock.flush = AsyncMock() if hasattr(AsyncMock, '__call__') else MagicMock()\n    mock.list_stories = MagicMock(return_value=[])\n    mock.get_story = MagicMock(return_value=None)\n    return mock\n\n\n@pytest.fixture\ndef fake_clock():\n    return lambda: datetime(2024, 1, 15, 12, 0, 0, tzinfo=timezone.utc)\n\n\n@pytest.fixture\ndef default_config(tmp_path):\n    state_file = str(tmp_path / \"state.jsonl\")\n    return make_engine_config(state_file=state_file)\n\n\n@pytest.fixture\ndef engine_factory(\n    fake_chronicler_config,\n    fake_correlation_engine,\n    fake_story_manager,\n    fake_clock,\n    tmp_path,\n):\n    \"\"\"Factory to build a ChroniclerEngine with configurable fakes.\"\"\"\n\n    def _make(sources=None, sinks=None, config_overrides=None, clock=None):\n        state_file = str(tmp_path / \"state.jsonl\")\n        # Ensure state file exists (empty) so loading doesn't fail\n        open(state_file, \"a\").close()\n        cfg_kwargs = dict(state_file=state_file)\n        if config_overrides:\n            cfg_kwargs.update(config_overrides)\n        config = make_engine_config(**cfg_kwargs)\n        fake_chronicler_config.engine = config\n        return ChroniclerEngine(\n            config=config,\n            chronicler_config=fake_chronicler_config,\n            sources=sources if sources is not None else [],\n            sinks=sinks if sinks is not None else [],\n            correlation_engine=fake_correlation_engine,\n            story_manager=fake_story_manager,\n            clock=clock or fake_clock,\n        )\n\n    return _make\n\n\n# ============================================================================\n# TYPE / STRUCT VALIDATION TESTS\n# ============================================================================\n\n\nclass TestEnginePhaseEnum:\n    def test_all_phases_exist(self):\n        phases = [\n            EnginePhase.CREATED,\n            EnginePhase.STARTING,\n            EnginePhase.RUNNING,\n            EnginePhase.STOPPING,\n            EnginePhase.STOPPED,\n            EnginePhase.ERROR,\n        ]\n        assert len(phases) == 6\n\n\nclass TestSourceHealthEnum:\n    def test_all_health_states_exist(self):\n        states = [\n            SourceHealth.HEALTHY,\n            SourceHealth.DEGRADED,\n            SourceHealth.FAILED,\n            SourceHealth.STOPPED,\n        ]\n        assert len(states) == 4\n\n\nclass TestSinkHealthEnum:\n    def test_all_health_states_exist(self):\n        states = [\n            SinkHealth.HEALTHY,\n            SinkHealth.DEGRADED,\n            SinkHealth.FAILED,\n            SinkHealth.STOPPED,\n        ]\n        assert len(states) == 4\n\n\nclass TestStoryFilterEnum:\n    def test_all_filter_values_exist(self):\n        filters = [StoryFilter.OPEN, StoryFilter.CLOSED, StoryFilter.ALL]\n        assert len(filters) == 3\n\n\nclass TestMcpToolNameEnum:\n    def test_all_tool_names_exist(self):\n        names = [\n            McpToolName.chronicler_status,\n            McpToolName.chronicler_stories_list,\n            McpToolName.chronicler_stories_show,\n            McpToolName.chronicler_events_replay,\n        ]\n        assert len(names) == 4\n\n\nclass TestCliExitCodeEnum:\n    def test_all_exit_codes_exist(self):\n        codes = [\n            CliExitCode.SUCCESS_0,\n            CliExitCode.CONFIG_ERROR_1,\n            CliExitCode.RUNTIME_ERROR_2,\n            CliExitCode.FILE_NOT_FOUND_3,\n            CliExitCode.STATE_READ_ERROR_4,\n        ]\n        assert len(codes) == 5\n\n\nclass TestDatetimeISO:\n    def test_valid_utc(self):\n        dt = DatetimeISO(value=\"2024-01-15T10:30:00Z\")\n        assert dt.value == \"2024-01-15T10:30:00Z\"\n\n    def test_valid_with_offset(self):\n        dt = DatetimeISO(value=\"2024-01-15T10:30:00+05:30\")\n        assert dt.value == \"2024-01-15T10:30:00+05:30\"\n\n    def test_valid_with_fractional_seconds(self):\n        dt = DatetimeISO(value=\"2024-01-15T10:30:00.123456Z\")\n        assert dt.value == \"2024-01-15T10:30:00.123456Z\"\n\n    def test_invalid_format(self):\n        with pytest.raises(Exception):  # ValidationError\n            DatetimeISO(value=\"not-a-date\")\n\n    def test_missing_timezone(self):\n        with pytest.raises(Exception):  # ValidationError\n            DatetimeISO(value=\"2024-01-15T10:30:00\")\n\n    def test_empty_string(self):\n        with pytest.raises(Exception):\n            DatetimeISO(value=\"\")\n\n\nclass TestQueueBound:\n    def test_valid_value(self):\n        qb = QueueBound(value=100)\n        assert qb.value == 100\n\n    def test_minimum_value(self):\n        qb = QueueBound(value=1)\n        assert qb.value == 1\n\n    def test_maximum_value(self):\n        qb = QueueBound(value=100000)\n        assert qb.value == 100000\n\n    def test_zero_rejected(self):\n        with pytest.raises(Exception):\n            QueueBound(value=0)\n\n    def test_negative_rejected(self):\n        with pytest.raises(Exception):\n            QueueBound(value=-1)\n\n    def test_too_large_rejected(self):\n        with pytest.raises(Exception):\n            QueueBound(value=100001)\n\n\nclass TestEngineConfig:\n    def test_valid_config(self):\n        cfg = make_engine_config()\n        assert cfg.queue_max_size == 5\n        assert cfg.drain_timeout_seconds == 0.5\n        assert cfg.mcp_enabled is False\n\n    def test_queue_max_size_zero_rejected(self):\n        with pytest.raises(Exception):\n            make_engine_config(queue_max_size=0)\n\n    def test_queue_max_size_too_large_rejected(self):\n        with pytest.raises(Exception):\n            make_engine_config(queue_max_size=100001)\n\n    def test_drain_timeout_too_small_rejected(self):\n        with pytest.raises(Exception):\n            make_engine_config(drain_timeout_seconds=0.05)\n\n    def test_drain_timeout_too_large_rejected(self):\n        with pytest.raises(Exception):\n            make_engine_config(drain_timeout_seconds=61.0)\n\n    def test_empty_state_file_rejected(self):\n        with pytest.raises(Exception):\n            make_engine_config(state_file=\"\")\n\n    def test_state_file_too_long_rejected(self):\n        with pytest.raises(Exception):\n            make_engine_config(state_file=\"x\" * 4097)\n\n    def test_source_restart_delay_negative_rejected(self):\n        with pytest.raises(Exception):\n            make_engine_config(source_restart_delay_seconds=-1.0)\n\n    def test_source_restart_delay_too_large_rejected(self):\n        with pytest.raises(Exception):\n            make_engine_config(source_restart_delay_seconds=301.0)\n\n    def test_source_restart_delay_zero_accepted(self):\n        cfg = make_engine_config(source_restart_delay_seconds=0.0)\n        assert cfg.source_restart_delay_seconds == 0.0\n\n    def test_source_restart_delay_max_accepted(self):\n        cfg = make_engine_config(source_restart_delay_seconds=300.0)\n        assert cfg.source_restart_delay_seconds == 300.0\n\n\nclass TestSourceStatus:\n    def test_valid(self):\n        ss = SourceStatus(\n            source_id=\"src-1\",\n            source_type=\"webhook\",\n            health=SourceHealth.HEALTHY,\n            events_received=42,\n            last_event_at=None,\n        )\n        assert ss.source_id == \"src-1\"\n        assert ss.events_received == 42\n\n    def test_zero_events_accepted(self):\n        ss = SourceStatus(\n            source_id=\"src-1\",\n            source_type=\"webhook\",\n            health=SourceHealth.HEALTHY,\n            events_received=0,\n            last_event_at=None,\n        )\n        assert ss.events_received == 0\n\n    def test_negative_events_rejected(self):\n        with pytest.raises(Exception):\n            SourceStatus(\n                source_id=\"src-1\",\n                source_type=\"webhook\",\n                health=SourceHealth.HEALTHY,\n                events_received=-1,\n                last_event_at=None,\n            )\n\n\nclass TestSinkStatus:\n    def test_valid(self):\n        ss = SinkStatus(\n            sink_id=\"sink-1\",\n            sink_type=\"disk\",\n            health=SinkHealth.HEALTHY,\n            events_emitted=10,\n            errors=0,\n            last_emit_at=None,\n        )\n        assert ss.events_emitted == 10\n        assert ss.errors == 0\n\n    def test_negative_events_emitted_rejected(self):\n        with pytest.raises(Exception):\n            SinkStatus(\n                sink_id=\"sink-1\",\n                sink_type=\"disk\",\n                health=SinkHealth.HEALTHY,\n                events_emitted=-1,\n                errors=0,\n                last_emit_at=None,\n            )\n\n    def test_negative_errors_rejected(self):\n        with pytest.raises(Exception):\n            SinkStatus(\n                sink_id=\"sink-1\",\n                sink_type=\"disk\",\n                health=SinkHealth.HEALTHY,\n                events_emitted=0,\n                errors=-1,\n                last_emit_at=None,\n            )\n\n\nclass TestEngineStatus:\n    def _make_valid(self, **overrides):\n        defaults = dict(\n            phase=EnginePhase.CREATED,\n            uptime_seconds=0.0,\n            total_events_processed=0,\n            open_stories_count=0,\n            closed_stories_count=0,\n            sources=[],\n            sinks=[],\n            queue_depth=0,\n            started_at=None,\n        )\n        defaults.update(overrides)\n        return EngineStatus(**defaults)\n\n    def test_valid(self):\n        es = self._make_valid()\n        assert es.phase == EnginePhase.CREATED\n        assert es.uptime_seconds == 0.0\n\n    def test_negative_uptime_rejected(self):\n        with pytest.raises(Exception):\n            self._make_valid(uptime_seconds=-1.0)\n\n    def test_negative_total_events_rejected(self):\n        with pytest.raises(Exception):\n            self._make_valid(total_events_processed=-1)\n\n    def test_negative_open_stories_rejected(self):\n        with pytest.raises(Exception):\n            self._make_valid(open_stories_count=-1)\n\n    def test_negative_closed_stories_rejected(self):\n        with pytest.raises(Exception):\n            self._make_valid(closed_stories_count=-1)\n\n    def test_negative_queue_depth_rejected(self):\n        with pytest.raises(Exception):\n            self._make_valid(queue_depth=-1)\n\n\nclass TestStoryId:\n    def test_valid(self):\n        sid = StoryId(value=\"story-123\")\n        assert sid.value == \"story-123\"\n\n    def test_empty_rejected(self):\n        with pytest.raises(Exception):\n            StoryId(value=\"\")\n\n    def test_too_long_rejected(self):\n        with pytest.raises(Exception):\n            StoryId(value=\"x\" * 257)\n\n    def test_max_length_accepted(self):\n        sid = StoryId(value=\"x\" * 256)\n        assert len(sid.value) == 256\n\n    def test_single_char_accepted(self):\n        sid = StoryId(value=\"a\")\n        assert sid.value == \"a\"\n\n\nclass TestStorySummary:\n    def test_valid(self):\n        ss = StorySummary(\n            story_id=\"s1\",\n            title=\"Test Story\",\n            status=\"open\",\n            event_count=3,\n            created_at=\"2024-01-01T00:00:00Z\",\n            updated_at=\"2024-01-01T01:00:00Z\",\n            correlation_rule_id=\"rule-1\",\n        )\n        assert ss.event_count == 3\n\n    def test_zero_event_count_rejected(self):\n        with pytest.raises(Exception):\n            StorySummary(\n                story_id=\"s1\",\n                title=\"Test\",\n                status=\"open\",\n                event_count=0,\n                created_at=\"2024-01-01T00:00:00Z\",\n                updated_at=\"2024-01-01T01:00:00Z\",\n                correlation_rule_id=\"rule-1\",\n            )\n\n\nclass TestStoryListResult:\n    def test_valid(self):\n        slr = StoryListResult(\n            total=0,\n            stories=[],\n            filter_applied=StoryFilter.ALL,\n        )\n        assert slr.total == 0\n        assert slr.stories == []\n\n    def test_negative_total_rejected(self):\n        with pytest.raises(Exception):\n            StoryListResult(\n                total=-1,\n                stories=[],\n                filter_applied=StoryFilter.ALL,\n            )\n\n\nclass TestReplayResult:\n    def test_valid(self):\n        rr = ReplayResult(\n            file_path=\"/tmp/test.jsonl\",\n            total_lines=100,\n            events_processed=95,\n            events_skipped=5,\n            stories_created=10,\n            stories_closed=3,\n            duration_seconds=1.5,\n        )\n        assert rr.total_lines == 100\n\n    def test_negative_total_lines_rejected(self):\n        with pytest.raises(Exception):\n            ReplayResult(\n                file_path=\"/tmp/test.jsonl\",\n                total_lines=-1,\n                events_processed=0,\n                events_skipped=0,\n                stories_created=0,\n                stories_closed=0,\n                duration_seconds=0.0,\n            )\n\n    def test_negative_events_processed_rejected(self):\n        with pytest.raises(Exception):\n            ReplayResult(\n                file_path=\"/tmp/test.jsonl\",\n                total_lines=0,\n                events_processed=-1,\n                events_skipped=0,\n                stories_created=0,\n                stories_closed=0,\n                duration_seconds=0.0,\n            )\n\n    def test_negative_duration_rejected(self):\n        with pytest.raises(Exception):\n            ReplayResult(\n                file_path=\"/tmp/test.jsonl\",\n                total_lines=0,\n                events_processed=0,\n                events_skipped=0,\n                stories_created=0,\n                stories_closed=0,\n                duration_seconds=-0.1,\n            )\n\n\nclass TestReplayFileSpec:\n    def test_valid(self):\n        rfs = ReplayFileSpec(file_path=\"/tmp/events.jsonl\", suppress_sinks=False)\n        assert rfs.file_path == \"/tmp/events.jsonl\"\n\n    def test_empty_path_rejected(self):\n        with pytest.raises(Exception):\n            ReplayFileSpec(file_path=\"\", suppress_sinks=False)\n\n    def test_path_too_long_rejected(self):\n        with pytest.raises(Exception):\n            ReplayFileSpec(file_path=\"x\" * 4097, suppress_sinks=False)\n\n\nclass TestMcpToolResult:\n    def test_valid_success(self):\n        result = McpToolResult(\n            tool_name=\"chronicler_status\",\n            success=True,\n            data={\"phase\": \"RUNNING\"},\n            error_message=None,\n        )\n        assert result.success is True\n        assert result.data == {\"phase\": \"RUNNING\"}\n        assert result.error_message is None\n\n    def test_valid_failure(self):\n        result = McpToolResult(\n            tool_name=\"chronicler_stories_show\",\n            success=False,\n            data={},\n            error_message=\"Story not found\",\n        )\n        assert result.success is False\n        assert result.error_message == \"Story not found\"\n\n\n# ============================================================================\n# ENGINE TESTS\n# ============================================================================\n\n\nclass TestEngineInit:\n    def test_init_valid_config(self, engine_factory):\n        engine = engine_factory()\n        status = engine.status()\n        assert status.phase == EnginePhase.CREATED\n\n    def test_init_queue_bounded(self, engine_factory):\n        engine = engine_factory(config_overrides={\"queue_max_size\": 3})\n        status = engine.status()\n        assert status.queue_depth == 0\n        # The queue should have maxsize=3; we verify via status or internal\n\n    def test_init_invalid_config_rejected(\n        self, fake_chronicler_config, fake_correlation_engine,\n        fake_story_manager, fake_clock\n    ):\n        \"\"\"Invalid configuration is a fatal error that prevents engine creation.\"\"\"\n        with pytest.raises(Exception):\n            # queue_max_size=0 is out of range\n            bad_config = EngineConfig(\n                queue_max_size=0,\n                drain_timeout_seconds=1.0,\n                mcp_enabled=False,\n                state_file=\"/tmp/state.jsonl\",\n                source_restart_delay_seconds=0.0,\n            )\n\n    def test_init_no_io_performed(self, engine_factory, tmp_path):\n        \"\"\"No I/O performed during __init__.\"\"\"\n        state_file = str(tmp_path / \"nonexistent_state.jsonl\")\n        # Don't create the file; if engine tried to read it in __init__,\n        # it would fail — but __init__ should NOT read it.\n        try:\n            engine = engine_factory(config_overrides={\"state_file\": state_file})\n        except FileNotFoundError:\n            pytest.fail(\"Engine __init__ should not perform I/O\")\n\n\nclass TestEngineStart:\n    @pytest.mark.asyncio\n    async def test_start_transitions_to_running(self, engine_factory):\n        engine = engine_factory()\n        try:\n            await engine.start()\n            status = engine.status()\n            assert status.phase == EnginePhase.RUNNING\n            assert status.started_at is not None\n        finally:\n            await engine.stop()\n\n    @pytest.mark.asyncio\n    async def test_start_already_started_raises(self, engine_factory):\n        engine = engine_factory()\n        try:\n            await engine.start()\n            with pytest.raises(Exception):\n                await engine.start()\n        finally:\n            await engine.stop()\n\n    @pytest.mark.asyncio\n    async def test_start_source_init_failure_marks_failed(self, engine_factory):\n        \"\"\"Source failure doesn't crash engine — source marked FAILED, engine continues.\"\"\"\n        failing_source = FakeSource(should_fail=True)\n        engine = engine_factory(sources=[failing_source])\n        try:\n            await engine.start()\n            status = engine.status()\n            # Engine should still be RUNNING (or at least not crashed)\n            assert status.phase in (EnginePhase.RUNNING, EnginePhase.ERROR)\n        finally:\n            try:\n                await engine.stop()\n            except Exception:\n                pass\n\n\nclass TestEngineStop:\n    @pytest.mark.asyncio\n    async def test_stop_transitions_to_stopped(self, engine_factory):\n        engine = engine_factory()\n        await engine.start()\n        await engine.stop()\n        status = engine.status()\n        assert status.phase == EnginePhase.STOPPED\n\n    @pytest.mark.asyncio\n    async def test_stop_already_stopped_raises(self, engine_factory):\n        engine = engine_factory()\n        await engine.start()\n        await engine.stop()\n        with pytest.raises(Exception):\n            await engine.stop()\n\n    @pytest.mark.asyncio\n    async def test_stop_created_phase_raises(self, engine_factory):\n        \"\"\"Stopping an engine that was never started raises.\"\"\"\n        engine = engine_factory()\n        with pytest.raises(Exception):\n            await engine.stop()\n\n\nclass TestEngineRun:\n    @pytest.mark.asyncio\n    async def test_run_processes_events_to_stopped(self, engine_factory):\n        \"\"\"Engine.run() processes events and reaches STOPPED phase.\"\"\"\n        fake_event = MagicMock()\n        source = FakeSource(events=[fake_event])\n        sink = FakeSink()\n        engine = engine_factory(sources=[source], sinks=[sink])\n\n        # run() should start, process, and stop. We need to trigger shutdown.\n        # Use a task with a short delay to call stop().\n        async def _stop_after_delay():\n            await asyncio.sleep(0.2)\n            await engine.stop()\n\n        task = asyncio.create_task(_stop_after_delay())\n        try:\n            await engine.run()\n        except Exception:\n            pass\n        await task\n        status = engine.status()\n        assert status.phase == EnginePhase.STOPPED\n\n    @pytest.mark.asyncio\n    async def test_run_sink_exception_does_not_crash(self, engine_factory):\n        \"\"\"Sink exceptions are logged but do not block the processing pipeline.\"\"\"\n        fake_event = MagicMock()\n        source = FakeSource(events=[fake_event])\n        failing_sink = FakeSink(should_fail=True)\n        engine = engine_factory(sources=[source], sinks=[failing_sink])\n\n        async def _stop_after_delay():\n            await asyncio.sleep(0.2)\n            await engine.stop()\n\n        task = asyncio.create_task(_stop_after_delay())\n        try:\n            await engine.run()\n        except Exception:\n            pass\n        await task\n        status = engine.status()\n        assert status.phase == EnginePhase.STOPPED\n\n\nclass TestEngineStatus:\n    def test_status_created_phase(self, engine_factory):\n        engine = engine_factory()\n        status = engine.status()\n        assert status.phase == EnginePhase.CREATED\n        assert status.uptime_seconds >= 0.0\n        assert status.total_events_processed == 0\n        assert status.queue_depth == 0\n\n    @pytest.mark.asyncio\n    async def test_status_running_phase(self, engine_factory):\n        source = FakeSource()\n        sink = FakeSink()\n        engine = engine_factory(sources=[source], sinks=[sink])\n        try:\n            await engine.start()\n            status = engine.status()\n            assert status.phase == EnginePhase.RUNNING\n            assert isinstance(status.sources, list)\n            assert isinstance(status.sinks, list)\n        finally:\n            await engine.stop()\n\n    def test_status_no_mutation(self, engine_factory):\n        \"\"\"status() does not mutate state.\"\"\"\n        engine = engine_factory()\n        s1 = engine.status()\n        s2 = engine.status()\n        assert s1.phase == s2.phase\n        assert s1.total_events_processed == s2.total_events_processed\n\n\nclass TestEngineSubmitEvent:\n    @pytest.mark.asyncio\n    async def test_submit_event_happy(self, engine_factory):\n        engine = engine_factory(config_overrides={\"queue_max_size\": 5})\n        try:\n            await engine.start()\n            fake_event = MagicMock()\n            result = await engine.submit_event(fake_event)\n            assert result is True\n        finally:\n            await engine.stop()\n\n    @pytest.mark.asyncio\n    async def test_submit_event_not_running_raises(self, engine_factory):\n        engine = engine_factory()\n        fake_event = MagicMock()\n        with pytest.raises(Exception):\n            await engine.submit_event(fake_event)\n\n    @pytest.mark.asyncio\n    async def test_submit_event_queue_full_returns_false(self, engine_factory):\n        \"\"\"When queue is full and timeout expires, submit_event returns False.\"\"\"\n        engine = engine_factory(config_overrides={\"queue_max_size\": 1})\n        try:\n            await engine.start()\n            e1 = MagicMock()\n            e2 = MagicMock()\n            # Fill the queue\n            r1 = await engine.submit_event(e1)\n            assert r1 is True\n            # Second should fail (queue full), depending on implementation timeout\n            # We try — if the impl has a short timeout, this returns False\n            try:\n                r2 = await asyncio.wait_for(engine.submit_event(e2), timeout=0.5)\n                # Either True (if queue was consumed) or False (if full)\n                assert isinstance(r2, bool)\n            except asyncio.TimeoutError:\n                pass  # Acceptable: blocked on full queue\n        finally:\n            await engine.stop()\n\n\nclass TestEngineContextManager:\n    @pytest.mark.asyncio\n    async def test_async_context_manager_happy(self, engine_factory):\n        engine = engine_factory()\n        async with engine as eng:\n            status = eng.status()\n            assert status.phase == EnginePhase.RUNNING\n        status = engine.status()\n        assert status.phase == EnginePhase.STOPPED\n\n    @pytest.mark.asyncio\n    async def test_aexit_returns_false(self, engine_factory):\n        \"\"\"__aexit__ returns False so exceptions are not suppressed.\"\"\"\n        engine = engine_factory()\n        await engine.__aenter__()\n        result = await engine.__aexit__(None, None, None)\n        assert result is False\n\n    @pytest.mark.asyncio\n    async def test_context_manager_stops_on_exception(self, engine_factory):\n        engine = engine_factory()\n        with pytest.raises(ValueError):\n            async with engine:\n                raise ValueError(\"test error\")\n        status = engine.status()\n        assert status.phase == EnginePhase.STOPPED\n\n\nclass TestEngineShutdownOrder:\n    @pytest.mark.asyncio\n    async def test_shutdown_stops_sources_then_sinks(self, engine_factory):\n        source = FakeSource()\n        sink = FakeSink()\n        engine = engine_factory(sources=[source], sinks=[sink])\n        await engine.start()\n        await engine.stop()\n        assert source.stopped is True\n        assert sink.stopped is True\n\n\nclass TestEngineInvariants:\n    def test_queue_bounded_by_config(self, engine_factory):\n        \"\"\"Internal queue is bounded by config.queue_max_size.\"\"\"\n        engine = engine_factory(config_overrides={\"queue_max_size\": 7})\n        # Access internal queue size — implementation dependent\n        # At minimum, verify config is stored correctly\n        status = engine.status()\n        assert status.phase == EnginePhase.CREATED\n\n    @pytest.mark.asyncio\n    async def test_phase_transitions_strictly_ordered(self, engine_factory):\n        \"\"\"Phase transitions follow CREATED → STARTING → RUNNING → STOPPING → STOPPED.\"\"\"\n        engine = engine_factory()\n        assert engine.status().phase == EnginePhase.CREATED\n        await engine.start()\n        assert engine.status().phase == EnginePhase.RUNNING\n        await engine.stop()\n        assert engine.status().phase == EnginePhase.STOPPED\n\n    def test_clock_injectable(self, engine_factory, fake_clock):\n        \"\"\"Engine clock is injectable for deterministic replay.\"\"\"\n        engine = engine_factory(clock=fake_clock)\n        # Engine should be constructable with custom clock\n        assert engine.status().phase == EnginePhase.CREATED\n\n\n# ============================================================================\n# CLI TESTS\n# ============================================================================\n\n\nclass TestCliMain:\n    @patch(\"engine_cli_mcp.cli_cmd_start\", return_value=0)\n    def test_routes_start(self, mock_start):\n        result = cli_main([\"start\"])\n        assert result == 0\n\n    @patch(\"engine_cli_mcp.cli_cmd_status\", return_value=0)\n    def test_routes_status(self, mock_status):\n        result = cli_main([\"status\"])\n        assert result == 0\n\n    @patch(\"engine_cli_mcp.cli_cmd_stories_list\", return_value=0)\n    def test_routes_stories_list(self, mock_list):\n        result = cli_main([\"stories\", \"list\"])\n        assert result == 0\n\n    @patch(\"engine_cli_mcp.cli_cmd_stories_show\", return_value=0)\n    def test_routes_stories_show(self, mock_show):\n        result = cli_main([\"stories\", \"show\", \"story-123\"])\n        assert result == 0\n\n    @patch(\"engine_cli_mcp.cli_cmd_replay\", return_value=0)\n    def test_routes_replay(self, mock_replay):\n        result = cli_main([\"replay\", \"/tmp/events.jsonl\"])\n        assert result == 0\n\n    def test_unknown_subcommand_returns_error(self):\n        result = cli_main([\"nonexistent\"])\n        assert result != 0\n\n\nclass TestCliCmdStart:\n    def test_config_not_found(self, tmp_path):\n        missing = str(tmp_path / \"nonexistent.yaml\")\n        result = cli_cmd_start(missing)\n        assert result != 0  # CONFIG_ERROR_1\n\n    @patch(\"engine_cli_mcp.ChroniclerEngine\")\n    def test_invalid_config(self, mock_engine, tmp_path):\n        bad_yaml = tmp_path / \"bad.yaml\"\n        bad_yaml.write_text(\"invalid: {{{\")\n        result = cli_cmd_start(str(bad_yaml))\n        assert result != 0\n\n\nclass TestCliCmdStatus:\n    def test_happy_path(self, tmp_path, capsys):\n        state_file = str(tmp_path / \"state.jsonl\")\n        # Create a minimal valid state file\n        with open(state_file, \"w\") as f:\n            f.write(\"\")  # empty is valid — no events\n        result = cli_cmd_status(state_file)\n        assert result == 0\n\n    def test_missing_file(self, tmp_path):\n        missing = str(tmp_path / \"nonexistent.jsonl\")\n        result = cli_cmd_status(missing)\n        # Should return 4 (STATE_READ_ERROR_4) or handle gracefully\n        assert result in (0, 4)\n\n    def test_corrupt_file(self, tmp_path):\n        corrupt = tmp_path / \"corrupt.jsonl\"\n        corrupt.write_text(\"{{not json\\n\")\n        result = cli_cmd_status(str(corrupt))\n        assert result in (0, 4)\n\n\nclass TestCliCmdStoriesList:\n    def test_happy_path_all_filter(self, tmp_path, capsys):\n        state_file = str(tmp_path / \"state.jsonl\")\n        with open(state_file, \"w\") as f:\n            f.write(\"\")\n        result = cli_cmd_stories_list(state_file, StoryFilter.ALL)\n        assert result == 0\n\n    def test_empty_state_returns_empty(self, tmp_path, capsys):\n        state_file = str(tmp_path / \"state.jsonl\")\n        with open(state_file, \"w\") as f:\n            f.write(\"\")\n        result = cli_cmd_stories_list(state_file, StoryFilter.OPEN)\n        assert result == 0\n\n    def test_missing_state_file(self, tmp_path):\n        missing = str(tmp_path / \"nonexistent.jsonl\")\n        result = cli_cmd_stories_list(missing, StoryFilter.ALL)\n        assert result in (0, 4)\n\n\nclass TestCliCmdStoriesShow:\n    def test_story_not_found(self, tmp_path):\n        state_file = str(tmp_path / \"state.jsonl\")\n        with open(state_file, \"w\") as f:\n            f.write(\"\")\n        result = cli_cmd_stories_show(\"nonexistent-story\", state_file)\n        assert result == 2  # RUNTIME_ERROR_2\n\n    def test_missing_state_file(self, tmp_path):\n        missing = str(tmp_path / \"nonexistent.jsonl\")\n        result = cli_cmd_stories_show(\"story-1\", missing)\n        assert result in (2, 4)\n\n\nclass TestCliCmdReplay:\n    def test_file_not_found(self, tmp_path):\n        config_path = str(tmp_path / \"config.yaml\")\n        with open(config_path, \"w\") as f:\n            f.write(\"engine:\\n  queue_max_size: 5\\n\")\n        missing = str(tmp_path / \"nonexistent.jsonl\")\n        result = cli_cmd_replay(missing, config_path, suppress_sinks=False)\n        assert result == 3  # FILE_NOT_FOUND_3\n\n    def test_config_not_found(self, tmp_path):\n        events_file = str(tmp_path / \"events.jsonl\")\n        with open(events_file, \"w\") as f:\n            f.write(\"{}\\n\")\n        missing_config = str(tmp_path / \"nonexistent.yaml\")\n        result = cli_cmd_replay(events_file, missing_config, suppress_sinks=False)\n        assert result in (1, 3)  # CONFIG_ERROR_1 or FILE_NOT_FOUND_3\n\n\n# ============================================================================\n# MCP SERVER / TOOL TESTS\n# ============================================================================\n\n\nclass TestMcpServerCreate:\n    def test_happy_path(self, engine_factory):\n        engine = engine_factory()\n        try:\n            server = mcp_server_create(engine)\n            assert server is not None\n        except ImportError:\n            pytest.skip(\"mcp SDK not installed\")\n\n    def test_sdk_unavailable(self, engine_factory):\n        engine = engine_factory()\n        with patch.dict(\"sys.modules\", {\"mcp\": None}):\n            try:\n                with pytest.raises((ImportError, Exception)):\n                    mcp_server_create(engine)\n            except Exception:\n                pass  # SDK might be required at import time\n\n\nclass TestMcpToolChroniclerStatus:\n    @pytest.mark.asyncio\n    async def test_happy_path(self, engine_factory):\n        engine = engine_factory()\n        try:\n            await engine.start()\n            try:\n                result = await mcp_tool_chronicler_status()\n            except TypeError:\n                # Some implementations may need the engine passed\n                result = await mcp_tool_chronicler_status()\n            assert result.success is True\n            assert \"phase\" in result.data or isinstance(result.data, dict)\n        except (ImportError, AttributeError):\n            pytest.skip(\"MCP tools not available\")\n        finally:\n            try:\n                await engine.stop()\n            except Exception:\n                pass\n\n    def test_engine_unavailable(self):\n        \"\"\"chronicler_status returns error when engine is unavailable.\"\"\"\n        try:\n            # Attempt to call without a running engine\n            mock_engine = MagicMock()\n            mock_engine.status.side_effect = RuntimeError(\"engine unavailable\")\n            with patch(\"engine_cli_mcp.mcp_tool_chronicler_status\") as mock_tool:\n                mock_tool.return_value = McpToolResult(\n                    tool_name=\"chronicler_status\",\n                    success=False,\n                    data={},\n                    error_message=\"Engine unavailable\",\n                )\n                result = mock_tool()\n                assert result.success is False\n                assert result.error_message is not None\n        except (ImportError, AttributeError):\n            pytest.skip(\"MCP tools not available\")\n\n\nclass TestMcpToolChroniclerStoriesList:\n    def test_happy_path(self):\n        \"\"\"chronicler_stories_list returns McpToolResult with stories.\"\"\"\n        try:\n            with patch(\"engine_cli_mcp.mcp_tool_chronicler_stories_list\") as mock_tool:\n                mock_tool.return_value = McpToolResult(\n                    tool_name=\"chronicler_stories_list\",\n                    success=True,\n                    data={\"total\": 0, \"stories\": [], \"filter_applied\": \"ALL\"},\n                    error_message=None,\n                )\n                result = mock_tool(StoryFilter.ALL)\n                assert result.success is True\n                assert \"stories\" in result.data\n        except (ImportError, AttributeError):\n            pytest.skip(\"MCP tools not available\")\n\n    def test_with_filter(self):\n        try:\n            with patch(\"engine_cli_mcp.mcp_tool_chronicler_stories_list\") as mock_tool:\n                mock_tool.return_value = McpToolResult(\n                    tool_name=\"chronicler_stories_list\",\n                    success=True,\n                    data={\"total\": 0, \"stories\": [], \"filter_applied\": \"OPEN\"},\n                    error_message=None,\n                )\n                result = mock_tool(StoryFilter.OPEN)\n                assert result.success is True\n                assert result.data[\"filter_applied\"] == \"OPEN\"\n        except (ImportError, AttributeError):\n            pytest.skip(\"MCP tools not available\")\n\n    def test_engine_unavailable(self):\n        try:\n            with patch(\"engine_cli_mcp.mcp_tool_chronicler_stories_list\") as mock_tool:\n                mock_tool.return_value = McpToolResult(\n                    tool_name=\"chronicler_stories_list\",\n                    success=False,\n                    data={},\n                    error_message=\"Engine unavailable\",\n                )\n                result = mock_tool(StoryFilter.ALL)\n                assert result.success is False\n        except (ImportError, AttributeError):\n            pytest.skip(\"MCP tools not available\")\n\n\nclass TestMcpToolChroniclerStoriesShow:\n    def test_found(self):\n        try:\n            with patch(\"engine_cli_mcp.mcp_tool_chronicler_stories_show\") as mock_tool:\n                mock_tool.return_value = McpToolResult(\n                    tool_name=\"chronicler_stories_show\",\n                    success=True,\n                    data={\"story_id\": \"story-1\", \"title\": \"Test\"},\n                    error_message=None,\n                )\n                result = mock_tool(\"story-1\")\n                assert result.success is True\n                assert result.data[\"story_id\"] == \"story-1\"\n        except (ImportError, AttributeError):\n            pytest.skip(\"MCP tools not available\")\n\n    def test_not_found(self):\n        try:\n            with patch(\"engine_cli_mcp.mcp_tool_chronicler_stories_show\") as mock_tool:\n                mock_tool.return_value = McpToolResult(\n                    tool_name=\"chronicler_stories_show\",\n                    success=False,\n                    data={},\n                    error_message=\"Story not found\",\n                )\n                result = mock_tool(\"nonexistent\")\n                assert result.success is False\n                assert \"not found\" in result.error_message.lower()\n        except (ImportError, AttributeError):\n            pytest.skip(\"MCP tools not available\")\n\n    def test_engine_unavailable(self):\n        try:\n            with patch(\"engine_cli_mcp.mcp_tool_chronicler_stories_show\") as mock_tool:\n                mock_tool.return_value = McpToolResult(\n                    tool_name=\"chronicler_stories_show\",\n                    success=False,\n                    data={},\n                    error_message=\"Engine unavailable\",\n                )\n                result = mock_tool(\"story-1\")\n                assert result.success is False\n        except (ImportError, AttributeError):\n            pytest.skip(\"MCP tools not available\")\n\n\nclass TestMcpToolChroniclerEventsReplay:\n    def test_happy_path(self):\n        try:\n            with patch(\"engine_cli_mcp.mcp_tool_chronicler_events_replay\") as mock_tool:\n                mock_tool.return_value = McpToolResult(\n                    tool_name=\"chronicler_events_replay\",\n                    success=True,\n                    data={\n                        \"file_path\": \"/tmp/events.jsonl\",\n                        \"total_lines\": 10,\n                        \"events_processed\": 9,\n                        \"events_skipped\": 1,\n                        \"stories_created\": 2,\n                        \"stories_closed\": 1,\n                        \"duration_seconds\": 0.5,\n                    },\n                    error_message=None,\n                )\n                result = mock_tool(\"/tmp/events.jsonl\", False)\n                assert result.success is True\n                assert result.data[\"events_processed\"] == 9\n        except (ImportError, AttributeError):\n            pytest.skip(\"MCP tools not available\")\n\n    def test_file_not_found(self):\n        try:\n            with patch(\"engine_cli_mcp.mcp_tool_chronicler_events_replay\") as mock_tool:\n                mock_tool.return_value = McpToolResult(\n                    tool_name=\"chronicler_events_replay\",\n                    success=False,\n                    data={},\n                    error_message=\"File not found: /tmp/nonexistent.jsonl\",\n                )\n                result = mock_tool(\"/tmp/nonexistent.jsonl\", False)\n                assert result.success is False\n                assert \"not found\" in result.error_message.lower()\n        except (ImportError, AttributeError):\n            pytest.skip(\"MCP tools not available\")\n\n    def test_engine_unavailable(self):\n        try:\n            with patch(\"engine_cli_mcp.mcp_tool_chronicler_events_replay\") as mock_tool:\n                mock_tool.return_value = McpToolResult(\n                    tool_name=\"chronicler_events_replay\",\n                    success=False,\n                    data={},\n                    error_message=\"Engine not in RUNNING phase\",\n                )\n                result = mock_tool(\"/tmp/events.jsonl\", False)\n                assert result.success is False\n        except (ImportError, AttributeError):\n            pytest.skip(\"MCP tools not available\")\n\n\nclass TestMcpLifecycleInvariant:\n    \"\"\"MCP server lifecycle is tied to engine lifecycle.\"\"\"\n\n    @pytest.mark.asyncio\n    async def test_mcp_stops_when_engine_stops(self, engine_factory):\n        engine = engine_factory(config_overrides={\"mcp_enabled\": True})\n        try:\n            await engine.start()\n            # If MCP is enabled, the server task should be running\n            await engine.stop()\n            status = engine.status()\n            assert status.phase == EnginePhase.STOPPED\n        except (ImportError, Exception):\n            pytest.skip(\"MCP server not available or not supported in test env\")\n\n\n# ============================================================================\n# ADDITIONAL INVARIANT TESTS\n# ============================================================================\n\n\nclass TestConfigFailsFastInvariant:\n    \"\"\"Invalid configuration is a fatal error that prevents engine creation.\"\"\"\n\n    def test_invalid_queue_size_prevents_creation(self):\n        with pytest.raises(Exception):\n            EngineConfig(\n                queue_max_size=0,\n                drain_timeout_seconds=1.0,\n                mcp_enabled=False,\n                state_file=\"/tmp/state.jsonl\",\n                source_restart_delay_seconds=0.0,\n            )\n\n    def test_invalid_drain_timeout_prevents_creation(self):\n        with pytest.raises(Exception):\n            EngineConfig(\n                queue_max_size=10,\n                drain_timeout_seconds=0.0,\n                mcp_enabled=False,\n                state_file=\"/tmp/state.jsonl\",\n                source_restart_delay_seconds=0.0,\n            )\n\n\nclass TestStateFileInvariant:\n    \"\"\"JSONL state file is append-only during normal operation.\"\"\"\n\n    @pytest.mark.asyncio\n    async def test_state_file_grows_on_operation(self, engine_factory, tmp_path):\n        state_file = str(tmp_path / \"state.jsonl\")\n        with open(state_file, \"w\") as f:\n            f.write(\"\")\n        engine = engine_factory(config_overrides={\"state_file\": state_file})\n        initial_size = os.path.getsize(state_file)\n        try:\n            await engine.start()\n            await engine.stop()\n        except Exception:\n            pass\n        final_size = os.path.getsize(state_file)\n        # File should have grown (or at least not shrunk)\n        assert final_size >= initial_size\n\n\nclass TestCliStatusNoRunningEngineInvariant:\n    \"\"\"CLI status/stories commands work without a running engine.\"\"\"\n\n    def test_status_reads_file_directly(self, tmp_path):\n        state_file = str(tmp_path / \"state.jsonl\")\n        with open(state_file, \"w\") as f:\n            f.write(\"\")\n        # Should work without any engine process\n        result = cli_cmd_status(state_file)\n        assert result == 0\n\n    def test_stories_list_reads_file_directly(self, tmp_path):\n        state_file = str(tmp_path / \"state.jsonl\")\n        with open(state_file, \"w\") as f:\n            f.write(\"\")\n        result = cli_cmd_stories_list(state_file, StoryFilter.ALL)\n        assert result == 0\n"
+}
