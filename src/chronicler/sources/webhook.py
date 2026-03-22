@@ -144,13 +144,60 @@ class WebhookSource:
         if self._state == SourceState.RUNNING:
             raise RuntimeError("WebhookSource is already started")
         self._state = SourceState.RUNNING
-        logger.info("WebhookSource started")
+
+        if self._config:
+            try:
+                from aiohttp import web
+
+                app = web.Application(
+                    client_max_size=self._config.client_max_size_bytes,
+                )
+                app.router.add_post("/events", self._aiohttp_handler)
+
+                self._runner = web.AppRunner(app)
+                await self._runner.setup()
+                self._site = web.TCPSite(
+                    self._runner,
+                    self._config.bind.host,
+                    self._config.bind.port,
+                )
+                await self._site.start()
+                logger.info(
+                    "WebhookSource listening on %s:%d",
+                    self._config.bind.host, self._config.bind.port,
+                )
+            except ImportError:
+                logger.warning("aiohttp not installed — WebhookSource running without HTTP server")
+            except Exception as e:
+                self._state = SourceState.STOPPED
+                raise RuntimeError(f"Failed to start WebhookSource HTTP server: {e}") from e
+        else:
+            logger.info("WebhookSource started (no config — handler-only mode)")
 
     async def stop(self) -> None:
         if self._state == SourceState.STOPPED:
             return  # idempotent
         self._state = SourceState.STOPPED
+        if self._site:
+            await self._site.stop()
+            self._site = None
+        if self._runner:
+            await self._runner.cleanup()
+            self._runner = None
         logger.info("WebhookSource stopped")
+
+    async def _aiohttp_handler(self, request) -> "web.Response":
+        """aiohttp route handler that delegates to _handle_post."""
+        from aiohttp import web
+
+        body = await request.read()
+        content_type = request.content_type or ""
+        result = await self._handle_post(body, content_type)
+        return web.Response(
+            status=result.status,
+            body=result.body,
+            content_type="application/json",
+        )
 
     async def _handle_post(self, body: bytes, content_type: str) -> HttpResponse:
         """Handle an incoming HTTP POST request."""

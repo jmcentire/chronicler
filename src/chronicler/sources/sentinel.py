@@ -46,6 +46,8 @@ class SentinelSource:
         self._config = config
         self._subscribers: list = []
         self._state = SourceState.CREATED
+        self._runner = None
+        self._site = None
 
     def subscribe(self, callback) -> None:
         self._subscribers.append(callback)
@@ -56,13 +58,60 @@ class SentinelSource:
         if self._state == SourceState.RUNNING:
             raise RuntimeError("SentinelSource is already started")
         self._state = SourceState.RUNNING
-        logger.info("SentinelSource started")
+
+        if self._config:
+            try:
+                from aiohttp import web
+
+                app = web.Application(
+                    client_max_size=self._config.client_max_size_bytes,
+                )
+                app.router.add_post("/incidents", self._aiohttp_handler)
+
+                self._runner = web.AppRunner(app)
+                await self._runner.setup()
+                self._site = web.TCPSite(
+                    self._runner,
+                    self._config.bind.host,
+                    self._config.bind.port,
+                )
+                await self._site.start()
+                logger.info(
+                    "SentinelSource listening on %s:%d/incidents",
+                    self._config.bind.host, self._config.bind.port,
+                )
+            except ImportError:
+                logger.warning("aiohttp not installed — SentinelSource running without HTTP server")
+            except Exception as e:
+                self._state = SourceState.STOPPED
+                raise RuntimeError(f"Failed to start SentinelSource HTTP server: {e}") from e
+        else:
+            logger.info("SentinelSource started (no config — handler-only mode)")
 
     async def stop(self) -> None:
         if self._state == SourceState.STOPPED:
             return  # idempotent
         self._state = SourceState.STOPPED
+        if self._site:
+            await self._site.stop()
+            self._site = None
+        if self._runner:
+            await self._runner.cleanup()
+            self._runner = None
         logger.info("SentinelSource stopped")
+
+    async def _aiohttp_handler(self, request) -> "web.Response":
+        """aiohttp route handler that delegates to _handle_post."""
+        from aiohttp import web
+
+        body = await request.read()
+        content_type = request.content_type or ""
+        result = await self._handle_post(body, content_type)
+        return web.Response(
+            status=result.status,
+            body=result.body,
+            content_type="application/json",
+        )
 
     async def _handle_post(self, body: bytes, content_type: str) -> HttpResponse:
         """Handle an incoming Sentinel incident webhook."""

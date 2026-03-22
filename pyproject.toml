@@ -1,6 +1,6 @@
 [project]
 name = "chronicler"
-version = "0.2.0"
+version = "0.3.0"
 description = "Event collection and story assembly for the FOSS governance stack"
 requires-python = ">=3.12"
 dependencies = ["pydantic>=2.0", "pyyaml>=6.0", "aiohttp>=3.9", "aiofiles>=23.0"]

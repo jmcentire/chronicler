@@ -1083,20 +1083,20 @@ class TestMcpToolChroniclerStatus:
             except Exception:
                 pass
 
-    def test_engine_unavailable(self):
+    async def test_engine_unavailable(self):
         """chronicler_status returns error when engine is unavailable."""
         try:
             # Attempt to call without a running engine
             mock_engine = MagicMock()
             mock_engine.status.side_effect = RuntimeError("engine unavailable")
-            with patch("chronicler.engine_cli_mcp.mcp_tool_chronicler_status") as mock_tool:
+            with patch("chronicler.engine_cli_mcp.mcp_tool_chronicler_status", new_callable=AsyncMock) as mock_tool:
                 mock_tool.return_value = McpToolResult(
                     tool_name="chronicler_status",
                     success=False,
                     data={},
                     error_message="Engine unavailable",
                 )
-                result = mock_tool()
+                result = await mock_tool()
                 assert result.success is False
                 assert result.error_message is not None
         except (ImportError, AttributeError):

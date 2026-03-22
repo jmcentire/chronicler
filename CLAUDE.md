@@ -46,9 +46,8 @@ Sources → Correlation Engine → Sinks
 
 ## Known Issues
 
-- 1 skipped test: `TestMcpToolChroniclerStatus::test_engine_unavailable` — Pact test-gen bug (contradictory async/sync expectations for same function)
 - MCP tool functions are stubs returning static data
-- Source transports (webhook HTTP server, OTLP gRPC server) are basic implementations
+- Sink transports (Stigmergy, Apprentice, Kindex) are placeholder implementations
 
 ## Release
 
