@@ -14,45 +14,11 @@ import pytest
 # ---------------------------------------------------------------------------
 # Imports from the component under test
 # ---------------------------------------------------------------------------
-try:
-    from chronicler.sources.base import emit
-except ImportError:
-    try:
-        from sources.base import emit
-    except ImportError:
-        emit = None
-
-try:
-    from chronicler.sources.webhook import WebhookSource
-except ImportError:
-    try:
-        from sources.webhook import WebhookSource
-    except ImportError:
-        WebhookSource = None
-
-try:
-    from chronicler.sources.otlp import OtlpSource
-except ImportError:
-    try:
-        from sources.otlp import OtlpSource
-    except ImportError:
-        OtlpSource = None
-
-try:
-    from chronicler.sources.file import FileSource
-except ImportError:
-    try:
-        from sources.file import FileSource
-    except ImportError:
-        FileSource = None
-
-try:
-    from chronicler.sources.sentinel import SentinelSource
-except ImportError:
-    try:
-        from sources.sentinel import SentinelSource
-    except ImportError:
-        SentinelSource = None
+from chronicler.sources.base import emit
+from chronicler.sources.webhook import WebhookSource
+from chronicler.sources.otlp import OtlpSource
+from chronicler.sources.file import FileSource
+from chronicler.sources.sentinel import SentinelSource
 
 # Types / schemas — import from actual source modules
 try:

@@ -14,7 +14,7 @@ from unittest.mock import patch, MagicMock
 import pytest
 
 # Import everything from the schemas module
-from schemas import (
+from chronicler.schemas import (
     EventKind,
     EntityKind,
     EntityId,

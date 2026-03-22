@@ -36,7 +36,7 @@ import textwrap
 
 import pytest
 
-from config import (
+from chronicler.config import (
     load_config,
     validate_config_dict,
     FilePath,

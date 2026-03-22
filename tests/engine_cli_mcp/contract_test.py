@@ -14,7 +14,7 @@ from unittest.mock import (
 # ---------------------------------------------------------------------------
 # Imports from the component under test
 # ---------------------------------------------------------------------------
-from engine_cli_mcp import (
+from chronicler.engine_cli_mcp import (
     # Enums
     EnginePhase,
     SourceHealth,
@@ -919,27 +919,27 @@ class TestEngineInvariants:
 
 
 class TestCliMain:
-    @patch("engine_cli_mcp.cli_cmd_start", return_value=0)
+    @patch("chronicler.engine_cli_mcp.cli_cmd_start", return_value=0)
     def test_routes_start(self, mock_start):
         result = cli_main(["start"])
         assert result == 0
 
-    @patch("engine_cli_mcp.cli_cmd_status", return_value=0)
+    @patch("chronicler.engine_cli_mcp.cli_cmd_status", return_value=0)
     def test_routes_status(self, mock_status):
         result = cli_main(["status"])
         assert result == 0
 
-    @patch("engine_cli_mcp.cli_cmd_stories_list", return_value=0)
+    @patch("chronicler.engine_cli_mcp.cli_cmd_stories_list", return_value=0)
     def test_routes_stories_list(self, mock_list):
         result = cli_main(["stories", "list"])
         assert result == 0
 
-    @patch("engine_cli_mcp.cli_cmd_stories_show", return_value=0)
+    @patch("chronicler.engine_cli_mcp.cli_cmd_stories_show", return_value=0)
     def test_routes_stories_show(self, mock_show):
         result = cli_main(["stories", "show", "story-123"])
         assert result == 0
 
-    @patch("engine_cli_mcp.cli_cmd_replay", return_value=0)
+    @patch("chronicler.engine_cli_mcp.cli_cmd_replay", return_value=0)
     def test_routes_replay(self, mock_replay):
         result = cli_main(["replay", "/tmp/events.jsonl"])
         assert result == 0
@@ -955,7 +955,7 @@ class TestCliCmdStart:
         result = cli_cmd_start(missing)
         assert result != 0  # CONFIG_ERROR_1
 
-    @patch("engine_cli_mcp.ChroniclerEngine")
+    @patch("chronicler.engine_cli_mcp.ChroniclerEngine")
     def test_invalid_config(self, mock_engine, tmp_path):
         bad_yaml = tmp_path / "bad.yaml"
         bad_yaml.write_text("invalid: {{{")
@@ -1089,7 +1089,7 @@ class TestMcpToolChroniclerStatus:
             # Attempt to call without a running engine
             mock_engine = MagicMock()
             mock_engine.status.side_effect = RuntimeError("engine unavailable")
-            with patch("engine_cli_mcp.mcp_tool_chronicler_status") as mock_tool:
+            with patch("chronicler.engine_cli_mcp.mcp_tool_chronicler_status") as mock_tool:
                 mock_tool.return_value = McpToolResult(
                     tool_name="chronicler_status",
                     success=False,
@@ -1107,7 +1107,7 @@ class TestMcpToolChroniclerStoriesList:
     def test_happy_path(self):
         """chronicler_stories_list returns McpToolResult with stories."""
         try:
-            with patch("engine_cli_mcp.mcp_tool_chronicler_stories_list") as mock_tool:
+            with patch("chronicler.engine_cli_mcp.mcp_tool_chronicler_stories_list") as mock_tool:
                 mock_tool.return_value = McpToolResult(
                     tool_name="chronicler_stories_list",
                     success=True,
@@ -1122,7 +1122,7 @@ class TestMcpToolChroniclerStoriesList:
 
     def test_with_filter(self):
         try:
-            with patch("engine_cli_mcp.mcp_tool_chronicler_stories_list") as mock_tool:
+            with patch("chronicler.engine_cli_mcp.mcp_tool_chronicler_stories_list") as mock_tool:
                 mock_tool.return_value = McpToolResult(
                     tool_name="chronicler_stories_list",
                     success=True,
@@ -1137,7 +1137,7 @@ class TestMcpToolChroniclerStoriesList:
 
     def test_engine_unavailable(self):
         try:
-            with patch("engine_cli_mcp.mcp_tool_chronicler_stories_list") as mock_tool:
+            with patch("chronicler.engine_cli_mcp.mcp_tool_chronicler_stories_list") as mock_tool:
                 mock_tool.return_value = McpToolResult(
                     tool_name="chronicler_stories_list",
                     success=False,
@@ -1153,7 +1153,7 @@ class TestMcpToolChroniclerStoriesList:
 class TestMcpToolChroniclerStoriesShow:
     def test_found(self):
         try:
-            with patch("engine_cli_mcp.mcp_tool_chronicler_stories_show") as mock_tool:
+            with patch("chronicler.engine_cli_mcp.mcp_tool_chronicler_stories_show") as mock_tool:
                 mock_tool.return_value = McpToolResult(
                     tool_name="chronicler_stories_show",
                     success=True,
@@ -1168,7 +1168,7 @@ class TestMcpToolChroniclerStoriesShow:
 
     def test_not_found(self):
         try:
-            with patch("engine_cli_mcp.mcp_tool_chronicler_stories_show") as mock_tool:
+            with patch("chronicler.engine_cli_mcp.mcp_tool_chronicler_stories_show") as mock_tool:
                 mock_tool.return_value = McpToolResult(
                     tool_name="chronicler_stories_show",
                     success=False,
@@ -1183,7 +1183,7 @@ class TestMcpToolChroniclerStoriesShow:
 
     def test_engine_unavailable(self):
         try:
-            with patch("engine_cli_mcp.mcp_tool_chronicler_stories_show") as mock_tool:
+            with patch("chronicler.engine_cli_mcp.mcp_tool_chronicler_stories_show") as mock_tool:
                 mock_tool.return_value = McpToolResult(
                     tool_name="chronicler_stories_show",
                     success=False,
@@ -1199,7 +1199,7 @@ class TestMcpToolChroniclerStoriesShow:
 class TestMcpToolChroniclerEventsReplay:
     def test_happy_path(self):
         try:
-            with patch("engine_cli_mcp.mcp_tool_chronicler_events_replay") as mock_tool:
+            with patch("chronicler.engine_cli_mcp.mcp_tool_chronicler_events_replay") as mock_tool:
                 mock_tool.return_value = McpToolResult(
                     tool_name="chronicler_events_replay",
                     success=True,
@@ -1222,7 +1222,7 @@ class TestMcpToolChroniclerEventsReplay:
 
     def test_file_not_found(self):
         try:
-            with patch("engine_cli_mcp.mcp_tool_chronicler_events_replay") as mock_tool:
+            with patch("chronicler.engine_cli_mcp.mcp_tool_chronicler_events_replay") as mock_tool:
                 mock_tool.return_value = McpToolResult(
                     tool_name="chronicler_events_replay",
                     success=False,
@@ -1237,7 +1237,7 @@ class TestMcpToolChroniclerEventsReplay:
 
     def test_engine_unavailable(self):
         try:
-            with patch("engine_cli_mcp.mcp_tool_chronicler_events_replay") as mock_tool:
+            with patch("chronicler.engine_cli_mcp.mcp_tool_chronicler_events_replay") as mock_tool:
                 mock_tool.return_value = McpToolResult(
                     tool_name="chronicler_events_replay",
                     success=False,

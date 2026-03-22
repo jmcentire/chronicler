@@ -17,7 +17,7 @@ from unittest.mock import (
 from typing import List, Dict, Optional
 
 # Import the module under test
-from correlation_and_stories import (
+from chronicler.correlation import (
     EventTime,
     StoryId,
     EventId,

@@ -21,7 +21,7 @@ import pytest
 # Attempt imports – the root module may expose items in different ways
 # ---------------------------------------------------------------------------
 try:
-    from root import (
+    from chronicler.root import (
         # Enums
         LifecyclePhase,
         ErrorBoundaryZone,
@@ -1006,13 +1006,13 @@ class TestInitialize:
     @pytest.mark.asyncio
     async def test_happy_path(self, valid_config_path, fake_clock, fake_id_factory):
         """TC_INIT_HAPPY: successful initialization returns StartupResult with all steps."""
-        with patch("root.load_config") as mock_load_config, \
-             patch("root.recover_state") as mock_recover, \
-             patch("root.CorrelationEngine") as MockCorrEngine, \
-             patch("root.StoryManager") as MockStoryMgr, \
-             patch("root.ChroniclerEngine") as MockEngine, \
-             patch("root.WebhookSource") as MockSource, \
-             patch("root.DiskSink") as MockSink:
+        with patch("chronicler.root.load_config") as mock_load_config, \
+             patch("chronicler.root.recover_state") as mock_recover, \
+             patch("chronicler.root.CorrelationEngine") as MockCorrEngine, \
+             patch("chronicler.root.StoryManager") as MockStoryMgr, \
+             patch("chronicler.root.ChroniclerEngine") as MockEngine, \
+             patch("chronicler.root.WebhookSource") as MockSource, \
+             patch("chronicler.root.DiskSink") as MockSink:
 
             mock_config = MagicMock()
             mock_config.sources = [MagicMock(type="webhook")]
@@ -1076,8 +1076,8 @@ class TestInitialize:
     @pytest.mark.asyncio
     async def test_state_recovery_failed(self, valid_config_path, fake_clock, fake_id_factory):
         """TC_INIT_STATE_RECOVERY_FAILED: corrupt state file causes failure at RECOVER_STATE."""
-        with patch("root.load_config") as mock_load_config, \
-             patch("root.recover_state") as mock_recover:
+        with patch("chronicler.root.load_config") as mock_load_config, \
+             patch("chronicler.root.recover_state") as mock_recover:
 
             mock_config = MagicMock()
             mock_config.state_file = "/tmp/state.jsonl"
@@ -1098,12 +1098,12 @@ class TestInitialize:
     @pytest.mark.asyncio
     async def test_no_sources_started(self, valid_config_path, fake_clock, fake_id_factory):
         """TC_INIT_NO_SOURCES_STARTED: all sources failing causes failure."""
-        with patch("root.load_config") as mock_load_config, \
-             patch("root.recover_state") as mock_recover, \
-             patch("root.CorrelationEngine") as MockCorrEngine, \
-             patch("root.StoryManager") as MockStoryMgr, \
-             patch("root.WebhookSource") as MockSource, \
-             patch("root.DiskSink") as MockSink:
+        with patch("chronicler.root.load_config") as mock_load_config, \
+             patch("chronicler.root.recover_state") as mock_recover, \
+             patch("chronicler.root.CorrelationEngine") as MockCorrEngine, \
+             patch("chronicler.root.StoryManager") as MockStoryMgr, \
+             patch("chronicler.root.WebhookSource") as MockSource, \
+             patch("chronicler.root.DiskSink") as MockSink:
 
             mock_config = MagicMock()
             mock_config.sources = [MagicMock(type="webhook")]
@@ -1135,9 +1135,9 @@ class TestInitialize:
     @pytest.mark.asyncio
     async def test_partial_steps_on_failure(self, valid_config_path, fake_clock, fake_id_factory):
         """TC_INIT_PARTIAL_STEPS: completed_steps only has steps before failure."""
-        with patch("root.load_config") as mock_load_config, \
-             patch("root.recover_state") as mock_recover, \
-             patch("root.CorrelationEngine") as MockCorrEngine:
+        with patch("chronicler.root.load_config") as mock_load_config, \
+             patch("chronicler.root.recover_state") as mock_recover, \
+             patch("chronicler.root.CorrelationEngine") as MockCorrEngine:
 
             mock_config = MagicMock()
             mock_config.state_file = "/tmp/state.jsonl"
@@ -1172,8 +1172,8 @@ class TestShutdown:
     async def test_happy_path(self):
         """TC_SHUTDOWN_HAPPY: successful shutdown returns ShutdownResult with all steps."""
         # We need to mock the engine being in RUNNING state
-        with patch("root._engine_phase", LifecyclePhase.RUNNING, create=True), \
-             patch("root._engine", create=True) as mock_engine:
+        with patch("chronicler.root._engine_phase", LifecyclePhase.RUNNING, create=True), \
+             patch("chronicler.root._engine", create=True) as mock_engine:
 
             mock_engine_instance = AsyncMock()
             mock_engine_instance.stop = AsyncMock()
@@ -1226,11 +1226,11 @@ class TestCreateEngineFromConfig:
 
     def test_happy_path(self, mock_config, fake_clock, fake_id_factory):
         """TC_ENGINE_FACTORY_HAPPY: valid config creates engine."""
-        with patch("root.CorrelationEngine") as MockCorrEngine, \
-             patch("root.StoryManager") as MockStoryMgr, \
-             patch("root.ChroniclerEngine") as MockEngine, \
-             patch("root.WebhookSource") as MockSource, \
-             patch("root.DiskSink") as MockSink:
+        with patch("chronicler.root.CorrelationEngine") as MockCorrEngine, \
+             patch("chronicler.root.StoryManager") as MockStoryMgr, \
+             patch("chronicler.root.ChroniclerEngine") as MockEngine, \
+             patch("chronicler.root.WebhookSource") as MockSource, \
+             patch("chronicler.root.DiskSink") as MockSink:
 
             MockCorrEngine.return_value = MagicMock()
             MockStoryMgr.return_value = MagicMock()
@@ -1322,10 +1322,10 @@ class TestCreateEngineFromConfig:
 
     def test_override_sources(self, mock_config, fake_clock, fake_id_factory, fake_source):
         """TC_ENGINE_FACTORY_OVERRIDE_SOURCES: custom sources are used instead of config ones."""
-        with patch("root.CorrelationEngine") as MockCorrEngine, \
-             patch("root.StoryManager") as MockStoryMgr, \
-             patch("root.ChroniclerEngine") as MockEngine, \
-             patch("root.DiskSink") as MockSink:
+        with patch("chronicler.root.CorrelationEngine") as MockCorrEngine, \
+             patch("chronicler.root.StoryManager") as MockStoryMgr, \
+             patch("chronicler.root.ChroniclerEngine") as MockEngine, \
+             patch("chronicler.root.DiskSink") as MockSink:
 
             MockCorrEngine.return_value = MagicMock()
             MockStoryMgr.return_value = MagicMock()
@@ -1346,10 +1346,10 @@ class TestCreateEngineFromConfig:
 
     def test_override_sinks(self, mock_config, fake_clock, fake_id_factory, fake_sink):
         """TC_ENGINE_FACTORY_OVERRIDE_SINKS: custom sinks are used instead of config ones."""
-        with patch("root.CorrelationEngine") as MockCorrEngine, \
-             patch("root.StoryManager") as MockStoryMgr, \
-             patch("root.ChroniclerEngine") as MockEngine, \
-             patch("root.WebhookSource") as MockSource:
+        with patch("chronicler.root.CorrelationEngine") as MockCorrEngine, \
+             patch("chronicler.root.StoryManager") as MockStoryMgr, \
+             patch("chronicler.root.ChroniclerEngine") as MockEngine, \
+             patch("chronicler.root.WebhookSource") as MockSource:
 
             MockCorrEngine.return_value = MagicMock()
             MockStoryMgr.return_value = MagicMock()
@@ -1378,7 +1378,7 @@ class TestRunCli:
 
     def test_happy_path_delegates_to_cli_main(self):
         """TC_CLI_HAPPY: valid command returns 0."""
-        with patch("root.cli_main", return_value=0) as mock_cli:
+        with patch("chronicler.root.cli_main", return_value=0) as mock_cli:
             try:
                 exit_code = run_cli(["start", "--config", "/tmp/test.yaml"])
                 assert exit_code == 0
@@ -1389,7 +1389,7 @@ class TestRunCli:
 
     def test_missing_file_returns_nonzero(self):
         """TC_CLI_MISSING_FILE: non-existent config file returns non-zero."""
-        with patch("root.cli_main", return_value=1) as mock_cli:
+        with patch("chronicler.root.cli_main", return_value=1) as mock_cli:
             try:
                 exit_code = run_cli(["start", "--config", "/nonexistent/config.yaml"])
                 assert exit_code != 0
@@ -1400,7 +1400,7 @@ class TestRunCli:
 
     def test_invalid_config_returns_nonzero(self):
         """TC_CLI_INVALID_CONFIG: invalid config returns non-zero."""
-        with patch("root.cli_main", return_value=2) as mock_cli:
+        with patch("chronicler.root.cli_main", return_value=2) as mock_cli:
             try:
                 exit_code = run_cli(["start", "--config", "/tmp/bad.yaml"])
                 assert exit_code != 0
@@ -1410,7 +1410,7 @@ class TestRunCli:
 
     def test_help_returns_zero(self):
         """TC_CLI_HELP: --help returns 0."""
-        with patch("root.cli_main", return_value=0) as mock_cli:
+        with patch("chronicler.root.cli_main", return_value=0) as mock_cli:
             try:
                 exit_code = run_cli(["--help"])
                 assert exit_code == 0
