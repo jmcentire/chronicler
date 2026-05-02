@@ -1,0 +1,41 @@
+name: chronicler
+audience: public
+description: >
+  Event collection and story assembly engine. Correlates events from
+  webhooks, OTLP, and file sources into meaningful narratives.
+  Part of the FOSS governance stack.
+
+domains:
+  - event-correlation
+  - observability
+  - story-assembly
+  - governance-stack
+  - pattern-discovery
+
+voice:
+  tone: precise, narrative-aware
+  principles:
+    - Events are raw; stories are correlated meaning
+    - Correlation rules are declarative, not hardcoded
+    - Sinks are pluggable — disk, kindex, apprentice
+    - Noteworthiness filters reduce noise before storage
+  anti-patterns:
+    - Storing raw events without correlation
+    - Hardcoding correlation logic instead of using rules
+    - Blocking event ingestion on sink failures
+
+standards:
+  code_review:
+    - Pydantic models for events and stories
+    - Async queue-based pipeline
+    - Memory limits enforced via configuration
+  documentation:
+    - Source and sink configurations documented with examples
+
+connects_to:
+  - sentinel
+  - stigmergy
+  - apprentice
+  - kindex
+  - pact
+  - baton
