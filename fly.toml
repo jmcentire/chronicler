@@ -1,0 +1,29 @@
+app = "exemplar-chronicler"
+primary_region = "ord"
+
+[build]
+  dockerfile = "Dockerfile"
+
+[env]
+  CHRONICLER_HTTP_HOST = "0.0.0.0"
+  CHRONICLER_HTTP_PORT = "8080"
+  CHRONICLER_EVENTS_PATH = "/var/lib/chronicler/events.jsonl"
+
+[[mounts]]
+  source = "chronicler_data"
+  destination = "/var/lib/chronicler"
+
+[http_service]
+  internal_port = 8080
+  force_https = true
+  auto_stop_machines = "stop"
+  auto_start_machines = true
+  min_machines_running = 1
+  processes = ["app"]
+
+  [[http_service.checks]]
+    grace_period = "10s"
+    interval = "30s"
+    method = "GET"
+    timeout = "5s"
+    path = "/health"
