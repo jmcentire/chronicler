@@ -1,0 +1,6812 @@
+{
+  "version": "1.0.0",
+  "project": {
+    "name": "chronicler",
+    "description": "Code map exported from Kindex for chronicler.",
+    "languages": [
+      "Python",
+      "python"
+    ],
+    "frameworks": [],
+    "analyzedAt": "2026-05-24T14:50:42",
+    "gitCommitHash": "1fe57c9a8fb0bdf8ebdcaf9ea6128cde4a61a6c6"
+  },
+  "nodes": [
+    {
+      "id": "code-mod-chronicler-0ea045375b45",
+      "type": "file",
+      "name": "src/chronicler/http_service.py",
+      "filePath": "src/chronicler/http_service.py",
+      "summary": "Language: Python | Path: src/chronicler/http_service.py | ~126 lines ## Classes - ReeveChroniclerEvent(BaseModel)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 8,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "artifact",
+        "toolTier": "C"
+      }
+    },
+    {
+      "id": "code-mod-chronicler-5d0c5c5a5b7d",
+      "type": "file",
+      "name": "src/chronicler/config.py",
+      "filePath": "src/chronicler/config.py",
+      "summary": "Language: Python | Path: src/chronicler/config.py | ~395 lines ## Classes - ApprenticeSinkConfig(BaseModel)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 19,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "artifact",
+        "toolTier": "C"
+      }
+    },
+    {
+      "id": "code-mod-chronicler-ea4067dcfbb9",
+      "type": "file",
+      "name": "contracts/sources/interface.py",
+      "filePath": "contracts/sources/interface.py",
+      "summary": "Language: Python | Path: contracts/sources/interface.py | ~477 lines ## Classes - BindAddress",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 30,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "artifact",
+        "toolTier": "C"
+      }
+    },
+    {
+      "id": "code-mod-chronicler-255ecb4a2784",
+      "type": "file",
+      "name": "src/chronicler/sources/webhook.py",
+      "filePath": "src/chronicler/sources/webhook.py",
+      "summary": "Language: Python | Path: src/chronicler/sources/webhook.py | ~202 lines ## Classes - BindAddress(BaseModel)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 8,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "artifact",
+        "toolTier": "C"
+      }
+    },
+    {
+      "id": "code-mod-chronicler-3c742d80eead",
+      "type": "file",
+      "name": "contracts/root/interface.py",
+      "filePath": "contracts/root/interface.py",
+      "summary": "Language: Python | Path: contracts/root/interface.py | ~378 lines ## Classes - ErrorBoundaryPolicy",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 27,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "artifact",
+        "toolTier": "C"
+      }
+    },
+    {
+      "id": "code-mod-chronicler-fdb1c0d56cf2",
+      "type": "file",
+      "name": "src/chronicler/root.py",
+      "filePath": "src/chronicler/root.py",
+      "summary": "Language: Python | Path: src/chronicler/root.py | ~493 lines ## Classes - ErrorBoundaryPolicy(BaseModel)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 28,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "artifact",
+        "toolTier": "C"
+      }
+    },
+    {
+      "id": "code-mod-chronicler-5bc047d5c399",
+      "type": "file",
+      "name": "src/chronicler/sources/base.py",
+      "filePath": "src/chronicler/sources/base.py",
+      "summary": "Language: Python | Path: src/chronicler/sources/base.py | ~28 lines ## Classes - SourceProtocol(Protocol)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 3,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "artifact",
+        "toolTier": "C"
+      }
+    },
+    {
+      "id": "code-mod-chronicler-2e84ba5f1926",
+      "type": "file",
+      "name": "contracts/correlation_and_stories/interface.py",
+      "filePath": "contracts/correlation_and_stories/interface.py",
+      "summary": "Language: Python | Path: contracts/correlation_and_stories/interface.py | ~528 lines ## Classes - ChainEntry",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 33,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "artifact",
+        "toolTier": "C"
+      }
+    },
+    {
+      "id": "code-mod-chronicler-2dd3a4697241",
+      "type": "file",
+      "name": "src/chronicler/correlation.py",
+      "filePath": "src/chronicler/correlation.py",
+      "summary": "Language: Python | Path: src/chronicler/correlation.py | ~928 lines ## Classes - ChainEntry(BaseModel)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 32,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "artifact",
+        "toolTier": "C"
+      }
+    },
+    {
+      "id": "code-mod-chronicler-cb8daade2607",
+      "type": "file",
+      "name": "src/chronicler/engine.py",
+      "filePath": "src/chronicler/engine.py",
+      "summary": "Language: Python | Path: src/chronicler/engine.py | ~33 lines ## Classes - ChroniclerEngine",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "artifact",
+        "toolTier": "C"
+      }
+    },
+    {
+      "id": "code-mod-chronicler-389a002d2c0c",
+      "type": "file",
+      "name": "src/chronicler/sinks/disk.py",
+      "filePath": "src/chronicler/sinks/disk.py",
+      "summary": "Language: Python | Path: src/chronicler/sinks/disk.py | ~71 lines ## Classes - DiskSink",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 4,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "artifact",
+        "toolTier": "C"
+      }
+    },
+    {
+      "id": "code-mod-chronicler-25ce0b4f9578",
+      "type": "file",
+      "name": "src/chronicler/sinks/types.py",
+      "filePath": "src/chronicler/sinks/types.py",
+      "summary": "Language: Python | Path: src/chronicler/sinks/types.py | ~70 lines ## Classes - FilePath(BaseModel)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 6,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "artifact",
+        "toolTier": "C"
+      }
+    },
+    {
+      "id": "code-mod-chronicler-ccdeaf23f639",
+      "type": "file",
+      "name": "src/chronicler/sources/file.py",
+      "filePath": "src/chronicler/sources/file.py",
+      "summary": "Language: Python | Path: src/chronicler/sources/file.py | ~72 lines ## Classes - FileSource",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 2,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "artifact",
+        "toolTier": "C"
+      }
+    },
+    {
+      "id": "code-mod-chronicler-fa8c4fca9b95",
+      "type": "file",
+      "name": "src/chronicler/sinks/kindex.py",
+      "filePath": "src/chronicler/sinks/kindex.py",
+      "summary": "Language: Python | Path: src/chronicler/sinks/kindex.py | ~77 lines ## Classes - KindexSink",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 3,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "artifact",
+        "toolTier": "C"
+      }
+    },
+    {
+      "id": "code-mod-chronicler-be160674a046",
+      "type": "file",
+      "name": "src/chronicler/sources/otlp.py",
+      "filePath": "src/chronicler/sources/otlp.py",
+      "summary": "Language: Python | Path: src/chronicler/sources/otlp.py | ~168 lines ## Classes - OtlpSource",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 3,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "artifact",
+        "toolTier": "C"
+      }
+    },
+    {
+      "id": "code-mod-chronicler-b70a20eb1868",
+      "type": "file",
+      "name": "src/chronicler/sources/sentinel.py",
+      "filePath": "src/chronicler/sources/sentinel.py",
+      "summary": "Language: Python | Path: src/chronicler/sources/sentinel.py | ~116 lines ## Classes - SentinelSource",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 2,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "artifact",
+        "toolTier": "C"
+      }
+    },
+    {
+      "id": "code-mod-chronicler-213754b771d6",
+      "type": "file",
+      "name": "src/chronicler/sinks/base.py",
+      "filePath": "src/chronicler/sinks/base.py",
+      "summary": "Language: Python | Path: src/chronicler/sinks/base.py | ~11 lines ## Classes - SinkProtocol(Protocol)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "artifact",
+        "toolTier": "C"
+      }
+    },
+    {
+      "id": "code-mod-chronicler-81cefb7a54db",
+      "type": "file",
+      "name": "src/chronicler/sinks/stigmergy.py",
+      "filePath": "src/chronicler/sinks/stigmergy.py",
+      "summary": "Language: Python | Path: src/chronicler/sinks/stigmergy.py | ~25 lines ## Classes - StigmergySink",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "artifact",
+        "toolTier": "C"
+      }
+    },
+    {
+      "id": "code-mod-chronicler-112ae72614ee",
+      "type": "file",
+      "name": "src/chronicler/story_manager.py",
+      "filePath": "src/chronicler/story_manager.py",
+      "summary": "Language: Python | Path: src/chronicler/story_manager.py | ~5 lines",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "artifact",
+        "toolTier": "C"
+      }
+    },
+    {
+      "id": "code-mod-chronicler-c698a4772cc8",
+      "type": "file",
+      "name": "src/chronicler/__init__.py",
+      "filePath": "src/chronicler/__init__.py",
+      "summary": "Language: Python | Path: src/chronicler/__init__.py | ~3 lines",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "artifact",
+        "toolTier": "C"
+      }
+    },
+    {
+      "id": "code-mod-chronicler-273aee9d1b26",
+      "type": "file",
+      "name": "src/chronicler/state.py",
+      "filePath": "src/chronicler/state.py",
+      "summary": "Language: Python | Path: src/chronicler/state.py | ~12 lines ## Functions - append_record(path: str, record: dict) -> None",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "artifact",
+        "toolTier": "C"
+      }
+    },
+    {
+      "id": "code-mod-chronicler-e7b431dc0210",
+      "type": "file",
+      "name": "src/chronicler/mcp_server.py",
+      "filePath": "src/chronicler/mcp_server.py",
+      "summary": "Language: Python | Path: src/chronicler/mcp_server.py | ~16 lines ## Functions - mcp_server_create(engine=None)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 2,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "artifact",
+        "toolTier": "C"
+      }
+    },
+    {
+      "id": "code-mod-chronicler-487035dddf61",
+      "type": "file",
+      "name": "src/chronicler/sinks/engine.py",
+      "filePath": "src/chronicler/sinks/engine.py",
+      "summary": "Language: Python | Path: src/chronicler/sinks/engine.py | ~12 lines ## Functions - safe_emit(sink_name: str, sink_emit, story) -> SafeEmitOutcome",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "artifact",
+        "toolTier": "C"
+      }
+    },
+    {
+      "id": "code-mod-chronicler-4508c424311c",
+      "type": "file",
+      "name": "src/chronicler/cli.py",
+      "filePath": "src/chronicler/cli.py",
+      "summary": "Language: Python | Path: src/chronicler/cli.py | ~9 lines ## Functions - main(argv=None) -> int",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "artifact",
+        "toolTier": "C"
+      }
+    },
+    {
+      "id": "code-sym-chronicler-c1053a7e9cef",
+      "type": "class",
+      "name": "StigmergySink",
+      "filePath": "src/chronicler/sinks/stigmergy.py",
+      "summary": "class StigmergySink (src/chronicler/sinks/stigmergy.py:10) ## Methods - close(self) -> None",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 3,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-80977b087385",
+      "type": "class",
+      "name": "SentinelSource",
+      "filePath": "src/chronicler/sources/sentinel.py",
+      "summary": "class SentinelSource (src/chronicler/sources/sentinel.py:42) ## Methods - start(self) -> None",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 3,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-3e5d038a8039",
+      "type": "class",
+      "name": "SentinelSourceConfig",
+      "filePath": "src/chronicler/sources/sentinel.py",
+      "summary": "class SentinelSourceConfig(BaseModel) (src/chronicler/sources/sentinel.py:22)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-a1d6690df95c",
+      "type": "class",
+      "name": "SinkProtocol",
+      "filePath": "src/chronicler/sinks/base.py",
+      "summary": "class SinkProtocol(Protocol) (src/chronicler/sinks/base.py:7) ## Methods - close(self) -> None",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 3,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-3a107f29c8b2",
+      "type": "class",
+      "name": "OtlpSource",
+      "filePath": "src/chronicler/sources/otlp.py",
+      "summary": "class OtlpSource (src/chronicler/sources/otlp.py:43) ## Methods - start(self) -> None",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 3,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-773f82c2b067",
+      "type": "class",
+      "name": "OtlpSourceConfig",
+      "filePath": "src/chronicler/sources/otlp.py",
+      "summary": "class OtlpSourceConfig(BaseModel) (src/chronicler/sources/otlp.py:22)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-3e12ef68483d",
+      "type": "class",
+      "name": "OtlpSpan",
+      "filePath": "src/chronicler/sources/otlp.py",
+      "summary": "class OtlpSpan(BaseModel) (src/chronicler/sources/otlp.py:30)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-a21b0df94938",
+      "type": "class",
+      "name": "FileSourceConfig",
+      "filePath": "src/chronicler/sources/file.py",
+      "summary": "class FileSourceConfig(BaseModel) (src/chronicler/sources/file.py:19)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-a83248b83242",
+      "type": "class",
+      "name": "KindexSink",
+      "filePath": "src/chronicler/sinks/kindex.py",
+      "summary": "class KindexSink (src/chronicler/sinks/kindex.py:49) ## Methods - close(self) -> None",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 3,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-cc58abe13852",
+      "type": "class",
+      "name": "KindexSinkConfig",
+      "filePath": "src/chronicler/sinks/kindex.py",
+      "summary": "class KindexSinkConfig(BaseModel) (src/chronicler/sinks/kindex.py:13)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-54678ad39e76",
+      "type": "class",
+      "name": "SafeEmitOutcome",
+      "filePath": "src/chronicler/sinks/types.py",
+      "summary": "class SafeEmitOutcome(BaseModel) (src/chronicler/sinks/types.py:64)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-137e8cf8881f",
+      "type": "class",
+      "name": "SinkEmitResult",
+      "filePath": "src/chronicler/sinks/types.py",
+      "summary": "class SinkEmitResult(str, Enum) (src/chronicler/sinks/types.py:57)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-1298ba5795b2",
+      "type": "class",
+      "name": "SinkName",
+      "filePath": "src/chronicler/sinks/types.py",
+      "summary": "class SinkName(str, Enum) (src/chronicler/sinks/types.py:49)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-6c940d82e495",
+      "type": "class",
+      "name": "FileSource",
+      "filePath": "src/chronicler/sources/file.py",
+      "summary": "class FileSource (src/chronicler/sources/file.py:27) ## Methods - start(self) -> None",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 3,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-cabb682c0130",
+      "type": "class",
+      "name": "DiskSinkConfig",
+      "filePath": "src/chronicler/sinks/disk.py",
+      "summary": "class DiskSinkConfig(BaseModel) (src/chronicler/sinks/disk.py:17)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-8048d5e0a765",
+      "type": "class",
+      "name": "FilePath",
+      "filePath": "src/chronicler/sinks/types.py",
+      "summary": "class FilePath(BaseModel) (src/chronicler/sinks/types.py:10)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-de1cea0f2f6c",
+      "type": "class",
+      "name": "NonNegativeFloat",
+      "filePath": "src/chronicler/sinks/types.py",
+      "summary": "class NonNegativeFloat(BaseModel) (src/chronicler/sinks/types.py:38)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-5ace79df5182",
+      "type": "class",
+      "name": "PositiveInt",
+      "filePath": "src/chronicler/sinks/types.py",
+      "summary": "class PositiveInt(BaseModel) (src/chronicler/sinks/types.py:27)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-564c3a53ba11",
+      "type": "class",
+      "name": "DiskSink",
+      "filePath": "src/chronicler/sinks/disk.py",
+      "summary": "class DiskSink (src/chronicler/sinks/disk.py:24) ## Methods - close(self) -> None",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 3,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-ed9c72b77366",
+      "type": "class",
+      "name": "TerminalCondition",
+      "filePath": "src/chronicler/correlation.py",
+      "summary": "class TerminalCondition(BaseModel) (src/chronicler/correlation.py:148)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-bd4ee3ed7ec5",
+      "type": "class",
+      "name": "TimeoutSeconds",
+      "filePath": "src/chronicler/correlation.py",
+      "summary": "class TimeoutSeconds(BaseModel) (src/chronicler/correlation.py:118)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-c5965c6c4373",
+      "type": "class",
+      "name": "ChroniclerEngine",
+      "filePath": "src/chronicler/engine.py",
+      "summary": "class ChroniclerEngine (src/chronicler/engine.py:11) ## Methods - __aenter__(self)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 5,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-62d2f2c83e5f",
+      "type": "class",
+      "name": "StoryId",
+      "filePath": "src/chronicler/correlation.py",
+      "summary": "class StoryId(BaseModel) (src/chronicler/correlation.py:48) ## Methods - __eq__(self, other)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 3,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-55e41a8fa0b9",
+      "type": "class",
+      "name": "StoryManager",
+      "filePath": "src/chronicler/correlation.py",
+      "summary": "class StoryManager (src/chronicler/correlation.py:440) ## Methods - append_event(self, story_id, event: Event) -> None",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 10,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-d605ba76e47e",
+      "type": "class",
+      "name": "StoryOpenedRecord",
+      "filePath": "src/chronicler/correlation.py",
+      "summary": "class StoryOpenedRecord(BaseModel) (src/chronicler/correlation.py:289)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-dc2e6f6e564a",
+      "type": "class",
+      "name": "StoryStatus",
+      "filePath": "src/chronicler/correlation.py",
+      "summary": "class StoryStatus(str, Enum) (src/chronicler/correlation.py:214)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-74e5f9aa7f01",
+      "type": "class",
+      "name": "SweepIntervalSeconds",
+      "filePath": "src/chronicler/correlation.py",
+      "summary": "class SweepIntervalSeconds(BaseModel) (src/chronicler/correlation.py:125)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-68a56fb045cb",
+      "type": "class",
+      "name": "RuleName",
+      "filePath": "src/chronicler/correlation.py",
+      "summary": "class RuleName(BaseModel) (src/chronicler/correlation.py:75)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-3e78c7d676a0",
+      "type": "class",
+      "name": "SequenceNumber",
+      "filePath": "src/chronicler/correlation.py",
+      "summary": "class SequenceNumber(BaseModel) (src/chronicler/correlation.py:82) ## Methods - __ge__(self, other)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 4,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-5cd935507493",
+      "type": "class",
+      "name": "Story",
+      "filePath": "src/chronicler/correlation.py",
+      "summary": "class Story(BaseModel) (src/chronicler/correlation.py:221)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-d6dedb8c04f0",
+      "type": "class",
+      "name": "StoryClosedRecord",
+      "filePath": "src/chronicler/correlation.py",
+      "summary": "class StoryClosedRecord(BaseModel) (src/chronicler/correlation.py:319)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-80f48a1510db",
+      "type": "class",
+      "name": "MatchPredicate",
+      "filePath": "src/chronicler/correlation.py",
+      "summary": "class MatchPredicate(BaseModel) (src/chronicler/correlation.py:140)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-1d5657823253",
+      "type": "class",
+      "name": "MaxOpenStories",
+      "filePath": "src/chronicler/correlation.py",
+      "summary": "class MaxOpenStories(BaseModel) (src/chronicler/correlation.py:111)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-0e731c6fa223",
+      "type": "class",
+      "name": "RecordType",
+      "filePath": "src/chronicler/correlation.py",
+      "summary": "class RecordType(str, Enum) (src/chronicler/correlation.py:275)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-4960fb7ae058",
+      "type": "class",
+      "name": "RecoveryResult",
+      "filePath": "src/chronicler/correlation.py",
+      "summary": "class RecoveryResult(BaseModel) (src/chronicler/correlation.py:336)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-9e57eb9f8d2b",
+      "type": "class",
+      "name": "Event",
+      "filePath": "src/chronicler/correlation.py",
+      "summary": "class Event(BaseModel) (src/chronicler/correlation.py:182)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-39636b2de597",
+      "type": "class",
+      "name": "EventAppendedRecord",
+      "filePath": "src/chronicler/correlation.py",
+      "summary": "class EventAppendedRecord(BaseModel) (src/chronicler/correlation.py:306)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-5491af06298a",
+      "type": "class",
+      "name": "EventId",
+      "filePath": "src/chronicler/correlation.py",
+      "summary": "class EventId(BaseModel) (src/chronicler/correlation.py:68)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-882df6cc1b88",
+      "type": "class",
+      "name": "EventTime",
+      "filePath": "src/chronicler/correlation.py",
+      "summary": "class EventTime(BaseModel) (src/chronicler/correlation.py:41)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-c551263fb03c",
+      "type": "class",
+      "name": "FilePath",
+      "filePath": "src/chronicler/correlation.py",
+      "summary": "class FilePath(BaseModel) (src/chronicler/correlation.py:132)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-e7ce6177935c",
+      "type": "class",
+      "name": "CompositeKey",
+      "filePath": "src/chronicler/correlation.py",
+      "summary": "class CompositeKey(BaseModel) (src/chronicler/correlation.py:256)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-e2b8d93b169c",
+      "type": "class",
+      "name": "CorrelationEngine",
+      "filePath": "src/chronicler/correlation.py",
+      "summary": "class CorrelationEngine (src/chronicler/correlation.py:621) ## Methods - get_stats(self) -> EngineStats",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 4,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-07ab5d1517f0",
+      "type": "class",
+      "name": "CorrelationEngineConfig",
+      "filePath": "src/chronicler/correlation.py",
+      "summary": "class CorrelationEngineConfig(BaseModel) (src/chronicler/correlation.py:345)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-d55c658a491d",
+      "type": "class",
+      "name": "CorrelationRule",
+      "filePath": "src/chronicler/correlation.py",
+      "summary": "class CorrelationRule(BaseModel) (src/chronicler/correlation.py:156)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-15f14d4f1438",
+      "type": "class",
+      "name": "EngineStats",
+      "filePath": "src/chronicler/correlation.py",
+      "summary": "class EngineStats(BaseModel) (src/chronicler/correlation.py:377)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-d8f5594e05e5",
+      "type": "class",
+      "name": "StoryStatus",
+      "filePath": "contracts/correlation_and_stories/interface.py",
+      "summary": "class StoryStatus(Enum) (contracts/correlation_and_stories/interface.py:66)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-cee5cce58b59",
+      "type": "class",
+      "name": "TerminalCondition",
+      "filePath": "contracts/correlation_and_stories/interface.py",
+      "summary": "class TerminalCondition (contracts/correlation_and_stories/interface.py:41)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-7567a1699b75",
+      "type": "class",
+      "name": "ChainEntry",
+      "filePath": "src/chronicler/correlation.py",
+      "summary": "class ChainEntry(BaseModel) (src/chronicler/correlation.py:263)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-382df7a446ea",
+      "type": "class",
+      "name": "RecordType",
+      "filePath": "contracts/correlation_and_stories/interface.py",
+      "summary": "class RecordType(Enum) (contracts/correlation_and_stories/interface.py:95)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-d22c342dc517",
+      "type": "class",
+      "name": "RecoveryResult",
+      "filePath": "contracts/correlation_and_stories/interface.py",
+      "summary": "class RecoveryResult (contracts/correlation_and_stories/interface.py:134)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-fd5d1c70aee7",
+      "type": "class",
+      "name": "Story",
+      "filePath": "contracts/correlation_and_stories/interface.py",
+      "summary": "class Story (contracts/correlation_and_stories/interface.py:72)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-d310bba0fe4f",
+      "type": "class",
+      "name": "StoryClosedRecord",
+      "filePath": "contracts/correlation_and_stories/interface.py",
+      "summary": "class StoryClosedRecord (contracts/correlation_and_stories/interface.py:117)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-8c2ccf558717",
+      "type": "class",
+      "name": "StoryOpenedRecord",
+      "filePath": "contracts/correlation_and_stories/interface.py",
+      "summary": "class StoryOpenedRecord (contracts/correlation_and_stories/interface.py:101)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-2255adf09c2e",
+      "type": "class",
+      "name": "Event",
+      "filePath": "contracts/correlation_and_stories/interface.py",
+      "summary": "class Event (contracts/correlation_and_stories/interface.py:57)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-4de890105ee0",
+      "type": "class",
+      "name": "EventAppendedRecord",
+      "filePath": "contracts/correlation_and_stories/interface.py",
+      "summary": "class EventAppendedRecord (contracts/correlation_and_stories/interface.py:111)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-d36c23a929e1",
+      "type": "class",
+      "name": "MatchPredicate",
+      "filePath": "contracts/correlation_and_stories/interface.py",
+      "summary": "class MatchPredicate (contracts/correlation_and_stories/interface.py:35)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-fc9313a7f863",
+      "type": "class",
+      "name": "ChainEntry",
+      "filePath": "contracts/correlation_and_stories/interface.py",
+      "summary": "class ChainEntry (contracts/correlation_and_stories/interface.py:90)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-dbf9786b1057",
+      "type": "class",
+      "name": "CompositeKey",
+      "filePath": "contracts/correlation_and_stories/interface.py",
+      "summary": "class CompositeKey (contracts/correlation_and_stories/interface.py:85)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-7d8e11b9d3bf",
+      "type": "class",
+      "name": "CorrelationEngineConfig",
+      "filePath": "contracts/correlation_and_stories/interface.py",
+      "summary": "class CorrelationEngineConfig (contracts/correlation_and_stories/interface.py:141)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-43fc7c9ed7dc",
+      "type": "class",
+      "name": "CorrelationRule",
+      "filePath": "contracts/correlation_and_stories/interface.py",
+      "summary": "class CorrelationRule (contracts/correlation_and_stories/interface.py:47)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-0027dc0cbd2a",
+      "type": "class",
+      "name": "EngineStats",
+      "filePath": "contracts/correlation_and_stories/interface.py",
+      "summary": "class EngineStats (contracts/correlation_and_stories/interface.py:150)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-735436485248",
+      "type": "class",
+      "name": "TypeOwnershipEntry",
+      "filePath": "src/chronicler/root.py",
+      "summary": "class TypeOwnershipEntry(BaseModel) (src/chronicler/root.py:115)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-4ea5b0e8a4f2",
+      "type": "class",
+      "name": "SourceProtocol",
+      "filePath": "src/chronicler/sources/base.py",
+      "summary": "class SourceProtocol(Protocol) (src/chronicler/sources/base.py:14) ## Methods - start(self) -> None",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 3,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-46b5e46e1b05",
+      "type": "class",
+      "name": "SourceState",
+      "filePath": "src/chronicler/sources/base.py",
+      "summary": "class SourceState(str, Enum) (src/chronicler/sources/base.py:21)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-914453575cbf",
+      "type": "class",
+      "name": "ShutdownStep",
+      "filePath": "src/chronicler/root.py",
+      "summary": "class ShutdownStep(str, Enum) (src/chronicler/root.py:76)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-936e181e7809",
+      "type": "class",
+      "name": "StartupResult",
+      "filePath": "src/chronicler/root.py",
+      "summary": "class StartupResult(BaseModel) (src/chronicler/root.py:131)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-467c9e6de3d6",
+      "type": "class",
+      "name": "StartupStep",
+      "filePath": "src/chronicler/root.py",
+      "summary": "class StartupStep(str, Enum) (src/chronicler/root.py:61)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-ca8d27a3e418",
+      "type": "class",
+      "name": "SystemHealth",
+      "filePath": "src/chronicler/root.py",
+      "summary": "class SystemHealth(BaseModel) (src/chronicler/root.py:157)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-2e0aae3f5dd4",
+      "type": "class",
+      "name": "TypeCategory",
+      "filePath": "src/chronicler/root.py",
+      "summary": "class TypeCategory(str, Enum) (src/chronicler/root.py:52)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-9b788c6ce214",
+      "type": "class",
+      "name": "PackageVersion",
+      "filePath": "src/chronicler/root.py",
+      "summary": "class PackageVersion(BaseModel) (src/chronicler/root.py:171)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-416d72b22dd4",
+      "type": "class",
+      "name": "PublicApiExport",
+      "filePath": "src/chronicler/root.py",
+      "summary": "class PublicApiExport(BaseModel) (src/chronicler/root.py:150)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-60fb54447aa0",
+      "type": "class",
+      "name": "SerializationConvention",
+      "filePath": "src/chronicler/root.py",
+      "summary": "class SerializationConvention(BaseModel) (src/chronicler/root.py:122)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-0700ca5a72e1",
+      "type": "class",
+      "name": "ShutdownResult",
+      "filePath": "src/chronicler/root.py",
+      "summary": "class ShutdownResult(BaseModel) (src/chronicler/root.py:140)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-618a2fe5ecff",
+      "type": "class",
+      "name": "ErrorHandlingStrategy",
+      "filePath": "src/chronicler/root.py",
+      "summary": "class ErrorHandlingStrategy(str, Enum) (src/chronicler/root.py:39)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-e5c612013b7b",
+      "type": "class",
+      "name": "HealthStatus",
+      "filePath": "src/chronicler/root.py",
+      "summary": "class HealthStatus(str, Enum) (src/chronicler/root.py:86)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-dc999406fc3f",
+      "type": "class",
+      "name": "IntegrationSeam",
+      "filePath": "src/chronicler/root.py",
+      "summary": "class IntegrationSeam(str, Enum) (src/chronicler/root.py:46)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-3e221efd5361",
+      "type": "class",
+      "name": "IntegrationSeamSpec",
+      "filePath": "src/chronicler/root.py",
+      "summary": "class IntegrationSeamSpec(BaseModel) (src/chronicler/root.py:104)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-4c83ef655177",
+      "type": "class",
+      "name": "LifecyclePhase",
+      "filePath": "src/chronicler/root.py",
+      "summary": "class LifecyclePhase(str, Enum) (src/chronicler/root.py:23)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-29b04e78cd90",
+      "type": "class",
+      "name": "ErrorBoundaryZone",
+      "filePath": "src/chronicler/root.py",
+      "summary": "class ErrorBoundaryZone(str, Enum) (src/chronicler/root.py:32)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-49a967b4d41d",
+      "type": "class",
+      "name": "TypeOwnershipEntry",
+      "filePath": "contracts/root/interface.py",
+      "summary": "class TypeOwnershipEntry (contracts/root/interface.py:72)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-296435500866",
+      "type": "class",
+      "name": "ErrorBoundaryPolicy",
+      "filePath": "src/chronicler/root.py",
+      "summary": "class ErrorBoundaryPolicy(BaseModel) (src/chronicler/root.py:95)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-ec0859ba516b",
+      "type": "class",
+      "name": "StartupResult",
+      "filePath": "contracts/root/interface.py",
+      "summary": "class StartupResult (contracts/root/interface.py:120)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-3d8ad6460bda",
+      "type": "class",
+      "name": "StartupStep",
+      "filePath": "contracts/root/interface.py",
+      "summary": "class StartupStep(Enum) (contracts/root/interface.py:95)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-78dbedf22f9b",
+      "type": "class",
+      "name": "SystemHealth",
+      "filePath": "contracts/root/interface.py",
+      "summary": "class SystemHealth (contracts/root/interface.py:150)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-b92b6f87aae8",
+      "type": "class",
+      "name": "TypeCategory",
+      "filePath": "contracts/root/interface.py",
+      "summary": "class TypeCategory(Enum) (contracts/root/interface.py:78)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-0b47e382dec5",
+      "type": "class",
+      "name": "PackageVersion",
+      "filePath": "contracts/root/interface.py",
+      "summary": "class PackageVersion (contracts/root/interface.py:163)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-5fea8fac2b79",
+      "type": "class",
+      "name": "PublicApiExport",
+      "filePath": "contracts/root/interface.py",
+      "summary": "class PublicApiExport (contracts/root/interface.py:137)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-87c711f1f8ef",
+      "type": "class",
+      "name": "SerializationConvention",
+      "filePath": "contracts/root/interface.py",
+      "summary": "class SerializationConvention (contracts/root/interface.py:87)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-e4d8f9b8f617",
+      "type": "class",
+      "name": "ShutdownResult",
+      "filePath": "contracts/root/interface.py",
+      "summary": "class ShutdownResult (contracts/root/interface.py:128)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-8f551a12a439",
+      "type": "class",
+      "name": "ShutdownStep",
+      "filePath": "contracts/root/interface.py",
+      "summary": "class ShutdownStep(Enum) (contracts/root/interface.py:110)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-9591d518da76",
+      "type": "class",
+      "name": "HealthStatus",
+      "filePath": "contracts/root/interface.py",
+      "summary": "class HealthStatus(Enum) (contracts/root/interface.py:143)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-85ac9eaa10f4",
+      "type": "class",
+      "name": "IntegrationSeam",
+      "filePath": "contracts/root/interface.py",
+      "summary": "class IntegrationSeam(Enum) (contracts/root/interface.py:56)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-51c8fcdefe60",
+      "type": "class",
+      "name": "IntegrationSeamSpec",
+      "filePath": "contracts/root/interface.py",
+      "summary": "class IntegrationSeamSpec (contracts/root/interface.py:62)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-b17d207168e4",
+      "type": "class",
+      "name": "LifecyclePhase",
+      "filePath": "contracts/root/interface.py",
+      "summary": "class LifecyclePhase(Enum) (contracts/root/interface.py:25)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-5ed76dd72c68",
+      "type": "class",
+      "name": "WebhookSourceConfig",
+      "filePath": "src/chronicler/sources/webhook.py",
+      "summary": "class WebhookSourceConfig(BaseModel) (src/chronicler/sources/webhook.py:36)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-efd3ab96478a",
+      "type": "class",
+      "name": "ErrorBoundaryPolicy",
+      "filePath": "contracts/root/interface.py",
+      "summary": "class ErrorBoundaryPolicy (contracts/root/interface.py:41)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-526a3a552f49",
+      "type": "class",
+      "name": "ErrorBoundaryZone",
+      "filePath": "contracts/root/interface.py",
+      "summary": "class ErrorBoundaryZone(Enum) (contracts/root/interface.py:34)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-13699d010538",
+      "type": "class",
+      "name": "ErrorHandlingStrategy",
+      "filePath": "contracts/root/interface.py",
+      "summary": "class ErrorHandlingStrategy(Enum) (contracts/root/interface.py:49)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-7e4fed4faa8c",
+      "type": "class",
+      "name": "FilePath",
+      "filePath": "src/chronicler/sources/webhook.py",
+      "summary": "class FilePath(str) (src/chronicler/sources/webhook.py:102) ## Methods - __new__(cls, value: str = \"\", **kwargs) -> FilePath",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-e6b86a2ffccf",
+      "type": "class",
+      "name": "FilePosition",
+      "filePath": "src/chronicler/sources/webhook.py",
+      "summary": "class FilePosition(BaseModel) (src/chronicler/sources/webhook.py:118)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-02bb38957b45",
+      "type": "class",
+      "name": "HttpResponse",
+      "filePath": "src/chronicler/sources/webhook.py",
+      "summary": "class HttpResponse(BaseModel) (src/chronicler/sources/webhook.py:44)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-00281823a5b3",
+      "type": "class",
+      "name": "WebhookSource",
+      "filePath": "src/chronicler/sources/webhook.py",
+      "summary": "class WebhookSource (src/chronicler/sources/webhook.py:128) ## Methods - start(self) -> None",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 3,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-91911710c9af",
+      "type": "class",
+      "name": "BindAddress",
+      "filePath": "src/chronicler/sources/webhook.py",
+      "summary": "class BindAddress(BaseModel) (src/chronicler/sources/webhook.py:19)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-8f8e4d140b50",
+      "type": "class",
+      "name": "Event",
+      "filePath": "src/chronicler/sources/webhook.py",
+      "summary": "class Event(BaseModel) (src/chronicler/sources/webhook.py:68)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-85854905889b",
+      "type": "class",
+      "name": "EventKind",
+      "filePath": "src/chronicler/sources/webhook.py",
+      "summary": "class EventKind(str) (src/chronicler/sources/webhook.py:51) ## Methods - __new__(cls, value: str = \"\", **kwargs) -> EventKind",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-14bc62a79bda",
+      "type": "class",
+      "name": "OtlpSpan",
+      "filePath": "contracts/sources/interface.py",
+      "summary": "class OtlpSpan (contracts/sources/interface.py:74)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-f29508869a05",
+      "type": "class",
+      "name": "SentinelSourceConfig",
+      "filePath": "contracts/sources/interface.py",
+      "summary": "class SentinelSourceConfig (contracts/sources/interface.py:67)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-230c2787b05f",
+      "type": "class",
+      "name": "SourceProtocol",
+      "filePath": "contracts/sources/interface.py",
+      "summary": "class SourceProtocol (contracts/sources/interface.py:36)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-900d6b1771fd",
+      "type": "class",
+      "name": "SourceState",
+      "filePath": "contracts/sources/interface.py",
+      "summary": "class SourceState(Enum) (contracts/sources/interface.py:90)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-48d4a5596506",
+      "type": "class",
+      "name": "WebhookSourceConfig",
+      "filePath": "contracts/sources/interface.py",
+      "summary": "class WebhookSourceConfig (contracts/sources/interface.py:47)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-442e89a94c6c",
+      "type": "class",
+      "name": "Event",
+      "filePath": "contracts/sources/interface.py",
+      "summary": "class Event (contracts/sources/interface.py:23)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-d38841fa1dea",
+      "type": "class",
+      "name": "FilePosition",
+      "filePath": "contracts/sources/interface.py",
+      "summary": "class FilePosition (contracts/sources/interface.py:96)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-97782442bd80",
+      "type": "class",
+      "name": "FileSourceConfig",
+      "filePath": "contracts/sources/interface.py",
+      "summary": "class FileSourceConfig (contracts/sources/interface.py:59)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-f26b1e52ca9c",
+      "type": "class",
+      "name": "HttpResponse",
+      "filePath": "contracts/sources/interface.py",
+      "summary": "class HttpResponse (contracts/sources/interface.py:85)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-a7ff299a1a3f",
+      "type": "class",
+      "name": "OtlpSourceConfig",
+      "filePath": "contracts/sources/interface.py",
+      "summary": "class OtlpSourceConfig (contracts/sources/interface.py:53)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-504355ae0f7b",
+      "type": "class",
+      "name": "StigmergySinkConfig",
+      "filePath": "src/chronicler/config.py",
+      "summary": "class StigmergySinkConfig(BaseModel) (src/chronicler/config.py:140)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-56e8363e1d7d",
+      "type": "class",
+      "name": "WebhookSourceConfig",
+      "filePath": "src/chronicler/config.py",
+      "summary": "class WebhookSourceConfig(BaseModel) (src/chronicler/config.py:71)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-f4b0f314dc4b",
+      "type": "class",
+      "name": "BindAddress",
+      "filePath": "contracts/sources/interface.py",
+      "summary": "class BindAddress (contracts/sources/interface.py:42)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-0edad314a2b8",
+      "type": "class",
+      "name": "SentinelSourceConfig",
+      "filePath": "src/chronicler/config.py",
+      "summary": "class SentinelSourceConfig(BaseModel) (src/chronicler/config.py:114)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-7d84c3ec93de",
+      "type": "class",
+      "name": "SinkType",
+      "filePath": "src/chronicler/config.py",
+      "summary": "class SinkType(str, Enum) (src/chronicler/config.py:26)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-aa951460efe1",
+      "type": "class",
+      "name": "SourceType",
+      "filePath": "src/chronicler/config.py",
+      "summary": "class SourceType(str, Enum) (src/chronicler/config.py:19)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-6de491b97fc0",
+      "type": "class",
+      "name": "KindexSinkConfig",
+      "filePath": "src/chronicler/config.py",
+      "summary": "class KindexSinkConfig(BaseModel) (src/chronicler/config.py:179)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-284b0016a642",
+      "type": "class",
+      "name": "MatchCondition",
+      "filePath": "src/chronicler/config.py",
+      "summary": "class MatchCondition(BaseModel) (src/chronicler/config.py:204)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-339a7c3740ba",
+      "type": "class",
+      "name": "NoteworthinessThreshold",
+      "filePath": "src/chronicler/config.py",
+      "summary": "class NoteworthinessThreshold(float) (src/chronicler/config.py:43) ## Methods - __new__(cls, value: float) -> NoteworthinessThreshold",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-56dfee5e15e8",
+      "type": "class",
+      "name": "OtlpSourceConfig",
+      "filePath": "src/chronicler/config.py",
+      "summary": "class OtlpSourceConfig(BaseModel) (src/chronicler/config.py:86)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-1cc11fb921e0",
+      "type": "class",
+      "name": "CorrelationRuleConfig",
+      "filePath": "src/chronicler/config.py",
+      "summary": "class CorrelationRuleConfig(BaseModel) (src/chronicler/config.py:211)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-11efce50734d",
+      "type": "class",
+      "name": "DiskSinkConfig",
+      "filePath": "src/chronicler/config.py",
+      "summary": "class DiskSinkConfig(BaseModel) (src/chronicler/config.py:166)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-6692d4bf2009",
+      "type": "class",
+      "name": "FilePath",
+      "filePath": "src/chronicler/config.py",
+      "summary": "class FilePath(str) (src/chronicler/config.py:35) ## Methods - __new__(cls, value: str) -> FilePath",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-e9d2c2ade91c",
+      "type": "class",
+      "name": "FileSourceConfig",
+      "filePath": "src/chronicler/config.py",
+      "summary": "class FileSourceConfig(BaseModel) (src/chronicler/config.py:100)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-dde721bf6944",
+      "type": "class",
+      "name": "KindexConfig",
+      "filePath": "src/chronicler/config.py",
+      "summary": "class KindexConfig(BaseModel) (src/chronicler/config.py:221)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-6d1810e93591",
+      "type": "class",
+      "name": "ApprenticeSinkConfig",
+      "filePath": "src/chronicler/config.py",
+      "summary": "class ApprenticeSinkConfig(BaseModel) (src/chronicler/config.py:153)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-077b50d0e0c9",
+      "type": "class",
+      "name": "ChroniclerConfig",
+      "filePath": "src/chronicler/config.py",
+      "summary": "class ChroniclerConfig(BaseModel) (src/chronicler/config.py:230)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-44b290e0cee1",
+      "type": "class",
+      "name": "ConfigError",
+      "filePath": "src/chronicler/config.py",
+      "summary": "class ConfigError(Exception) (src/chronicler/config.py:53)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-c67e05e1fea5",
+      "type": "class",
+      "name": "ReeveChroniclerEvent",
+      "filePath": "src/chronicler/http_service.py",
+      "summary": "class ReeveChroniclerEvent(BaseModel) (src/chronicler/http_service.py:24)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-d87968aad282",
+      "type": "class",
+      "name": "Event",
+      "filePath": "src/chronicler/schemas.py",
+      "summary": "class Event(BaseModel) (src/chronicler/schemas.py:248)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-8faed57d76d5",
+      "type": "class",
+      "name": "StoryId",
+      "filePath": "src/chronicler/schemas.py",
+      "summary": "class StoryId(str) (src/chronicler/schemas.py:82) ## Methods - __new__(cls, value: str) -> StoryId",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-191b39c77b7b",
+      "type": "class",
+      "name": "StoryFilter",
+      "filePath": "contracts/engine_cli_mcp/interface.py",
+      "summary": "class StoryFilter(Enum) (contracts/engine_cli_mcp/interface.py:85)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-99dee4b2a6a1",
+      "type": "class",
+      "name": "StoryListResult",
+      "filePath": "contracts/engine_cli_mcp/interface.py",
+      "summary": "class StoryListResult (contracts/engine_cli_mcp/interface.py:103)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-45b3d1718e7c",
+      "type": "class",
+      "name": "StorySummary",
+      "filePath": "contracts/engine_cli_mcp/interface.py",
+      "summary": "class StorySummary (contracts/engine_cli_mcp/interface.py:93)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-27d4554af47f",
+      "type": "class",
+      "name": "StoryFilter",
+      "filePath": "src/chronicler/engine_cli_mcp.py",
+      "summary": "class StoryFilter(str, Enum) (src/chronicler/engine_cli_mcp.py:44)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-30da25f91148",
+      "type": "class",
+      "name": "StoryId",
+      "filePath": "src/chronicler/engine_cli_mcp.py",
+      "summary": "class StoryId(BaseModel) (src/chronicler/engine_cli_mcp.py:82)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-66965d16f370",
+      "type": "class",
+      "name": "StoryListResult",
+      "filePath": "src/chronicler/engine_cli_mcp.py",
+      "summary": "class StoryListResult(BaseModel) (src/chronicler/engine_cli_mcp.py:141)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-4122e644545e",
+      "type": "class",
+      "name": "StorySummary",
+      "filePath": "src/chronicler/engine_cli_mcp.py",
+      "summary": "class StorySummary(BaseModel) (src/chronicler/engine_cli_mcp.py:130)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-17d93e884ef8",
+      "type": "class",
+      "name": "MemoryLimitsConfig",
+      "filePath": "src/chronicler/schemas.py",
+      "summary": "class MemoryLimitsConfig(BaseModel) (src/chronicler/schemas.py:668)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-99d626dc5940",
+      "type": "class",
+      "name": "NoteworthinessFilter",
+      "filePath": "src/chronicler/schemas.py",
+      "summary": "class NoteworthinessFilter(BaseModel) (src/chronicler/schemas.py:647)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-9f71f4b9710e",
+      "type": "class",
+      "name": "SinkType",
+      "filePath": "src/chronicler/schemas.py",
+      "summary": "class SinkType(str, Enum) (src/chronicler/schemas.py:198)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-efde929872eb",
+      "type": "class",
+      "name": "SourceType",
+      "filePath": "src/chronicler/schemas.py",
+      "summary": "class SourceType(str, Enum) (src/chronicler/schemas.py:190)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-cb22f3e917d2",
+      "type": "class",
+      "name": "ReplayFileSpec",
+      "filePath": "contracts/engine_cli_mcp/interface.py",
+      "summary": "class ReplayFileSpec (contracts/engine_cli_mcp/interface.py:119)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-24cf5f28c988",
+      "type": "class",
+      "name": "ReplayResult",
+      "filePath": "contracts/engine_cli_mcp/interface.py",
+      "summary": "class ReplayResult (contracts/engine_cli_mcp/interface.py:109)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-712c1595df9d",
+      "type": "class",
+      "name": "SinkHealth",
+      "filePath": "contracts/engine_cli_mcp/interface.py",
+      "summary": "class SinkHealth(Enum) (contracts/engine_cli_mcp/interface.py:35)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-d82273315be5",
+      "type": "class",
+      "name": "SinkStatus",
+      "filePath": "contracts/engine_cli_mcp/interface.py",
+      "summary": "class SinkStatus (contracts/engine_cli_mcp/interface.py:50)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-792707374cdd",
+      "type": "class",
+      "name": "SourceHealth",
+      "filePath": "contracts/engine_cli_mcp/interface.py",
+      "summary": "class SourceHealth(Enum) (contracts/engine_cli_mcp/interface.py:28)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-226853042644",
+      "type": "class",
+      "name": "SourceStatus",
+      "filePath": "contracts/engine_cli_mcp/interface.py",
+      "summary": "class SourceStatus (contracts/engine_cli_mcp/interface.py:42)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-6a5955012fa9",
+      "type": "class",
+      "name": "ReplayFileSpec",
+      "filePath": "src/chronicler/engine_cli_mcp.py",
+      "summary": "class ReplayFileSpec(BaseModel) (src/chronicler/engine_cli_mcp.py:159)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-b0fb260f5961",
+      "type": "class",
+      "name": "ReplayResult",
+      "filePath": "src/chronicler/engine_cli_mcp.py",
+      "summary": "class ReplayResult(BaseModel) (src/chronicler/engine_cli_mcp.py:148)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-224eb73e8bbb",
+      "type": "class",
+      "name": "SinkHealth",
+      "filePath": "src/chronicler/engine_cli_mcp.py",
+      "summary": "class SinkHealth(str, Enum) (src/chronicler/engine_cli_mcp.py:37)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-39df21a8c2b5",
+      "type": "class",
+      "name": "SinkStatus",
+      "filePath": "src/chronicler/engine_cli_mcp.py",
+      "summary": "class SinkStatus(BaseModel) (src/chronicler/engine_cli_mcp.py:98)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-f687415b4545",
+      "type": "class",
+      "name": "SourceHealth",
+      "filePath": "src/chronicler/engine_cli_mcp.py",
+      "summary": "class SourceHealth(str, Enum) (src/chronicler/engine_cli_mcp.py:30)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-c50c8c28682b",
+      "type": "class",
+      "name": "SourceStatus",
+      "filePath": "src/chronicler/engine_cli_mcp.py",
+      "summary": "class SourceStatus(BaseModel) (src/chronicler/engine_cli_mcp.py:89)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-b2781a5c6a12",
+      "type": "class",
+      "name": "MemoryLimitsConfig",
+      "filePath": "contracts/schemas/interface.py",
+      "summary": "class MemoryLimitsConfig (contracts/schemas/interface.py:186)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-862c9be7ec58",
+      "type": "class",
+      "name": "NoteworthinessFilter",
+      "filePath": "contracts/schemas/interface.py",
+      "summary": "class NoteworthinessFilter (contracts/schemas/interface.py:170)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-51ff15c15d8a",
+      "type": "class",
+      "name": "SinkType",
+      "filePath": "contracts/schemas/interface.py",
+      "summary": "class SinkType(Enum) (contracts/schemas/interface.py:145)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-d02c653fe13b",
+      "type": "class",
+      "name": "Event",
+      "filePath": "contracts/schemas/interface.py",
+      "summary": "class Event (contracts/schemas/interface.py:57)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-6f083624b5fa",
+      "type": "class",
+      "name": "McpToolName",
+      "filePath": "contracts/engine_cli_mcp/interface.py",
+      "summary": "class McpToolName(Enum) (contracts/engine_cli_mcp/interface.py:132)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-0352fc5286a1",
+      "type": "class",
+      "name": "McpToolResult",
+      "filePath": "contracts/engine_cli_mcp/interface.py",
+      "summary": "class McpToolResult (contracts/engine_cli_mcp/interface.py:139)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-3a003cd3caa6",
+      "type": "class",
+      "name": "McpToolName",
+      "filePath": "src/chronicler/engine_cli_mcp.py",
+      "summary": "class McpToolName(str, Enum) (src/chronicler/engine_cli_mcp.py:50)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-d9799db2619b",
+      "type": "class",
+      "name": "McpToolResult",
+      "filePath": "src/chronicler/engine_cli_mcp.py",
+      "summary": "class McpToolResult(BaseModel) (src/chronicler/engine_cli_mcp.py:165)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-107acde13bd5",
+      "type": "class",
+      "name": "CloseReason",
+      "filePath": "src/chronicler/schemas.py",
+      "summary": "class CloseReason(str, Enum) (src/chronicler/schemas.py:183)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-82b2b67ff807",
+      "type": "class",
+      "name": "CorrelationRule",
+      "filePath": "src/chronicler/schemas.py",
+      "summary": "class CorrelationRule(BaseModel) (src/chronicler/schemas.py:675)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-105e722d55c5",
+      "type": "class",
+      "name": "EntityId",
+      "filePath": "src/chronicler/schemas.py",
+      "summary": "class EntityId(str) (src/chronicler/schemas.py:55) ## Methods - __new__(cls, value: str) -> EntityId",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-864dacec5922",
+      "type": "class",
+      "name": "EntityKind",
+      "filePath": "src/chronicler/schemas.py",
+      "summary": "class EntityKind(str) (src/chronicler/schemas.py:41) ## Methods - __new__(cls, value: str) -> EntityKind",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-de05eff1fcdd",
+      "type": "class",
+      "name": "OtlpSourceConfig",
+      "filePath": "src/chronicler/schemas.py",
+      "summary": "class OtlpSourceConfig(BaseModel) (src/chronicler/schemas.py:593)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-e4ce75b24064",
+      "type": "class",
+      "name": "CloseReason",
+      "filePath": "contracts/schemas/interface.py",
+      "summary": "class CloseReason(Enum) (contracts/schemas/interface.py:51)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-05da5b4799ea",
+      "type": "class",
+      "name": "CorrelationRule",
+      "filePath": "contracts/schemas/interface.py",
+      "summary": "class CorrelationRule (contracts/schemas/interface.py:95)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-f2a206fc7629",
+      "type": "class",
+      "name": "OtlpSourceConfig",
+      "filePath": "contracts/schemas/interface.py",
+      "summary": "class OtlpSourceConfig (contracts/schemas/interface.py:122)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-f731da3b2721",
+      "type": "class",
+      "name": "EngineConfig",
+      "filePath": "contracts/engine_cli_mcp/interface.py",
+      "summary": "class EngineConfig (contracts/engine_cli_mcp/interface.py:77)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-3cab4248a286",
+      "type": "class",
+      "name": "EnginePhase",
+      "filePath": "contracts/engine_cli_mcp/interface.py",
+      "summary": "class EnginePhase(Enum) (contracts/engine_cli_mcp/interface.py:19)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-8d95353a8c56",
+      "type": "class",
+      "name": "EngineStatus",
+      "filePath": "contracts/engine_cli_mcp/interface.py",
+      "summary": "class EngineStatus (contracts/engine_cli_mcp/interface.py:59)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-cd788b9e702f",
+      "type": "class",
+      "name": "EngineConfig",
+      "filePath": "src/chronicler/engine_cli_mcp.py",
+      "summary": "class EngineConfig(BaseModel) (src/chronicler/engine_cli_mcp.py:121)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-41ffe5e6b75a",
+      "type": "class",
+      "name": "EnginePhase",
+      "filePath": "src/chronicler/engine_cli_mcp.py",
+      "summary": "class EnginePhase(str, Enum) (src/chronicler/engine_cli_mcp.py:21)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-a58f37acae67",
+      "type": "class",
+      "name": "EngineStatus",
+      "filePath": "src/chronicler/engine_cli_mcp.py",
+      "summary": "class EngineStatus(BaseModel) (src/chronicler/engine_cli_mcp.py:108)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-b6fa727e5353",
+      "type": "class",
+      "name": "ChroniclerConfig",
+      "filePath": "src/chronicler/schemas.py",
+      "summary": "class ChroniclerConfig(BaseModel) (src/chronicler/schemas.py:697)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-fc266e0859fa",
+      "type": "class",
+      "name": "ApprenticeSinkConfig",
+      "filePath": "contracts/schemas/interface.py",
+      "summary": "class ApprenticeSinkConfig (contracts/schemas/interface.py:158) [Merged from: ApprenticeSinkConfig] class ApprenticeSinkConfig (contracts/config/interface.py:64)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-378b882705e7",
+      "type": "class",
+      "name": "ChroniclerConfig",
+      "filePath": "contracts/schemas/interface.py",
+      "summary": "class ChroniclerConfig (contracts/schemas/interface.py:191) [Merged from: ChroniclerConfig] class ChroniclerConfig (contracts/config/interface.py:102)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-0daf2168e3e2",
+      "type": "class",
+      "name": "DiskSinkConfig",
+      "filePath": "contracts/schemas/interface.py",
+      "summary": "class DiskSinkConfig (contracts/schemas/interface.py:164) [Merged from: DiskSinkConfig] class DiskSinkConfig (contracts/sinks/interface.py:26)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-7c044b4afe14",
+      "type": "class",
+      "name": "FileSourceConfig",
+      "filePath": "contracts/schemas/interface.py",
+      "summary": "class FileSourceConfig (contracts/schemas/interface.py:129) [Merged from: FileSourceConfig] class FileSourceConfig (contracts/config/interface.py:45)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-e45cb62ae75f",
+      "type": "class",
+      "name": "KindexSinkConfig",
+      "filePath": "contracts/schemas/interface.py",
+      "summary": "class KindexSinkConfig (contracts/schemas/interface.py:177) [Merged from: KindexSinkConfig] class KindexSinkConfig (contracts/sinks/interface.py:33)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-mod-chronicler-a590a5c3076c",
+      "type": "file",
+      "name": "src/chronicler/schemas.py",
+      "filePath": "src/chronicler/schemas.py",
+      "summary": "Language: Python | Path: src/chronicler/schemas.py | ~828 lines ## Classes - ActorId(str)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 44,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "artifact",
+        "toolTier": "C"
+      }
+    },
+    {
+      "id": "code-sym-chronicler-63fd435fbdc6",
+      "type": "class",
+      "name": "ActorId",
+      "filePath": "src/chronicler/schemas.py",
+      "summary": "class ActorId(str) (src/chronicler/schemas.py:63) ## Methods - __new__(cls, value: str) -> ActorId",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-ffa1c4c62bae",
+      "type": "class",
+      "name": "ApprenticeSinkConfig",
+      "filePath": "src/chronicler/schemas.py",
+      "summary": "class ApprenticeSinkConfig(BaseModel) (src/chronicler/schemas.py:631)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-b991577cd9dd",
+      "type": "class",
+      "name": "AwareDatetime",
+      "filePath": "src/chronicler/schemas.py",
+      "summary": "class AwareDatetime(datetime) (src/chronicler/schemas.py:100) ## Methods - __new__(cls, *args, **kwargs)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-04067cbc4b5f",
+      "type": "class",
+      "name": "ContextDict",
+      "filePath": "src/chronicler/schemas.py",
+      "summary": "class ContextDict(dict) (src/chronicler/schemas.py:111) ## Methods - __bool__(self)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-e21a35741e96",
+      "type": "class",
+      "name": "CorrelationKeys",
+      "filePath": "src/chronicler/schemas.py",
+      "summary": "class CorrelationKeys(dict) (src/chronicler/schemas.py:131) ## Methods - __bool__(self)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-bf21eb358f7d",
+      "type": "class",
+      "name": "DiskSinkConfig",
+      "filePath": "src/chronicler/schemas.py",
+      "summary": "class DiskSinkConfig(BaseModel) (src/chronicler/schemas.py:639)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-3fbfd4992384",
+      "type": "class",
+      "name": "EventKind",
+      "filePath": "src/chronicler/schemas.py",
+      "summary": "class EventKind(str) (src/chronicler/schemas.py:27) ## Methods - __new__(cls, value: str) -> EventKind",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-a2445695b7c2",
+      "type": "class",
+      "name": "EventKindSet",
+      "filePath": "src/chronicler/schemas.py",
+      "summary": "class EventKindSet(frozenset) (src/chronicler/schemas.py:159) ## Methods - __new__(cls, iterable=())",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-43b5ee3343e5",
+      "type": "class",
+      "name": "FileSourceConfig",
+      "filePath": "src/chronicler/schemas.py",
+      "summary": "class FileSourceConfig(BaseModel) (src/chronicler/schemas.py:602)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-e0c324f2da9d",
+      "type": "class",
+      "name": "KindexSinkConfig",
+      "filePath": "src/chronicler/schemas.py",
+      "summary": "class KindexSinkConfig(BaseModel) (src/chronicler/schemas.py:656)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-f012d386672a",
+      "type": "class",
+      "name": "SentinelSourceConfig",
+      "filePath": "src/chronicler/schemas.py",
+      "summary": "class SentinelSourceConfig(BaseModel) (src/chronicler/schemas.py:611)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-1d66e7d36852",
+      "type": "class",
+      "name": "Sha256Hex",
+      "filePath": "src/chronicler/schemas.py",
+      "summary": "class Sha256Hex(str) (src/chronicler/schemas.py:71) ## Methods - __new__(cls, value: str) -> Sha256Hex",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-3157f82c851a",
+      "type": "class",
+      "name": "SinkProtocol",
+      "filePath": "src/chronicler/schemas.py",
+      "summary": "class SinkProtocol(Protocol) (src/chronicler/schemas.py:819) ## Methods - emit(self, item) -> None",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 3,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-3f1d97f73723",
+      "type": "class",
+      "name": "SourceProtocol",
+      "filePath": "src/chronicler/schemas.py",
+      "summary": "class SourceProtocol(Protocol) (src/chronicler/schemas.py:811) ## Methods - start(self) -> None",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 3,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-5e56221ee90c",
+      "type": "class",
+      "name": "StigmergySinkConfig",
+      "filePath": "src/chronicler/schemas.py",
+      "summary": "class StigmergySinkConfig(BaseModel) (src/chronicler/schemas.py:623)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-7252d4009b7a",
+      "type": "class",
+      "name": "Story",
+      "filePath": "src/chronicler/schemas.py",
+      "summary": "class Story(BaseModel) (src/chronicler/schemas.py:296) ## Methods - model_copy(self, *, update=None, deep=False, **kwargs)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-2abf38466fbf",
+      "type": "class",
+      "name": "StoryStatus",
+      "filePath": "src/chronicler/schemas.py",
+      "summary": "class StoryStatus(str, Enum) (src/chronicler/schemas.py:177)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-a49df431456c",
+      "type": "class",
+      "name": "TerminalEventPattern",
+      "filePath": "src/chronicler/schemas.py",
+      "summary": "class TerminalEventPattern(dict) (src/chronicler/schemas.py:145) ## Methods - __bool__(self)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-18b33f3bcfee",
+      "type": "class",
+      "name": "WebhookSourceConfig",
+      "filePath": "src/chronicler/schemas.py",
+      "summary": "class WebhookSourceConfig(BaseModel) (src/chronicler/schemas.py:583)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-mod-chronicler-b6825c52b40c",
+      "type": "file",
+      "name": "contracts/sinks/interface.py",
+      "filePath": "contracts/sinks/interface.py",
+      "summary": "Language: Python | Path: contracts/sinks/interface.py | ~297 lines ## Classes - DiskSinkConfig",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 21,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "artifact",
+        "toolTier": "C"
+      }
+    },
+    {
+      "id": "code-sym-chronicler-861b5e4f73b1",
+      "type": "class",
+      "name": "SafeEmitOutcome",
+      "filePath": "contracts/sinks/interface.py",
+      "summary": "class SafeEmitOutcome (contracts/sinks/interface.py:51)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-c1c20e8a76fe",
+      "type": "class",
+      "name": "SinkEmitResult",
+      "filePath": "contracts/sinks/interface.py",
+      "summary": "class SinkEmitResult(Enum) (contracts/sinks/interface.py:45)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-067d7cfbd53a",
+      "type": "class",
+      "name": "SinkName",
+      "filePath": "contracts/sinks/interface.py",
+      "summary": "class SinkName(Enum) (contracts/sinks/interface.py:19)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-19103382ae81",
+      "type": "class",
+      "name": "Story",
+      "filePath": "contracts/sinks/interface.py",
+      "summary": "class Story (contracts/sinks/interface.py:58)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-mod-chronicler-786981c58af5",
+      "type": "file",
+      "name": "src/chronicler/sinks/apprentice.py",
+      "filePath": "src/chronicler/sinks/apprentice.py",
+      "summary": "Language: Python | Path: src/chronicler/sinks/apprentice.py | ~25 lines ## Classes - ApprenticeSink",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "artifact",
+        "toolTier": "C"
+      }
+    },
+    {
+      "id": "code-sym-chronicler-2f4c05a9f5c8",
+      "type": "class",
+      "name": "ApprenticeSink",
+      "filePath": "src/chronicler/sinks/apprentice.py",
+      "summary": "class ApprenticeSink (src/chronicler/sinks/apprentice.py:10) ## Methods - close(self) -> None",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 3,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-mod-chronicler-a64f3b8b302b",
+      "type": "file",
+      "name": "contracts/config/interface.py",
+      "filePath": "contracts/config/interface.py",
+      "summary": "Language: Python | Path: contracts/config/interface.py | ~160 lines ## Classes - ApprenticeSinkConfig",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 17,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "artifact",
+        "toolTier": "C"
+      }
+    },
+    {
+      "id": "code-sym-chronicler-208c888469ad",
+      "type": "class",
+      "name": "ConfigError",
+      "filePath": "contracts/config/interface.py",
+      "summary": "class ConfigError (contracts/config/interface.py:111)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-0d75c9331a4d",
+      "type": "class",
+      "name": "CorrelationRuleConfig",
+      "filePath": "contracts/config/interface.py",
+      "summary": "class CorrelationRuleConfig (contracts/config/interface.py:87)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-33f76be3129f",
+      "type": "class",
+      "name": "KindexConfig",
+      "filePath": "contracts/config/interface.py",
+      "summary": "class KindexConfig (contracts/config/interface.py:96)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-mod-chronicler-5a922842c92a",
+      "type": "file",
+      "name": "contracts/engine_cli_mcp/interface.py",
+      "filePath": "contracts/engine_cli_mcp/interface.py",
+      "summary": "Language: Python | Path: contracts/engine_cli_mcp/interface.py | ~590 lines ## Classes - CliExitCode(Enum)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 35,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "artifact",
+        "toolTier": "C"
+      }
+    },
+    {
+      "id": "code-mod-chronicler-153c2e17ab4a",
+      "type": "file",
+      "name": "src/chronicler/engine_cli_mcp.py",
+      "filePath": "src/chronicler/engine_cli_mcp.py",
+      "summary": "Language: Python | Path: src/chronicler/engine_cli_mcp.py | ~355 lines ## Classes - ChroniclerEngine",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 31,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "artifact",
+        "toolTier": "C"
+      }
+    },
+    {
+      "id": "code-sym-chronicler-f278c5906a43",
+      "type": "class",
+      "name": "ChroniclerEngine",
+      "filePath": "src/chronicler/engine_cli_mcp.py",
+      "summary": "class ChroniclerEngine (src/chronicler/engine_cli_mcp.py:175) ## Methods - __aenter__(self)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 7,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-62ccc1bb1d6f",
+      "type": "class",
+      "name": "CliExitCode",
+      "filePath": "src/chronicler/engine_cli_mcp.py",
+      "summary": "class CliExitCode(int, Enum) (src/chronicler/engine_cli_mcp.py:57)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-c3b1122d8122",
+      "type": "class",
+      "name": "DatetimeISO",
+      "filePath": "src/chronicler/engine_cli_mcp.py",
+      "summary": "class DatetimeISO(BaseModel) (src/chronicler/engine_cli_mcp.py:72)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-16ca586dc909",
+      "type": "class",
+      "name": "QueueBound",
+      "filePath": "src/chronicler/engine_cli_mcp.py",
+      "summary": "class QueueBound(BaseModel) (src/chronicler/engine_cli_mcp.py:77)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-mod-chronicler-1b112e6e06f1",
+      "type": "file",
+      "name": "contracts/schemas/interface.py",
+      "filePath": "contracts/schemas/interface.py",
+      "summary": "Language: Python | Path: contracts/schemas/interface.py | ~579 lines ## Classes - ApprenticeSinkConfig",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 31,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "artifact",
+        "toolTier": "C"
+      }
+    },
+    {
+      "id": "code-sym-chronicler-d8cf8f2b5591",
+      "type": "class",
+      "name": "SentinelSourceConfig",
+      "filePath": "contracts/schemas/interface.py",
+      "summary": "class SentinelSourceConfig (contracts/schemas/interface.py:136)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "Python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-ba33d05e51fd",
+      "type": "concept",
+      "name": "DiskSinkConfig",
+      "filePath": "/Users/jmcentire/Code/chronicler/contracts/sinks/interface.py:26",
+      "summary": "class DiskSinkConfig (contracts/sinks/interface.py:26)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-55d1a0916e29",
+      "type": "concept",
+      "name": "KindexSinkConfig",
+      "filePath": "/Users/jmcentire/Code/chronicler/contracts/sinks/interface.py:33",
+      "summary": "class KindexSinkConfig (contracts/sinks/interface.py:33)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-020756f5cfe2",
+      "type": "concept",
+      "name": "ApprenticeSinkConfig",
+      "filePath": "/Users/jmcentire/Code/chronicler/contracts/config/interface.py:64",
+      "summary": "class ApprenticeSinkConfig (contracts/config/interface.py:64)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-beff596a33b4",
+      "type": "concept",
+      "name": "ChroniclerConfig",
+      "filePath": "/Users/jmcentire/Code/chronicler/contracts/config/interface.py:102",
+      "summary": "class ChroniclerConfig (contracts/config/interface.py:102)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-bc606a679a43",
+      "type": "concept",
+      "name": "DiskSinkConfig",
+      "filePath": "/Users/jmcentire/Code/chronicler/contracts/config/interface.py:69",
+      "summary": "class DiskSinkConfig (contracts/config/interface.py:69) [Merged from: DiskSinkConfig] class DiskSinkConfig (contracts/sinks/interface.py:26)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-063b61496920",
+      "type": "concept",
+      "name": "FileSourceConfig",
+      "filePath": "/Users/jmcentire/Code/chronicler/contracts/config/interface.py:45",
+      "summary": "class FileSourceConfig (contracts/config/interface.py:45)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-6f7edf59aad0",
+      "type": "concept",
+      "name": "KindexSinkConfig",
+      "filePath": "/Users/jmcentire/Code/chronicler/contracts/config/interface.py:74",
+      "summary": "class KindexSinkConfig (contracts/config/interface.py:74) [Merged from: KindexSinkConfig] class KindexSinkConfig (contracts/sinks/interface.py:33)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    },
+    {
+      "id": "code-sym-chronicler-b2841bdb0578",
+      "type": "concept",
+      "name": "CliExitCode",
+      "filePath": "/Users/jmcentire/Code/chronicler/contracts/engine_cli_mcp/interface.py:124",
+      "summary": "class CliExitCode(Enum) (contracts/engine_cli_mcp/interface.py:124) [Merged from: CliExitCode] class CliExitCode(Enum) (contracts/cli/interface.py:16)",
+      "tags": [
+        "code",
+        "python"
+      ],
+      "complexity": 1,
+      "languageNotes": {
+        "language": "python",
+        "kindexType": "concept",
+        "toolTier": ""
+      }
+    }
+  ],
+  "edges": [
+    {
+      "source": "code-sym-chronicler-c1053a7e9cef",
+      "target": "code-mod-chronicler-81cefb7a54db",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-80977b087385",
+      "target": "code-mod-chronicler-b70a20eb1868",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-3e5d038a8039",
+      "target": "code-mod-chronicler-b70a20eb1868",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-a1d6690df95c",
+      "target": "code-mod-chronicler-213754b771d6",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-3a107f29c8b2",
+      "target": "code-mod-chronicler-be160674a046",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-773f82c2b067",
+      "target": "code-mod-chronicler-be160674a046",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-3e12ef68483d",
+      "target": "code-mod-chronicler-be160674a046",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-a21b0df94938",
+      "target": "code-mod-chronicler-ccdeaf23f639",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-a83248b83242",
+      "target": "code-mod-chronicler-fa8c4fca9b95",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-cc58abe13852",
+      "target": "code-mod-chronicler-fa8c4fca9b95",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-54678ad39e76",
+      "target": "code-mod-chronicler-25ce0b4f9578",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-137e8cf8881f",
+      "target": "code-mod-chronicler-25ce0b4f9578",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-1298ba5795b2",
+      "target": "code-mod-chronicler-25ce0b4f9578",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-6c940d82e495",
+      "target": "code-mod-chronicler-ccdeaf23f639",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-cabb682c0130",
+      "target": "code-mod-chronicler-389a002d2c0c",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-8048d5e0a765",
+      "target": "code-mod-chronicler-25ce0b4f9578",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-de1cea0f2f6c",
+      "target": "code-mod-chronicler-25ce0b4f9578",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-5ace79df5182",
+      "target": "code-mod-chronicler-25ce0b4f9578",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-564c3a53ba11",
+      "target": "code-mod-chronicler-389a002d2c0c",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-ed9c72b77366",
+      "target": "code-mod-chronicler-2dd3a4697241",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-bd4ee3ed7ec5",
+      "target": "code-mod-chronicler-2dd3a4697241",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-c5965c6c4373",
+      "target": "code-mod-chronicler-cb8daade2607",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-62d2f2c83e5f",
+      "target": "code-mod-chronicler-2dd3a4697241",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-55e41a8fa0b9",
+      "target": "code-mod-chronicler-2dd3a4697241",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-d605ba76e47e",
+      "target": "code-mod-chronicler-2dd3a4697241",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-dc2e6f6e564a",
+      "target": "code-mod-chronicler-2dd3a4697241",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-74e5f9aa7f01",
+      "target": "code-mod-chronicler-2dd3a4697241",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-68a56fb045cb",
+      "target": "code-mod-chronicler-2dd3a4697241",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-3e78c7d676a0",
+      "target": "code-mod-chronicler-2dd3a4697241",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-5cd935507493",
+      "target": "code-mod-chronicler-2dd3a4697241",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-d6dedb8c04f0",
+      "target": "code-mod-chronicler-2dd3a4697241",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-80f48a1510db",
+      "target": "code-mod-chronicler-2dd3a4697241",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-1d5657823253",
+      "target": "code-mod-chronicler-2dd3a4697241",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-0e731c6fa223",
+      "target": "code-mod-chronicler-2dd3a4697241",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-4960fb7ae058",
+      "target": "code-mod-chronicler-2dd3a4697241",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-9e57eb9f8d2b",
+      "target": "code-mod-chronicler-2dd3a4697241",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-39636b2de597",
+      "target": "code-mod-chronicler-2dd3a4697241",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-5491af06298a",
+      "target": "code-mod-chronicler-2dd3a4697241",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-882df6cc1b88",
+      "target": "code-mod-chronicler-2dd3a4697241",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-c551263fb03c",
+      "target": "code-mod-chronicler-2dd3a4697241",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-e7ce6177935c",
+      "target": "code-mod-chronicler-2dd3a4697241",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-e2b8d93b169c",
+      "target": "code-mod-chronicler-2dd3a4697241",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-07ab5d1517f0",
+      "target": "code-mod-chronicler-2dd3a4697241",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-d55c658a491d",
+      "target": "code-mod-chronicler-2dd3a4697241",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-15f14d4f1438",
+      "target": "code-mod-chronicler-2dd3a4697241",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-d8f5594e05e5",
+      "target": "code-mod-chronicler-2e84ba5f1926",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-cee5cce58b59",
+      "target": "code-mod-chronicler-2e84ba5f1926",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-7567a1699b75",
+      "target": "code-mod-chronicler-2dd3a4697241",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-382df7a446ea",
+      "target": "code-mod-chronicler-2e84ba5f1926",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-d22c342dc517",
+      "target": "code-mod-chronicler-2e84ba5f1926",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-fd5d1c70aee7",
+      "target": "code-mod-chronicler-2e84ba5f1926",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-d310bba0fe4f",
+      "target": "code-mod-chronicler-2e84ba5f1926",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-8c2ccf558717",
+      "target": "code-mod-chronicler-2e84ba5f1926",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-2255adf09c2e",
+      "target": "code-mod-chronicler-2e84ba5f1926",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-4de890105ee0",
+      "target": "code-mod-chronicler-2e84ba5f1926",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-d36c23a929e1",
+      "target": "code-mod-chronicler-2e84ba5f1926",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-fc9313a7f863",
+      "target": "code-mod-chronicler-2e84ba5f1926",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-dbf9786b1057",
+      "target": "code-mod-chronicler-2e84ba5f1926",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-7d8e11b9d3bf",
+      "target": "code-mod-chronicler-2e84ba5f1926",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-43fc7c9ed7dc",
+      "target": "code-mod-chronicler-2e84ba5f1926",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-0027dc0cbd2a",
+      "target": "code-mod-chronicler-2e84ba5f1926",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-735436485248",
+      "target": "code-mod-chronicler-fdb1c0d56cf2",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-4ea5b0e8a4f2",
+      "target": "code-mod-chronicler-5bc047d5c399",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-46b5e46e1b05",
+      "target": "code-mod-chronicler-5bc047d5c399",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-914453575cbf",
+      "target": "code-mod-chronicler-fdb1c0d56cf2",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-936e181e7809",
+      "target": "code-mod-chronicler-fdb1c0d56cf2",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-467c9e6de3d6",
+      "target": "code-mod-chronicler-fdb1c0d56cf2",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-ca8d27a3e418",
+      "target": "code-mod-chronicler-fdb1c0d56cf2",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-2e0aae3f5dd4",
+      "target": "code-mod-chronicler-fdb1c0d56cf2",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-9b788c6ce214",
+      "target": "code-mod-chronicler-fdb1c0d56cf2",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-416d72b22dd4",
+      "target": "code-mod-chronicler-fdb1c0d56cf2",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-60fb54447aa0",
+      "target": "code-mod-chronicler-fdb1c0d56cf2",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-0700ca5a72e1",
+      "target": "code-mod-chronicler-fdb1c0d56cf2",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-618a2fe5ecff",
+      "target": "code-mod-chronicler-fdb1c0d56cf2",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-e5c612013b7b",
+      "target": "code-mod-chronicler-fdb1c0d56cf2",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-dc999406fc3f",
+      "target": "code-mod-chronicler-fdb1c0d56cf2",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-3e221efd5361",
+      "target": "code-mod-chronicler-fdb1c0d56cf2",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-4c83ef655177",
+      "target": "code-mod-chronicler-fdb1c0d56cf2",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-29b04e78cd90",
+      "target": "code-mod-chronicler-fdb1c0d56cf2",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-49a967b4d41d",
+      "target": "code-mod-chronicler-3c742d80eead",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-296435500866",
+      "target": "code-mod-chronicler-fdb1c0d56cf2",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-ec0859ba516b",
+      "target": "code-mod-chronicler-3c742d80eead",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-3d8ad6460bda",
+      "target": "code-mod-chronicler-3c742d80eead",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-78dbedf22f9b",
+      "target": "code-mod-chronicler-3c742d80eead",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-b92b6f87aae8",
+      "target": "code-mod-chronicler-3c742d80eead",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-0b47e382dec5",
+      "target": "code-mod-chronicler-3c742d80eead",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-5fea8fac2b79",
+      "target": "code-mod-chronicler-3c742d80eead",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-87c711f1f8ef",
+      "target": "code-mod-chronicler-3c742d80eead",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-e4d8f9b8f617",
+      "target": "code-mod-chronicler-3c742d80eead",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-8f551a12a439",
+      "target": "code-mod-chronicler-3c742d80eead",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-9591d518da76",
+      "target": "code-mod-chronicler-3c742d80eead",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-85ac9eaa10f4",
+      "target": "code-mod-chronicler-3c742d80eead",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-51c8fcdefe60",
+      "target": "code-mod-chronicler-3c742d80eead",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-b17d207168e4",
+      "target": "code-mod-chronicler-3c742d80eead",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-5ed76dd72c68",
+      "target": "code-mod-chronicler-255ecb4a2784",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-efd3ab96478a",
+      "target": "code-mod-chronicler-3c742d80eead",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-526a3a552f49",
+      "target": "code-mod-chronicler-3c742d80eead",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-13699d010538",
+      "target": "code-mod-chronicler-3c742d80eead",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-7e4fed4faa8c",
+      "target": "code-mod-chronicler-255ecb4a2784",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-e6b86a2ffccf",
+      "target": "code-mod-chronicler-255ecb4a2784",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-02bb38957b45",
+      "target": "code-mod-chronicler-255ecb4a2784",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-00281823a5b3",
+      "target": "code-mod-chronicler-255ecb4a2784",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-91911710c9af",
+      "target": "code-mod-chronicler-255ecb4a2784",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-8f8e4d140b50",
+      "target": "code-mod-chronicler-255ecb4a2784",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-85854905889b",
+      "target": "code-mod-chronicler-255ecb4a2784",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-14bc62a79bda",
+      "target": "code-mod-chronicler-ea4067dcfbb9",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-f29508869a05",
+      "target": "code-mod-chronicler-ea4067dcfbb9",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-230c2787b05f",
+      "target": "code-mod-chronicler-ea4067dcfbb9",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-900d6b1771fd",
+      "target": "code-mod-chronicler-ea4067dcfbb9",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-48d4a5596506",
+      "target": "code-mod-chronicler-ea4067dcfbb9",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-442e89a94c6c",
+      "target": "code-mod-chronicler-ea4067dcfbb9",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-d38841fa1dea",
+      "target": "code-mod-chronicler-ea4067dcfbb9",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-97782442bd80",
+      "target": "code-mod-chronicler-ea4067dcfbb9",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-f26b1e52ca9c",
+      "target": "code-mod-chronicler-ea4067dcfbb9",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-a7ff299a1a3f",
+      "target": "code-mod-chronicler-ea4067dcfbb9",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-504355ae0f7b",
+      "target": "code-mod-chronicler-5d0c5c5a5b7d",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-56e8363e1d7d",
+      "target": "code-mod-chronicler-5d0c5c5a5b7d",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-f4b0f314dc4b",
+      "target": "code-mod-chronicler-ea4067dcfbb9",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-0edad314a2b8",
+      "target": "code-mod-chronicler-5d0c5c5a5b7d",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-7d84c3ec93de",
+      "target": "code-mod-chronicler-5d0c5c5a5b7d",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-aa951460efe1",
+      "target": "code-mod-chronicler-5d0c5c5a5b7d",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-6de491b97fc0",
+      "target": "code-mod-chronicler-5d0c5c5a5b7d",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-284b0016a642",
+      "target": "code-mod-chronicler-5d0c5c5a5b7d",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-339a7c3740ba",
+      "target": "code-mod-chronicler-5d0c5c5a5b7d",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-56dfee5e15e8",
+      "target": "code-mod-chronicler-5d0c5c5a5b7d",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-1cc11fb921e0",
+      "target": "code-mod-chronicler-5d0c5c5a5b7d",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-11efce50734d",
+      "target": "code-mod-chronicler-5d0c5c5a5b7d",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-6692d4bf2009",
+      "target": "code-mod-chronicler-5d0c5c5a5b7d",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-e9d2c2ade91c",
+      "target": "code-mod-chronicler-5d0c5c5a5b7d",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-dde721bf6944",
+      "target": "code-mod-chronicler-5d0c5c5a5b7d",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-6d1810e93591",
+      "target": "code-mod-chronicler-5d0c5c5a5b7d",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-077b50d0e0c9",
+      "target": "code-mod-chronicler-5d0c5c5a5b7d",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-44b290e0cee1",
+      "target": "code-mod-chronicler-5d0c5c5a5b7d",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-c67e05e1fea5",
+      "target": "code-mod-chronicler-0ea045375b45",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.6
+    },
+    {
+      "source": "code-sym-chronicler-d87968aad282",
+      "target": "code-mod-chronicler-a590a5c3076c",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-d87968aad282",
+      "target": "code-sym-chronicler-d02c653fe13b",
+      "type": "related",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-8faed57d76d5",
+      "target": "code-mod-chronicler-a590a5c3076c",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-8faed57d76d5",
+      "target": "code-sym-chronicler-30da25f91148",
+      "type": "related",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-191b39c77b7b",
+      "target": "code-mod-chronicler-5a922842c92a",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-191b39c77b7b",
+      "target": "code-sym-chronicler-27d4554af47f",
+      "type": "related",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-99dee4b2a6a1",
+      "target": "code-mod-chronicler-5a922842c92a",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-99dee4b2a6a1",
+      "target": "code-sym-chronicler-66965d16f370",
+      "type": "related",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-45b3d1718e7c",
+      "target": "code-mod-chronicler-5a922842c92a",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-45b3d1718e7c",
+      "target": "code-sym-chronicler-4122e644545e",
+      "type": "related",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-27d4554af47f",
+      "target": "code-mod-chronicler-153c2e17ab4a",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-27d4554af47f",
+      "target": "code-sym-chronicler-191b39c77b7b",
+      "type": "related",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-30da25f91148",
+      "target": "code-mod-chronicler-153c2e17ab4a",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-30da25f91148",
+      "target": "code-sym-chronicler-8faed57d76d5",
+      "type": "related",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-66965d16f370",
+      "target": "code-mod-chronicler-153c2e17ab4a",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-66965d16f370",
+      "target": "code-sym-chronicler-99dee4b2a6a1",
+      "type": "related",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-4122e644545e",
+      "target": "code-mod-chronicler-153c2e17ab4a",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-4122e644545e",
+      "target": "code-sym-chronicler-45b3d1718e7c",
+      "type": "related",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-17d93e884ef8",
+      "target": "code-mod-chronicler-a590a5c3076c",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-17d93e884ef8",
+      "target": "code-sym-chronicler-b2781a5c6a12",
+      "type": "related",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-99d626dc5940",
+      "target": "code-mod-chronicler-a590a5c3076c",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-99d626dc5940",
+      "target": "code-sym-chronicler-862c9be7ec58",
+      "type": "related",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-9f71f4b9710e",
+      "target": "code-mod-chronicler-a590a5c3076c",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-9f71f4b9710e",
+      "target": "code-sym-chronicler-51ff15c15d8a",
+      "type": "related",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-efde929872eb",
+      "target": "code-mod-chronicler-a590a5c3076c",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-cb22f3e917d2",
+      "target": "code-mod-chronicler-5a922842c92a",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-cb22f3e917d2",
+      "target": "code-sym-chronicler-6a5955012fa9",
+      "type": "related",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-24cf5f28c988",
+      "target": "code-mod-chronicler-5a922842c92a",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-24cf5f28c988",
+      "target": "code-sym-chronicler-b0fb260f5961",
+      "type": "related",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-712c1595df9d",
+      "target": "code-mod-chronicler-5a922842c92a",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-712c1595df9d",
+      "target": "code-sym-chronicler-224eb73e8bbb",
+      "type": "related",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-d82273315be5",
+      "target": "code-mod-chronicler-5a922842c92a",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-d82273315be5",
+      "target": "code-sym-chronicler-39df21a8c2b5",
+      "type": "related",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-792707374cdd",
+      "target": "code-mod-chronicler-5a922842c92a",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-792707374cdd",
+      "target": "code-sym-chronicler-f687415b4545",
+      "type": "related",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-226853042644",
+      "target": "code-mod-chronicler-5a922842c92a",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-226853042644",
+      "target": "code-sym-chronicler-c50c8c28682b",
+      "type": "related",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-6a5955012fa9",
+      "target": "code-mod-chronicler-153c2e17ab4a",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-6a5955012fa9",
+      "target": "code-sym-chronicler-cb22f3e917d2",
+      "type": "related",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-b0fb260f5961",
+      "target": "code-mod-chronicler-153c2e17ab4a",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-b0fb260f5961",
+      "target": "code-sym-chronicler-24cf5f28c988",
+      "type": "related",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-224eb73e8bbb",
+      "target": "code-mod-chronicler-153c2e17ab4a",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-224eb73e8bbb",
+      "target": "code-sym-chronicler-712c1595df9d",
+      "type": "related",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-39df21a8c2b5",
+      "target": "code-mod-chronicler-153c2e17ab4a",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-39df21a8c2b5",
+      "target": "code-sym-chronicler-d82273315be5",
+      "type": "related",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-f687415b4545",
+      "target": "code-mod-chronicler-153c2e17ab4a",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-f687415b4545",
+      "target": "code-sym-chronicler-792707374cdd",
+      "type": "related",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-c50c8c28682b",
+      "target": "code-mod-chronicler-153c2e17ab4a",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-c50c8c28682b",
+      "target": "code-sym-chronicler-226853042644",
+      "type": "related",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-b2781a5c6a12",
+      "target": "code-mod-chronicler-1b112e6e06f1",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-b2781a5c6a12",
+      "target": "code-sym-chronicler-17d93e884ef8",
+      "type": "related",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-862c9be7ec58",
+      "target": "code-mod-chronicler-1b112e6e06f1",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-862c9be7ec58",
+      "target": "code-sym-chronicler-99d626dc5940",
+      "type": "related",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-51ff15c15d8a",
+      "target": "code-mod-chronicler-1b112e6e06f1",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-51ff15c15d8a",
+      "target": "code-sym-chronicler-9f71f4b9710e",
+      "type": "related",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-d02c653fe13b",
+      "target": "code-mod-chronicler-1b112e6e06f1",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-d02c653fe13b",
+      "target": "code-sym-chronicler-d87968aad282",
+      "type": "related",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-6f083624b5fa",
+      "target": "code-mod-chronicler-5a922842c92a",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-6f083624b5fa",
+      "target": "code-sym-chronicler-3a003cd3caa6",
+      "type": "related",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-0352fc5286a1",
+      "target": "code-mod-chronicler-5a922842c92a",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-0352fc5286a1",
+      "target": "code-sym-chronicler-d9799db2619b",
+      "type": "related",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-3a003cd3caa6",
+      "target": "code-mod-chronicler-153c2e17ab4a",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-3a003cd3caa6",
+      "target": "code-sym-chronicler-6f083624b5fa",
+      "type": "related",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-d9799db2619b",
+      "target": "code-mod-chronicler-153c2e17ab4a",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-d9799db2619b",
+      "target": "code-sym-chronicler-0352fc5286a1",
+      "type": "related",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-107acde13bd5",
+      "target": "code-mod-chronicler-a590a5c3076c",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-107acde13bd5",
+      "target": "code-sym-chronicler-e4ce75b24064",
+      "type": "related",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-82b2b67ff807",
+      "target": "code-mod-chronicler-a590a5c3076c",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-82b2b67ff807",
+      "target": "code-sym-chronicler-05da5b4799ea",
+      "type": "related",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-105e722d55c5",
+      "target": "code-mod-chronicler-a590a5c3076c",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-105e722d55c5",
+      "target": "code-sym-chronicler-864dacec5922",
+      "type": "related",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-864dacec5922",
+      "target": "code-mod-chronicler-a590a5c3076c",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-864dacec5922",
+      "target": "code-sym-chronicler-105e722d55c5",
+      "type": "related",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-de05eff1fcdd",
+      "target": "code-mod-chronicler-a590a5c3076c",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-de05eff1fcdd",
+      "target": "code-sym-chronicler-f2a206fc7629",
+      "type": "related",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-e4ce75b24064",
+      "target": "code-mod-chronicler-1b112e6e06f1",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-e4ce75b24064",
+      "target": "code-sym-chronicler-107acde13bd5",
+      "type": "related",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-05da5b4799ea",
+      "target": "code-mod-chronicler-1b112e6e06f1",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-05da5b4799ea",
+      "target": "code-sym-chronicler-82b2b67ff807",
+      "type": "related",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-f2a206fc7629",
+      "target": "code-mod-chronicler-1b112e6e06f1",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-f2a206fc7629",
+      "target": "code-sym-chronicler-de05eff1fcdd",
+      "type": "related",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-f731da3b2721",
+      "target": "code-mod-chronicler-5a922842c92a",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-f731da3b2721",
+      "target": "code-sym-chronicler-cd788b9e702f",
+      "type": "related",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-3cab4248a286",
+      "target": "code-mod-chronicler-5a922842c92a",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-3cab4248a286",
+      "target": "code-sym-chronicler-41ffe5e6b75a",
+      "type": "related",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-8d95353a8c56",
+      "target": "code-mod-chronicler-5a922842c92a",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-8d95353a8c56",
+      "target": "code-sym-chronicler-a58f37acae67",
+      "type": "related",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-cd788b9e702f",
+      "target": "code-mod-chronicler-153c2e17ab4a",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-cd788b9e702f",
+      "target": "code-sym-chronicler-f731da3b2721",
+      "type": "related",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-41ffe5e6b75a",
+      "target": "code-mod-chronicler-153c2e17ab4a",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-41ffe5e6b75a",
+      "target": "code-sym-chronicler-3cab4248a286",
+      "type": "related",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-a58f37acae67",
+      "target": "code-mod-chronicler-153c2e17ab4a",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-a58f37acae67",
+      "target": "code-sym-chronicler-8d95353a8c56",
+      "type": "related",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-b6fa727e5353",
+      "target": "code-mod-chronicler-a590a5c3076c",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-fc266e0859fa",
+      "target": "code-mod-chronicler-1b112e6e06f1",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-fc266e0859fa",
+      "target": "code-mod-chronicler-a64f3b8b302b",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-378b882705e7",
+      "target": "code-mod-chronicler-1b112e6e06f1",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-378b882705e7",
+      "target": "code-mod-chronicler-a64f3b8b302b",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-0daf2168e3e2",
+      "target": "code-mod-chronicler-1b112e6e06f1",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-0daf2168e3e2",
+      "target": "code-mod-chronicler-a64f3b8b302b",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-0daf2168e3e2",
+      "target": "code-mod-chronicler-b6825c52b40c",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-7c044b4afe14",
+      "target": "code-mod-chronicler-1b112e6e06f1",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-7c044b4afe14",
+      "target": "code-mod-chronicler-a64f3b8b302b",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-e45cb62ae75f",
+      "target": "code-mod-chronicler-1b112e6e06f1",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-e45cb62ae75f",
+      "target": "code-mod-chronicler-a64f3b8b302b",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-e45cb62ae75f",
+      "target": "code-mod-chronicler-b6825c52b40c",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-63fd435fbdc6",
+      "target": "code-mod-chronicler-a590a5c3076c",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-ffa1c4c62bae",
+      "target": "code-mod-chronicler-a590a5c3076c",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-b991577cd9dd",
+      "target": "code-mod-chronicler-a590a5c3076c",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-04067cbc4b5f",
+      "target": "code-mod-chronicler-a590a5c3076c",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-e21a35741e96",
+      "target": "code-mod-chronicler-a590a5c3076c",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-bf21eb358f7d",
+      "target": "code-mod-chronicler-a590a5c3076c",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-3fbfd4992384",
+      "target": "code-mod-chronicler-a590a5c3076c",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-a2445695b7c2",
+      "target": "code-mod-chronicler-a590a5c3076c",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-43b5ee3343e5",
+      "target": "code-mod-chronicler-a590a5c3076c",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-e0c324f2da9d",
+      "target": "code-mod-chronicler-a590a5c3076c",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-f012d386672a",
+      "target": "code-mod-chronicler-a590a5c3076c",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-1d66e7d36852",
+      "target": "code-mod-chronicler-a590a5c3076c",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-3157f82c851a",
+      "target": "code-mod-chronicler-a590a5c3076c",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-3f1d97f73723",
+      "target": "code-mod-chronicler-a590a5c3076c",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-5e56221ee90c",
+      "target": "code-mod-chronicler-a590a5c3076c",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-7252d4009b7a",
+      "target": "code-mod-chronicler-a590a5c3076c",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-2abf38466fbf",
+      "target": "code-mod-chronicler-a590a5c3076c",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-a49df431456c",
+      "target": "code-mod-chronicler-a590a5c3076c",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-18b33f3bcfee",
+      "target": "code-mod-chronicler-a590a5c3076c",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-mod-chronicler-b6825c52b40c",
+      "target": "code-sym-chronicler-6f7edf59aad0",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-mod-chronicler-b6825c52b40c",
+      "target": "code-sym-chronicler-e45cb62ae75f",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-mod-chronicler-b6825c52b40c",
+      "target": "code-sym-chronicler-bc606a679a43",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-mod-chronicler-b6825c52b40c",
+      "target": "code-sym-chronicler-0daf2168e3e2",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-861b5e4f73b1",
+      "target": "code-mod-chronicler-b6825c52b40c",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-c1c20e8a76fe",
+      "target": "code-mod-chronicler-b6825c52b40c",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-067d7cfbd53a",
+      "target": "code-mod-chronicler-b6825c52b40c",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-19103382ae81",
+      "target": "code-mod-chronicler-b6825c52b40c",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-2f4c05a9f5c8",
+      "target": "code-mod-chronicler-786981c58af5",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-mod-chronicler-a64f3b8b302b",
+      "target": "code-sym-chronicler-e45cb62ae75f",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-mod-chronicler-a64f3b8b302b",
+      "target": "code-sym-chronicler-fc266e0859fa",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-mod-chronicler-a64f3b8b302b",
+      "target": "code-sym-chronicler-378b882705e7",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-mod-chronicler-a64f3b8b302b",
+      "target": "code-sym-chronicler-7c044b4afe14",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-mod-chronicler-a64f3b8b302b",
+      "target": "code-sym-chronicler-0daf2168e3e2",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-208c888469ad",
+      "target": "code-mod-chronicler-a64f3b8b302b",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-0d75c9331a4d",
+      "target": "code-mod-chronicler-a64f3b8b302b",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-33f76be3129f",
+      "target": "code-mod-chronicler-a64f3b8b302b",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-f278c5906a43",
+      "target": "code-mod-chronicler-153c2e17ab4a",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-62ccc1bb1d6f",
+      "target": "code-mod-chronicler-153c2e17ab4a",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-c3b1122d8122",
+      "target": "code-mod-chronicler-153c2e17ab4a",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-16ca586dc909",
+      "target": "code-mod-chronicler-153c2e17ab4a",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-d8cf8f2b5591",
+      "target": "code-mod-chronicler-1b112e6e06f1",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-ba33d05e51fd",
+      "target": "code-mod-chronicler-b6825c52b40c",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-55d1a0916e29",
+      "target": "code-mod-chronicler-b6825c52b40c",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-020756f5cfe2",
+      "target": "code-mod-chronicler-a64f3b8b302b",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-beff596a33b4",
+      "target": "code-mod-chronicler-a64f3b8b302b",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-bc606a679a43",
+      "target": "code-mod-chronicler-a64f3b8b302b",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-bc606a679a43",
+      "target": "code-mod-chronicler-b6825c52b40c",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-063b61496920",
+      "target": "code-mod-chronicler-a64f3b8b302b",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-6f7edf59aad0",
+      "target": "code-mod-chronicler-a64f3b8b302b",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-6f7edf59aad0",
+      "target": "code-mod-chronicler-b6825c52b40c",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.0108
+    },
+    {
+      "source": "code-sym-chronicler-b2841bdb0578",
+      "target": "code-mod-chronicler-5a922842c92a",
+      "type": "contains",
+      "direction": "outbound",
+      "weight": 0.0108
+    }
+  ],
+  "layers": [
+    {
+      "id": "core",
+      "name": "Core",
+      "description": "Kindex-inferred core layer.",
+      "nodeIds": [
+        "code-mod-chronicler-112ae72614ee",
+        "code-mod-chronicler-153c2e17ab4a",
+        "code-mod-chronicler-213754b771d6",
+        "code-mod-chronicler-255ecb4a2784",
+        "code-mod-chronicler-25ce0b4f9578",
+        "code-mod-chronicler-273aee9d1b26",
+        "code-mod-chronicler-2dd3a4697241",
+        "code-mod-chronicler-2e84ba5f1926",
+        "code-mod-chronicler-389a002d2c0c",
+        "code-mod-chronicler-3c742d80eead",
+        "code-mod-chronicler-4508c424311c",
+        "code-mod-chronicler-487035dddf61",
+        "code-mod-chronicler-5a922842c92a",
+        "code-mod-chronicler-5bc047d5c399",
+        "code-mod-chronicler-5d0c5c5a5b7d",
+        "code-mod-chronicler-786981c58af5",
+        "code-mod-chronicler-81cefb7a54db",
+        "code-mod-chronicler-a64f3b8b302b",
+        "code-mod-chronicler-b6825c52b40c",
+        "code-mod-chronicler-b70a20eb1868",
+        "code-mod-chronicler-be160674a046",
+        "code-mod-chronicler-c698a4772cc8",
+        "code-mod-chronicler-cb8daade2607",
+        "code-mod-chronicler-ccdeaf23f639",
+        "code-mod-chronicler-e7b431dc0210",
+        "code-mod-chronicler-ea4067dcfbb9",
+        "code-mod-chronicler-fa8c4fca9b95",
+        "code-mod-chronicler-fdb1c0d56cf2",
+        "code-sym-chronicler-020756f5cfe2",
+        "code-sym-chronicler-063b61496920",
+        "code-sym-chronicler-55d1a0916e29",
+        "code-sym-chronicler-6f7edf59aad0",
+        "code-sym-chronicler-b2841bdb0578",
+        "code-sym-chronicler-ba33d05e51fd",
+        "code-sym-chronicler-bc606a679a43",
+        "code-sym-chronicler-beff596a33b4"
+      ]
+    },
+    {
+      "id": "data",
+      "name": "Data",
+      "description": "Kindex-inferred data layer.",
+      "nodeIds": [
+        "code-mod-chronicler-1b112e6e06f1",
+        "code-mod-chronicler-a590a5c3076c"
+      ]
+    },
+    {
+      "id": "domain",
+      "name": "Domain",
+      "description": "Kindex-inferred domain layer.",
+      "nodeIds": [
+        "code-sym-chronicler-0027dc0cbd2a",
+        "code-sym-chronicler-00281823a5b3",
+        "code-sym-chronicler-02bb38957b45",
+        "code-sym-chronicler-0352fc5286a1",
+        "code-sym-chronicler-04067cbc4b5f",
+        "code-sym-chronicler-05da5b4799ea",
+        "code-sym-chronicler-067d7cfbd53a",
+        "code-sym-chronicler-0700ca5a72e1",
+        "code-sym-chronicler-077b50d0e0c9",
+        "code-sym-chronicler-07ab5d1517f0",
+        "code-sym-chronicler-0b47e382dec5",
+        "code-sym-chronicler-0d75c9331a4d",
+        "code-sym-chronicler-0daf2168e3e2",
+        "code-sym-chronicler-0e731c6fa223",
+        "code-sym-chronicler-0edad314a2b8",
+        "code-sym-chronicler-105e722d55c5",
+        "code-sym-chronicler-107acde13bd5",
+        "code-sym-chronicler-11efce50734d",
+        "code-sym-chronicler-1298ba5795b2",
+        "code-sym-chronicler-13699d010538",
+        "code-sym-chronicler-137e8cf8881f",
+        "code-sym-chronicler-14bc62a79bda",
+        "code-sym-chronicler-15f14d4f1438",
+        "code-sym-chronicler-16ca586dc909",
+        "code-sym-chronicler-17d93e884ef8",
+        "code-sym-chronicler-18b33f3bcfee",
+        "code-sym-chronicler-19103382ae81",
+        "code-sym-chronicler-191b39c77b7b",
+        "code-sym-chronicler-1cc11fb921e0",
+        "code-sym-chronicler-1d5657823253",
+        "code-sym-chronicler-1d66e7d36852",
+        "code-sym-chronicler-208c888469ad",
+        "code-sym-chronicler-224eb73e8bbb",
+        "code-sym-chronicler-2255adf09c2e",
+        "code-sym-chronicler-226853042644",
+        "code-sym-chronicler-230c2787b05f",
+        "code-sym-chronicler-24cf5f28c988",
+        "code-sym-chronicler-27d4554af47f",
+        "code-sym-chronicler-284b0016a642",
+        "code-sym-chronicler-296435500866",
+        "code-sym-chronicler-29b04e78cd90",
+        "code-sym-chronicler-2abf38466fbf",
+        "code-sym-chronicler-2e0aae3f5dd4",
+        "code-sym-chronicler-2f4c05a9f5c8",
+        "code-sym-chronicler-30da25f91148",
+        "code-sym-chronicler-3157f82c851a",
+        "code-sym-chronicler-339a7c3740ba",
+        "code-sym-chronicler-33f76be3129f",
+        "code-sym-chronicler-378b882705e7",
+        "code-sym-chronicler-382df7a446ea",
+        "code-sym-chronicler-39636b2de597",
+        "code-sym-chronicler-39df21a8c2b5",
+        "code-sym-chronicler-3a003cd3caa6",
+        "code-sym-chronicler-3a107f29c8b2",
+        "code-sym-chronicler-3cab4248a286",
+        "code-sym-chronicler-3d8ad6460bda",
+        "code-sym-chronicler-3e12ef68483d",
+        "code-sym-chronicler-3e221efd5361",
+        "code-sym-chronicler-3e5d038a8039",
+        "code-sym-chronicler-3e78c7d676a0",
+        "code-sym-chronicler-3f1d97f73723",
+        "code-sym-chronicler-3fbfd4992384",
+        "code-sym-chronicler-4122e644545e",
+        "code-sym-chronicler-416d72b22dd4",
+        "code-sym-chronicler-41ffe5e6b75a",
+        "code-sym-chronicler-43b5ee3343e5",
+        "code-sym-chronicler-43fc7c9ed7dc",
+        "code-sym-chronicler-442e89a94c6c",
+        "code-sym-chronicler-44b290e0cee1",
+        "code-sym-chronicler-45b3d1718e7c",
+        "code-sym-chronicler-467c9e6de3d6",
+        "code-sym-chronicler-46b5e46e1b05",
+        "code-sym-chronicler-48d4a5596506",
+        "code-sym-chronicler-4960fb7ae058",
+        "code-sym-chronicler-49a967b4d41d",
+        "code-sym-chronicler-4c83ef655177",
+        "code-sym-chronicler-4de890105ee0",
+        "code-sym-chronicler-4ea5b0e8a4f2",
+        "code-sym-chronicler-504355ae0f7b",
+        "code-sym-chronicler-51c8fcdefe60",
+        "code-sym-chronicler-51ff15c15d8a",
+        "code-sym-chronicler-526a3a552f49",
+        "code-sym-chronicler-54678ad39e76",
+        "code-sym-chronicler-5491af06298a",
+        "code-sym-chronicler-55e41a8fa0b9",
+        "code-sym-chronicler-564c3a53ba11",
+        "code-sym-chronicler-56dfee5e15e8",
+        "code-sym-chronicler-56e8363e1d7d",
+        "code-sym-chronicler-5ace79df5182",
+        "code-sym-chronicler-5cd935507493",
+        "code-sym-chronicler-5e56221ee90c",
+        "code-sym-chronicler-5ed76dd72c68",
+        "code-sym-chronicler-5fea8fac2b79",
+        "code-sym-chronicler-60fb54447aa0",
+        "code-sym-chronicler-618a2fe5ecff",
+        "code-sym-chronicler-62ccc1bb1d6f",
+        "code-sym-chronicler-62d2f2c83e5f",
+        "code-sym-chronicler-63fd435fbdc6",
+        "code-sym-chronicler-6692d4bf2009",
+        "code-sym-chronicler-66965d16f370",
+        "code-sym-chronicler-68a56fb045cb",
+        "code-sym-chronicler-6a5955012fa9",
+        "code-sym-chronicler-6c940d82e495",
+        "code-sym-chronicler-6d1810e93591",
+        "code-sym-chronicler-6de491b97fc0",
+        "code-sym-chronicler-6f083624b5fa",
+        "code-sym-chronicler-712c1595df9d",
+        "code-sym-chronicler-7252d4009b7a",
+        "code-sym-chronicler-735436485248",
+        "code-sym-chronicler-74e5f9aa7f01",
+        "code-sym-chronicler-7567a1699b75",
+        "code-sym-chronicler-773f82c2b067",
+        "code-sym-chronicler-78dbedf22f9b",
+        "code-sym-chronicler-792707374cdd",
+        "code-sym-chronicler-7c044b4afe14",
+        "code-sym-chronicler-7d84c3ec93de",
+        "code-sym-chronicler-7d8e11b9d3bf",
+        "code-sym-chronicler-7e4fed4faa8c",
+        "code-sym-chronicler-8048d5e0a765",
+        "code-sym-chronicler-80977b087385",
+        "code-sym-chronicler-80f48a1510db",
+        "code-sym-chronicler-82b2b67ff807",
+        "code-sym-chronicler-85854905889b",
+        "code-sym-chronicler-85ac9eaa10f4",
+        "code-sym-chronicler-861b5e4f73b1",
+        "code-sym-chronicler-862c9be7ec58",
+        "code-sym-chronicler-864dacec5922",
+        "code-sym-chronicler-87c711f1f8ef",
+        "code-sym-chronicler-882df6cc1b88",
+        "code-sym-chronicler-8c2ccf558717",
+        "code-sym-chronicler-8d95353a8c56",
+        "code-sym-chronicler-8f551a12a439",
+        "code-sym-chronicler-8f8e4d140b50",
+        "code-sym-chronicler-8faed57d76d5",
+        "code-sym-chronicler-900d6b1771fd",
+        "code-sym-chronicler-914453575cbf",
+        "code-sym-chronicler-91911710c9af",
+        "code-sym-chronicler-936e181e7809",
+        "code-sym-chronicler-9591d518da76",
+        "code-sym-chronicler-97782442bd80",
+        "code-sym-chronicler-99d626dc5940",
+        "code-sym-chronicler-99dee4b2a6a1",
+        "code-sym-chronicler-9b788c6ce214",
+        "code-sym-chronicler-9e57eb9f8d2b",
+        "code-sym-chronicler-9f71f4b9710e",
+        "code-sym-chronicler-a1d6690df95c",
+        "code-sym-chronicler-a21b0df94938",
+        "code-sym-chronicler-a2445695b7c2",
+        "code-sym-chronicler-a49df431456c",
+        "code-sym-chronicler-a58f37acae67",
+        "code-sym-chronicler-a7ff299a1a3f",
+        "code-sym-chronicler-a83248b83242",
+        "code-sym-chronicler-aa951460efe1",
+        "code-sym-chronicler-b0fb260f5961",
+        "code-sym-chronicler-b17d207168e4",
+        "code-sym-chronicler-b2781a5c6a12",
+        "code-sym-chronicler-b6fa727e5353",
+        "code-sym-chronicler-b92b6f87aae8",
+        "code-sym-chronicler-b991577cd9dd",
+        "code-sym-chronicler-bd4ee3ed7ec5",
+        "code-sym-chronicler-bf21eb358f7d",
+        "code-sym-chronicler-c1053a7e9cef",
+        "code-sym-chronicler-c1c20e8a76fe",
+        "code-sym-chronicler-c3b1122d8122",
+        "code-sym-chronicler-c50c8c28682b",
+        "code-sym-chronicler-c551263fb03c",
+        "code-sym-chronicler-c5965c6c4373",
+        "code-sym-chronicler-c67e05e1fea5",
+        "code-sym-chronicler-ca8d27a3e418",
+        "code-sym-chronicler-cabb682c0130",
+        "code-sym-chronicler-cb22f3e917d2",
+        "code-sym-chronicler-cc58abe13852",
+        "code-sym-chronicler-cd788b9e702f",
+        "code-sym-chronicler-cee5cce58b59",
+        "code-sym-chronicler-d02c653fe13b",
+        "code-sym-chronicler-d22c342dc517",
+        "code-sym-chronicler-d310bba0fe4f",
+        "code-sym-chronicler-d36c23a929e1",
+        "code-sym-chronicler-d38841fa1dea",
+        "code-sym-chronicler-d55c658a491d",
+        "code-sym-chronicler-d605ba76e47e",
+        "code-sym-chronicler-d6dedb8c04f0",
+        "code-sym-chronicler-d82273315be5",
+        "code-sym-chronicler-d87968aad282",
+        "code-sym-chronicler-d8cf8f2b5591",
+        "code-sym-chronicler-d8f5594e05e5",
+        "code-sym-chronicler-d9799db2619b",
+        "code-sym-chronicler-dbf9786b1057",
+        "code-sym-chronicler-dc2e6f6e564a",
+        "code-sym-chronicler-dc999406fc3f",
+        "code-sym-chronicler-dde721bf6944",
+        "code-sym-chronicler-de05eff1fcdd",
+        "code-sym-chronicler-de1cea0f2f6c",
+        "code-sym-chronicler-e0c324f2da9d",
+        "code-sym-chronicler-e21a35741e96",
+        "code-sym-chronicler-e2b8d93b169c",
+        "code-sym-chronicler-e45cb62ae75f",
+        "code-sym-chronicler-e4ce75b24064",
+        "code-sym-chronicler-e4d8f9b8f617",
+        "code-sym-chronicler-e5c612013b7b",
+        "code-sym-chronicler-e6b86a2ffccf",
+        "code-sym-chronicler-e7ce6177935c",
+        "code-sym-chronicler-e9d2c2ade91c",
+        "code-sym-chronicler-ec0859ba516b",
+        "code-sym-chronicler-ed9c72b77366",
+        "code-sym-chronicler-efd3ab96478a",
+        "code-sym-chronicler-efde929872eb",
+        "code-sym-chronicler-f012d386672a",
+        "code-sym-chronicler-f26b1e52ca9c",
+        "code-sym-chronicler-f278c5906a43",
+        "code-sym-chronicler-f29508869a05",
+        "code-sym-chronicler-f2a206fc7629",
+        "code-sym-chronicler-f4b0f314dc4b",
+        "code-sym-chronicler-f687415b4545",
+        "code-sym-chronicler-f731da3b2721",
+        "code-sym-chronicler-fc266e0859fa",
+        "code-sym-chronicler-fc9313a7f863",
+        "code-sym-chronicler-fd5d1c70aee7",
+        "code-sym-chronicler-ffa1c4c62bae"
+      ]
+    },
+    {
+      "id": "service",
+      "name": "Service",
+      "description": "Kindex-inferred service layer.",
+      "nodeIds": [
+        "code-mod-chronicler-0ea045375b45"
+      ]
+    }
+  ],
+  "tour": [
+    {
+      "order": 1,
+      "title": "Core",
+      "description": "Review 36 node(s) in the Core layer.",
+      "nodeIds": [
+        "code-mod-chronicler-112ae72614ee",
+        "code-mod-chronicler-153c2e17ab4a",
+        "code-mod-chronicler-213754b771d6",
+        "code-mod-chronicler-255ecb4a2784",
+        "code-mod-chronicler-25ce0b4f9578",
+        "code-mod-chronicler-273aee9d1b26",
+        "code-mod-chronicler-2dd3a4697241",
+        "code-mod-chronicler-2e84ba5f1926",
+        "code-mod-chronicler-389a002d2c0c",
+        "code-mod-chronicler-3c742d80eead",
+        "code-mod-chronicler-4508c424311c",
+        "code-mod-chronicler-487035dddf61",
+        "code-mod-chronicler-5a922842c92a",
+        "code-mod-chronicler-5bc047d5c399",
+        "code-mod-chronicler-5d0c5c5a5b7d",
+        "code-mod-chronicler-786981c58af5",
+        "code-mod-chronicler-81cefb7a54db",
+        "code-mod-chronicler-a64f3b8b302b",
+        "code-mod-chronicler-b6825c52b40c",
+        "code-mod-chronicler-b70a20eb1868",
+        "code-mod-chronicler-be160674a046",
+        "code-mod-chronicler-c698a4772cc8",
+        "code-mod-chronicler-cb8daade2607",
+        "code-mod-chronicler-ccdeaf23f639",
+        "code-mod-chronicler-e7b431dc0210"
+      ]
+    },
+    {
+      "order": 2,
+      "title": "Data",
+      "description": "Review 2 node(s) in the Data layer.",
+      "nodeIds": [
+        "code-mod-chronicler-1b112e6e06f1",
+        "code-mod-chronicler-a590a5c3076c"
+      ]
+    },
+    {
+      "order": 3,
+      "title": "Domain",
+      "description": "Review 219 node(s) in the Domain layer.",
+      "nodeIds": [
+        "code-sym-chronicler-0027dc0cbd2a",
+        "code-sym-chronicler-00281823a5b3",
+        "code-sym-chronicler-02bb38957b45",
+        "code-sym-chronicler-0352fc5286a1",
+        "code-sym-chronicler-04067cbc4b5f",
+        "code-sym-chronicler-05da5b4799ea",
+        "code-sym-chronicler-067d7cfbd53a",
+        "code-sym-chronicler-0700ca5a72e1",
+        "code-sym-chronicler-077b50d0e0c9",
+        "code-sym-chronicler-07ab5d1517f0",
+        "code-sym-chronicler-0b47e382dec5",
+        "code-sym-chronicler-0d75c9331a4d",
+        "code-sym-chronicler-0daf2168e3e2",
+        "code-sym-chronicler-0e731c6fa223",
+        "code-sym-chronicler-0edad314a2b8",
+        "code-sym-chronicler-105e722d55c5",
+        "code-sym-chronicler-107acde13bd5",
+        "code-sym-chronicler-11efce50734d",
+        "code-sym-chronicler-1298ba5795b2",
+        "code-sym-chronicler-13699d010538",
+        "code-sym-chronicler-137e8cf8881f",
+        "code-sym-chronicler-14bc62a79bda",
+        "code-sym-chronicler-15f14d4f1438",
+        "code-sym-chronicler-16ca586dc909",
+        "code-sym-chronicler-17d93e884ef8"
+      ]
+    },
+    {
+      "order": 4,
+      "title": "Service",
+      "description": "Review 1 node(s) in the Service layer.",
+      "nodeIds": [
+        "code-mod-chronicler-0ea045375b45"
+      ]
+    }
+  ]
+}
