@@ -1,0 +1,2982 @@
+{
+  "domains": [
+    "code",
+    "python"
+  ],
+  "node_count": 270,
+  "nodes": [
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-mod-chronicler-0ea045375b45",
+      "title": "src/chronicler/http_service.py",
+      "type": "artifact",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-mod-chronicler-112ae72614ee",
+      "title": "src/chronicler/story_manager.py",
+      "type": "artifact",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-mod-chronicler-153c2e17ab4a",
+      "title": "src/chronicler/engine_cli_mcp.py",
+      "type": "artifact",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-mod-chronicler-1b112e6e06f1",
+      "title": "contracts/schemas/interface.py",
+      "type": "artifact",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-mod-chronicler-213754b771d6",
+      "title": "src/chronicler/sinks/base.py",
+      "type": "artifact",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-mod-chronicler-255ecb4a2784",
+      "title": "src/chronicler/sources/webhook.py",
+      "type": "artifact",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-mod-chronicler-25ce0b4f9578",
+      "title": "src/chronicler/sinks/types.py",
+      "type": "artifact",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-mod-chronicler-273aee9d1b26",
+      "title": "src/chronicler/state.py",
+      "type": "artifact",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-mod-chronicler-2dd3a4697241",
+      "title": "src/chronicler/correlation.py",
+      "type": "artifact",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-mod-chronicler-2e84ba5f1926",
+      "title": "contracts/correlation_and_stories/interface.py",
+      "type": "artifact",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-mod-chronicler-389a002d2c0c",
+      "title": "src/chronicler/sinks/disk.py",
+      "type": "artifact",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-mod-chronicler-3c742d80eead",
+      "title": "contracts/root/interface.py",
+      "type": "artifact",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-mod-chronicler-4508c424311c",
+      "title": "src/chronicler/cli.py",
+      "type": "artifact",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-mod-chronicler-487035dddf61",
+      "title": "src/chronicler/sinks/engine.py",
+      "type": "artifact",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-mod-chronicler-5a922842c92a",
+      "title": "contracts/engine_cli_mcp/interface.py",
+      "type": "artifact",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-mod-chronicler-5bc047d5c399",
+      "title": "src/chronicler/sources/base.py",
+      "type": "artifact",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-mod-chronicler-5d0c5c5a5b7d",
+      "title": "src/chronicler/config.py",
+      "type": "artifact",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-mod-chronicler-786981c58af5",
+      "title": "src/chronicler/sinks/apprentice.py",
+      "type": "artifact",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-mod-chronicler-81cefb7a54db",
+      "title": "src/chronicler/sinks/stigmergy.py",
+      "type": "artifact",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-mod-chronicler-a590a5c3076c",
+      "title": "src/chronicler/schemas.py",
+      "type": "artifact",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-mod-chronicler-a64f3b8b302b",
+      "title": "contracts/config/interface.py",
+      "type": "artifact",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-mod-chronicler-b6825c52b40c",
+      "title": "contracts/sinks/interface.py",
+      "type": "artifact",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-mod-chronicler-b70a20eb1868",
+      "title": "src/chronicler/sources/sentinel.py",
+      "type": "artifact",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-mod-chronicler-be160674a046",
+      "title": "src/chronicler/sources/otlp.py",
+      "type": "artifact",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-mod-chronicler-c698a4772cc8",
+      "title": "src/chronicler/__init__.py",
+      "type": "artifact",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-mod-chronicler-cb8daade2607",
+      "title": "src/chronicler/engine.py",
+      "type": "artifact",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-mod-chronicler-ccdeaf23f639",
+      "title": "src/chronicler/sources/file.py",
+      "type": "artifact",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-mod-chronicler-e7b431dc0210",
+      "title": "src/chronicler/mcp_server.py",
+      "type": "artifact",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-mod-chronicler-ea4067dcfbb9",
+      "title": "contracts/sources/interface.py",
+      "type": "artifact",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-mod-chronicler-fa8c4fca9b95",
+      "title": "src/chronicler/sinks/kindex.py",
+      "type": "artifact",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-mod-chronicler-fdb1c0d56cf2",
+      "title": "src/chronicler/root.py",
+      "type": "artifact",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-0027dc0cbd2a",
+      "title": "EngineStats",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-00281823a5b3",
+      "title": "WebhookSource",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-020756f5cfe2",
+      "title": "ApprenticeSinkConfig",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-02bb38957b45",
+      "title": "HttpResponse",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-0352fc5286a1",
+      "title": "McpToolResult",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-04067cbc4b5f",
+      "title": "ContextDict",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-05da5b4799ea",
+      "title": "CorrelationRule",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-063b61496920",
+      "title": "FileSourceConfig",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-067d7cfbd53a",
+      "title": "SinkName",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-0700ca5a72e1",
+      "title": "ShutdownResult",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-077b50d0e0c9",
+      "title": "ChroniclerConfig",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-07ab5d1517f0",
+      "title": "CorrelationEngineConfig",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-0b47e382dec5",
+      "title": "PackageVersion",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-0d75c9331a4d",
+      "title": "CorrelationRuleConfig",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-0daf2168e3e2",
+      "title": "DiskSinkConfig",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-0e731c6fa223",
+      "title": "RecordType",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-0edad314a2b8",
+      "title": "SentinelSourceConfig",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-105e722d55c5",
+      "title": "EntityId",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-107acde13bd5",
+      "title": "CloseReason",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-11efce50734d",
+      "title": "DiskSinkConfig",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-1298ba5795b2",
+      "title": "SinkName",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-13699d010538",
+      "title": "ErrorHandlingStrategy",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-137e8cf8881f",
+      "title": "SinkEmitResult",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-14bc62a79bda",
+      "title": "OtlpSpan",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-15f14d4f1438",
+      "title": "EngineStats",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-16ca586dc909",
+      "title": "QueueBound",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-17d93e884ef8",
+      "title": "MemoryLimitsConfig",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-18b33f3bcfee",
+      "title": "WebhookSourceConfig",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-19103382ae81",
+      "title": "Story",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-191b39c77b7b",
+      "title": "StoryFilter",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-1cc11fb921e0",
+      "title": "CorrelationRuleConfig",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-1d5657823253",
+      "title": "MaxOpenStories",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-1d66e7d36852",
+      "title": "Sha256Hex",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-208c888469ad",
+      "title": "ConfigError",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-216d94b9aa56",
+      "title": "SinkType",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-224eb73e8bbb",
+      "title": "SinkHealth",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-2255adf09c2e",
+      "title": "Event",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-226853042644",
+      "title": "SourceStatus",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-230c2787b05f",
+      "title": "SourceProtocol",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-24cf5f28c988",
+      "title": "ReplayResult",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-2516a5613f2e",
+      "title": "WebhookSourceConfig",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-27d4554af47f",
+      "title": "StoryFilter",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-284b0016a642",
+      "title": "MatchCondition",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-296435500866",
+      "title": "ErrorBoundaryPolicy",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-29b04e78cd90",
+      "title": "ErrorBoundaryZone",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-2abf38466fbf",
+      "title": "StoryStatus",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-2e0aae3f5dd4",
+      "title": "TypeCategory",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-2f4c05a9f5c8",
+      "title": "ApprenticeSink",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-30da25f91148",
+      "title": "StoryId",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-3157f82c851a",
+      "title": "SinkProtocol",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-339a7c3740ba",
+      "title": "NoteworthinessThreshold",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-33f76be3129f",
+      "title": "KindexConfig",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-378b882705e7",
+      "title": "ChroniclerConfig",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-382df7a446ea",
+      "title": "RecordType",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-39636b2de597",
+      "title": "EventAppendedRecord",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-39df21a8c2b5",
+      "title": "SinkStatus",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-3a003cd3caa6",
+      "title": "McpToolName",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-3a107f29c8b2",
+      "title": "OtlpSource",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-3cab4248a286",
+      "title": "EnginePhase",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-3d8ad6460bda",
+      "title": "StartupStep",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-3e12ef68483d",
+      "title": "OtlpSpan",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-3e221efd5361",
+      "title": "IntegrationSeamSpec",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-3e5d038a8039",
+      "title": "SentinelSourceConfig",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-3e78c7d676a0",
+      "title": "SequenceNumber",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-3f1d97f73723",
+      "title": "SourceProtocol",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-3fbfd4992384",
+      "title": "EventKind",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-4122e644545e",
+      "title": "StorySummary",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-416d72b22dd4",
+      "title": "PublicApiExport",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-41ffe5e6b75a",
+      "title": "EnginePhase",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-43b5ee3343e5",
+      "title": "FileSourceConfig",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-43fc7c9ed7dc",
+      "title": "CorrelationRule",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-442e89a94c6c",
+      "title": "Event",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-4431b2e3ae67",
+      "title": "MatchCondition",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-44b290e0cee1",
+      "title": "ConfigError",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-454a38c505d3",
+      "title": "SourceType",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-45b3d1718e7c",
+      "title": "StorySummary",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-467c9e6de3d6",
+      "title": "StartupStep",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-46b5e46e1b05",
+      "title": "SourceState",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-48d4a5596506",
+      "title": "WebhookSourceConfig",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-4960fb7ae058",
+      "title": "RecoveryResult",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-499998443e50",
+      "title": "OtlpSourceConfig",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-49a967b4d41d",
+      "title": "TypeOwnershipEntry",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-4c83ef655177",
+      "title": "LifecyclePhase",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-4de890105ee0",
+      "title": "EventAppendedRecord",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-4ea5b0e8a4f2",
+      "title": "SourceProtocol",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-504355ae0f7b",
+      "title": "StigmergySinkConfig",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-51c8fcdefe60",
+      "title": "IntegrationSeamSpec",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-51ff15c15d8a",
+      "title": "SinkType",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-526a3a552f49",
+      "title": "ErrorBoundaryZone",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-54678ad39e76",
+      "title": "SafeEmitOutcome",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-5491af06298a",
+      "title": "EventId",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-55d1a0916e29",
+      "title": "KindexSinkConfig",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-55e41a8fa0b9",
+      "title": "StoryManager",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-564c3a53ba11",
+      "title": "DiskSink",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-56dfee5e15e8",
+      "title": "OtlpSourceConfig",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-56e8363e1d7d",
+      "title": "WebhookSourceConfig",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-591f3a6270ab",
+      "title": "StigmergySinkConfig",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-5ace79df5182",
+      "title": "PositiveInt",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-5cd935507493",
+      "title": "Story",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-5e56221ee90c",
+      "title": "StigmergySinkConfig",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-5ed76dd72c68",
+      "title": "WebhookSourceConfig",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-5fea8fac2b79",
+      "title": "PublicApiExport",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-60fb54447aa0",
+      "title": "SerializationConvention",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-618a2fe5ecff",
+      "title": "ErrorHandlingStrategy",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-62ccc1bb1d6f",
+      "title": "CliExitCode",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-62d2f2c83e5f",
+      "title": "StoryId",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-63a427f44296",
+      "title": "SourceType",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-63fd435fbdc6",
+      "title": "ActorId",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-652649adb4e0",
+      "title": "WebhookSourceConfig",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-6692d4bf2009",
+      "title": "FilePath",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-66965d16f370",
+      "title": "StoryListResult",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-68a56fb045cb",
+      "title": "RuleName",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-68ef61b0978c",
+      "title": "SentinelSourceConfig",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-6a5955012fa9",
+      "title": "ReplayFileSpec",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-6c940d82e495",
+      "title": "FileSource",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-6d1810e93591",
+      "title": "ApprenticeSinkConfig",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-6de491b97fc0",
+      "title": "KindexSinkConfig",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-6f083624b5fa",
+      "title": "McpToolName",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-6f7edf59aad0",
+      "title": "KindexSinkConfig",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-712c1595df9d",
+      "title": "SinkHealth",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-7252d4009b7a",
+      "title": "Story",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-735436485248",
+      "title": "TypeOwnershipEntry",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-74e5f9aa7f01",
+      "title": "SweepIntervalSeconds",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-7567a1699b75",
+      "title": "ChainEntry",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-75fdabfb0b06",
+      "title": "StigmergySinkConfig",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-773f82c2b067",
+      "title": "OtlpSourceConfig",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-78dbedf22f9b",
+      "title": "SystemHealth",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-792707374cdd",
+      "title": "SourceHealth",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-7c044b4afe14",
+      "title": "FileSourceConfig",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-7d84c3ec93de",
+      "title": "SinkType",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-7d8e11b9d3bf",
+      "title": "CorrelationEngineConfig",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-7e4fed4faa8c",
+      "title": "FilePath",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-8048d5e0a765",
+      "title": "FilePath",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-80977b087385",
+      "title": "SentinelSource",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-80f48a1510db",
+      "title": "MatchPredicate",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-82b2b67ff807",
+      "title": "CorrelationRule",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-85854905889b",
+      "title": "EventKind",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-85ac9eaa10f4",
+      "title": "IntegrationSeam",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-861b5e4f73b1",
+      "title": "SafeEmitOutcome",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-862c9be7ec58",
+      "title": "NoteworthinessFilter",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-864dacec5922",
+      "title": "EntityKind",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-87c711f1f8ef",
+      "title": "SerializationConvention",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-882df6cc1b88",
+      "title": "EventTime",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-8c2ccf558717",
+      "title": "StoryOpenedRecord",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-8d95353a8c56",
+      "title": "EngineStatus",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-8f551a12a439",
+      "title": "ShutdownStep",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-8f8e4d140b50",
+      "title": "Event",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-8faed57d76d5",
+      "title": "StoryId",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-900d6b1771fd",
+      "title": "SourceState",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-914453575cbf",
+      "title": "ShutdownStep",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-91911710c9af",
+      "title": "BindAddress",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-936e181e7809",
+      "title": "StartupResult",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-9591d518da76",
+      "title": "HealthStatus",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-97782442bd80",
+      "title": "FileSourceConfig",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-99d626dc5940",
+      "title": "NoteworthinessFilter",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-99dee4b2a6a1",
+      "title": "StoryListResult",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-9b788c6ce214",
+      "title": "PackageVersion",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-9e57eb9f8d2b",
+      "title": "Event",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-9f71f4b9710e",
+      "title": "SinkType",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-a1d6690df95c",
+      "title": "SinkProtocol",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-a21b0df94938",
+      "title": "FileSourceConfig",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-a2445695b7c2",
+      "title": "EventKindSet",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-a49df431456c",
+      "title": "TerminalEventPattern",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-a58f37acae67",
+      "title": "EngineStatus",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-a7ff299a1a3f",
+      "title": "OtlpSourceConfig",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-a83248b83242",
+      "title": "KindexSink",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-aa951460efe1",
+      "title": "SourceType",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-b0fb260f5961",
+      "title": "ReplayResult",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-b17d207168e4",
+      "title": "LifecyclePhase",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-b2781a5c6a12",
+      "title": "MemoryLimitsConfig",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-b2841bdb0578",
+      "title": "CliExitCode",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-b3e56cb78409",
+      "title": "StoryStatus",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-b6fa727e5353",
+      "title": "ChroniclerConfig",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-b92b6f87aae8",
+      "title": "TypeCategory",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-b991577cd9dd",
+      "title": "AwareDatetime",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-ba33d05e51fd",
+      "title": "DiskSinkConfig",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-bc606a679a43",
+      "title": "DiskSinkConfig",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-bd4ee3ed7ec5",
+      "title": "TimeoutSeconds",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-bd918a3d3f64",
+      "title": "Story",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-beff596a33b4",
+      "title": "ChroniclerConfig",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-bf21eb358f7d",
+      "title": "DiskSinkConfig",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-c1053a7e9cef",
+      "title": "StigmergySink",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-c1c20e8a76fe",
+      "title": "SinkEmitResult",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-c3b1122d8122",
+      "title": "DatetimeISO",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-c50c8c28682b",
+      "title": "SourceStatus",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-c551263fb03c",
+      "title": "FilePath",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-c5965c6c4373",
+      "title": "ChroniclerEngine",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-c67e05e1fea5",
+      "title": "ReeveChroniclerEvent",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-ca8d27a3e418",
+      "title": "SystemHealth",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-cabb682c0130",
+      "title": "DiskSinkConfig",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-cb22f3e917d2",
+      "title": "ReplayFileSpec",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-cc58abe13852",
+      "title": "KindexSinkConfig",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-cd788b9e702f",
+      "title": "EngineConfig",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-cee5cce58b59",
+      "title": "TerminalCondition",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-d02c653fe13b",
+      "title": "Event",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-d22c342dc517",
+      "title": "RecoveryResult",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-d310bba0fe4f",
+      "title": "StoryClosedRecord",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-d36c23a929e1",
+      "title": "MatchPredicate",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-d38841fa1dea",
+      "title": "FilePosition",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-d55c658a491d",
+      "title": "CorrelationRule",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-d605ba76e47e",
+      "title": "StoryOpenedRecord",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-d6dedb8c04f0",
+      "title": "StoryClosedRecord",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-d82273315be5",
+      "title": "SinkStatus",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-d87968aad282",
+      "title": "Event",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-d8cf8f2b5591",
+      "title": "SentinelSourceConfig",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-d8f5594e05e5",
+      "title": "StoryStatus",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-d9799db2619b",
+      "title": "McpToolResult",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-dbf9786b1057",
+      "title": "CompositeKey",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-dc2e6f6e564a",
+      "title": "StoryStatus",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-dc999406fc3f",
+      "title": "IntegrationSeam",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-dde721bf6944",
+      "title": "KindexConfig",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-de05eff1fcdd",
+      "title": "OtlpSourceConfig",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-de1cea0f2f6c",
+      "title": "NonNegativeFloat",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-e0c324f2da9d",
+      "title": "KindexSinkConfig",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-e21a35741e96",
+      "title": "CorrelationKeys",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-e2b8d93b169c",
+      "title": "CorrelationEngine",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-e45cb62ae75f",
+      "title": "KindexSinkConfig",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-e4ce75b24064",
+      "title": "CloseReason",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-e4d8f9b8f617",
+      "title": "ShutdownResult",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-e5c612013b7b",
+      "title": "HealthStatus",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-e6b86a2ffccf",
+      "title": "FilePosition",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-e7ce6177935c",
+      "title": "CompositeKey",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-e9d2c2ade91c",
+      "title": "FileSourceConfig",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-ec0859ba516b",
+      "title": "StartupResult",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-ed9c72b77366",
+      "title": "TerminalCondition",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-efd3ab96478a",
+      "title": "ErrorBoundaryPolicy",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-efde929872eb",
+      "title": "SourceType",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-f012d386672a",
+      "title": "SentinelSourceConfig",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-f26b1e52ca9c",
+      "title": "HttpResponse",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-f278c5906a43",
+      "title": "ChroniclerEngine",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-f29508869a05",
+      "title": "SentinelSourceConfig",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-f2a206fc7629",
+      "title": "OtlpSourceConfig",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-f4b0f314dc4b",
+      "title": "BindAddress",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-f687415b4545",
+      "title": "SourceHealth",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-f731da3b2721",
+      "title": "EngineConfig",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-fc266e0859fa",
+      "title": "ApprenticeSinkConfig",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-fc9313a7f863",
+      "title": "ChainEntry",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-fd5d1c70aee7",
+      "title": "Story",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    },
+    {
+      "domains": [
+        "code",
+        "python"
+      ],
+      "id": "code-sym-chronicler-ffa1c4c62bae",
+      "title": "ApprenticeSinkConfig",
+      "type": "concept",
+      "updated_at": "2026-05-30T14:47:35",
+      "weight": 0.5
+    }
+  ],
+  "repo": "chronicler",
+  "source_updated_at": "2026-05-30T14:47:35",
+  "version": 1
+}
